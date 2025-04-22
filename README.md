@@ -47,27 +47,72 @@
               - `object pop()`: O(1) - Desempenha um fluxo constante de operações sendo a remoção do topo decrementando o índice do topo.
               - `object top()`: O(1) - Desempenha um fluxo constante de operações sendo o retorno do elemento do topo da Pilha.
               - `boolean isEmpty()`: O(1) - Desempenha um fluxo constante de operações sendo a verificação se a Pilha está vazia.
-
-> [!NOTE]
-> ```
->      Algoritmo size()
->          retorne t + 1            # Retorna a variavel t + 1 que indica a quantidade de elementos do Array.
->                                   # variavel t contem o último índice ocupado do Array.
->
->     Algoritmo push(x)
->          Se (t = S.length - 1)    # Verifica se o último índice guardado na variavel t é = ao tamanho desse Array 
->              throw EPilhaCheia    # Retorna uma excessão "EPilhaCheia" caso a expressão lógica seja True
->          Senão                    # Caso contrário, ou seja, a expresão lógica seja False
->              t ← t + 1            # O valor armazenado em t passa a ser o próximo índice livre do Array
->              S[t] ← x             # Por fim, o valor x é armazenado nesse índice 
->
->      Algoritmo pop()               
->          Se (estaVazia())        # Verifica se a Pilha está Vazia
->              throw EPilhaVazia   # Retorna uma excessão "EPilhaVazia" caso a expressão lógica seja True
->          Senão                   # Caso contrário, ou seja, a expresão lógica seja False
->              t ← t - 1           # O valor armazenado em t passa a ser o índice anterior ao atual do Array 
->              retorne S[t + 1]    # Por fim, retorna o antigo último alor do Array
-> ```
+              - `int size()`: O(1) - Desempenha um fluxo constante de operações sendo o retorno da quantidade de elementos da Pilha.
+          - Implementação em C#
+          > ```csharp
+          > class PilhaVaziaExcecao : Exception      // Classe de Exceção de Pilha Vazia
+          > {
+          >     public PilhaVaziaExcecao() : base("A Pilha está vazia!") {}
+          >     public PilhaVaziaExcecao(string mensagem) : base(mensagem) {}
+          >     public PilhaVaziaExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}
+          > }
+          > 
+          > class Pilha<T>
+          > {
+          >     private int capacidade;   // Capacidade da PilhaArray
+          >     private int topo;         // Atributo de referência do Topo da Pilha
+          >     private int FC;           // Fator de Crescimento da PilhaArray - Incremental ou Duplicativa
+          >     private T[] pilhaArray;   // Array utilizado como Pilha
+          >
+          >     public Pilha(int capacidade, int crescimento)
+          >     {
+          >         this.capacidade = capacidade;    // Definir a capacidade da PilhaArray
+          >         topo = -1;                       // Sem elementos na PilhaArray
+          >         if(crescimento <= 0) FC = 0;     // Fator de Crescimento por Duplicação
+          >         else FC = crescimento;           // Fator de Crescimento por Incrementação
+          >         pilhaArray = new T[capacidade];  // Inicializando a PilhaArray
+          >     }
+          >
+          >     public void Push(T objeto)                 // Método de Adicionar Elemento no Topo da Pilha
+          >     {
+          >         if(topo >= capacidade-1)               // Redimensionamento do tamanho da PilhaArray - Excedeu o Limite
+          >         {
+          >             if(FC == 0) capacidade *= 2;       // Redimensionamento por Duplicação
+          >             else capacidade += FC;             // Redimensionamento por Incrementação
+          >
+          >             T[] tempArray = new T[capacidade]; // Criação de um Array temporário
+          >             for(int i = 0; i < pilhaArray.Length; i++)
+          >             {
+          >                 tempArray[i] = pilhaArray[i];  // Colocar os elementos do antigo Array (pilhaArray) para o novo Array (tempArray)
+          >             }
+          >             pilhaArray = tempArray;            // pilhaArray passa a ser o novo Array
+          >         }
+          >         pilhaArray[++topo] = objeto;           // Adicionar o novo elemento a PilhaArray
+          >     }
+          >
+          >     public T Pop()                                  // Método de Remover Elemento do Topo da Pilha
+          >     {
+          >         if(IsEmpty()) throw new PilhaVaziaExcecao;  // Verificar se a PilhaArray está Vazia
+          >         T removido = pilhaArray[topo--];            // Remover o elemento do Topo da PilhaArray
+          >         return removido;                            // Retorna o elemento removido
+          >     }
+          >
+          >     public T Top()                                  // Método de Retorno do Elemento do Topo da Pilha
+          >     {
+          >         if(IsEmpty()) throw new PilhaVaziaExcecao;  // Verificar se a PilhaArray está Vazia
+          >         return pilhaArray[topo];                    // Retorna o elemento do Topo
+          >     }
+          >
+          >     public bool IsEmpty()                      // Método de Verificar se a Pilha está Vazia
+          >     {
+          >         return topo == -1;                     // Verificar se a Topo da PilhaArray é igual a -1, ou seja, está Vazia
+          >     }
+          >
+          >     public int Size()                          // Método de Retorna a Quantidade de Elementos da Pilha
+          >     {
+          >         return topo + 1;                       // Retorna a quantidade de elementos da PilhaArray
+          >     }
+          > }
 
   - 📌 Limitações das Pilhas Baseadas em Arrays:
       - Capacidade Fixa: O Array possui uma capacidade fixa, ou seja, ao atingir seu limite operações como o `push(object)` são inviáveis gerando problemas de **Overflow**. Dessa forma, é necessário implementar uma estratégia de redimensionamento do tamanho do Array.
