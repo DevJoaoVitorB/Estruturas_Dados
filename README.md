@@ -367,8 +367,7 @@ Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
 
 #### 🔃 Estratégias de Redimensionamento
 
-Ao atingir a capacidade máxima, o array da fila é substituído por um novo array maior. As duas principais estratégias são: [**Estratégia Incremental**](####1estrategia-incremental) e [**Estratégia Duplicativa (Exponencial)**](####2estrategia-duplicativa-Exponencial)
-)
+Ao atingir a capacidade máxima, o array da fila é substituído por um novo array maior. As duas principais estratégias são: [**Estratégia Incremental**](#1estrategia-incremental) e [**Estratégia Duplicativa (Exponencial)**](#2estrategia-duplicativa-exponencial).
 
 <br>
 
