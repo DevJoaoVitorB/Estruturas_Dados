@@ -47,7 +47,7 @@
 
 ### ⚙️ Modo de Funcionamento
 
-#### 🔹 Configuração Padrão (Sem Circularidade)
+#### 🧩 Configuração Padrão (Sem Circularidade)
 
 - À medida que elementos são **removidos**, o índice `i` é incrementado.
 - O índice `f` cresce com as **inserções**.
@@ -69,8 +69,7 @@
   - Não haja desperdício de espaço.
   - A fila continue funcionando de forma eficiente mesmo com remoções e inserções contínuas.
 
-
-### 🧠 Visualização (Fila Circular)
+- **🔍 Visualização (Fila Circular)**
 
 ```text
 Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
@@ -78,8 +77,9 @@ Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
          i = 1               f = 4
 ```
 
-- Elementos `B`, `C`, `D` estão na fila.
-- Após mais inserções, `f` pode voltar ao índice `0` para reutilizar a posição vazia.
+- **📖 Explicação**
+  - Elementos `B`, `C`, `D` estão na fila. \
+  - Após mais inserções, `f` pode voltar ao índice `0` para reutilizar a posição vazia.
 
 <br>
 
