@@ -7,23 +7,9 @@
 2. **Operações sobre os Dados** (comportamentos)
 3. **Condições de Erro** associadas às operações (exceções)
 
-> 📓 Os TADs permitem a construção de estruturas **sem a preocupação com sua implementação interna**.
-
-<br>
-
-## 💡 Exemplo: Sistema de Controle de Estoque
-
-- **Dados:** Pedidos de Compra/Venda
-- **Operações:**
-  - `Comprar(produto, preco)`
-  - `Vender(produto, preco)`
-  - `Cancelar(pedido)`
-- **Condições de Erro:**
-  - Comprar/Vender produto inexistente
-  - Cancelar venda inexistente
+> ✅ **Resumo:** TADs facilitam a construção de sistemas robustos por meio da **separação entre interface e implementação**.
 
 ## 📁 Arquivos de TADs
-1. [TAD - Pilha](arquivos/pilha.md)
-2. [TAD - Fila](arquivos/fila.md) 
-
-> ✅ **Resumo:** TADs, como a pilha e a fila, facilitam a construção de sistemas robustos por meio da **separação entre interface e implementação**.
+### 1. 🗃️ [TAD - Pilha](arquivos/pilha.md)
+### 2. 📚 [TAD - Fila](arquivos/fila.md)
+### 3. ↔️ [TAD - Deque](arquivos/deque.md)
