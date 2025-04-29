@@ -4,13 +4,14 @@ public class Program
 {
 	public static void Main()
 	{
-		PilhaRubroNegra<object> pilha = new PilhaRubroNegra<object>(10, 0);
+		PilhaRubroNegra<object> Pilha = new PilhaRubroNegra<object>(10, 0);
+
 		int valor = -1;
 		while(valor != 0)
 		{
 			try
 			{
-				valor = menu();
+				valor = Menu();
 				Console.Clear();
 				switch (valor)
 				{
@@ -24,42 +25,42 @@ public class Program
 						{
 							Console.Write("Inserindo Valor Vermelho - Qual o Valor: ");
 							objeto = Console.ReadLine();
-							pilha.pushVermelho(objeto);
+							Pilha.PushVermelho(objeto);
 						} else 
 						{
 							Console.Write("Inserindo Valor Preto - Qual o Valor: ");
 							objeto = Console.ReadLine();
-							pilha.pushPreto(objeto);
+							Pilha.PushPreto(objeto);
 						}
 
 						break;
 					case 3:
 					case 4:
-						if(valor == 3) Console.WriteLine($"Elemento Vermelho Removido -> {pilha.popVermelho()}\n");
-						else Console.WriteLine($"Elemento Preto Removido -> {pilha.popPreto()}\n");
+						if(valor == 3) Console.WriteLine($"Elemento Vermelho Removido -> {Pilha.PopVermelho()}\n");
+						else Console.WriteLine($"Elemento Preto Removido -> {Pilha.PopPreto()}\n");
 						break;
 					case 5:
 					case 6:
-						if(valor == 5) Console.WriteLine($"Elemento do Topo Vermelho -> {pilha.topVermelho()}\n");
-						else Console.WriteLine($"Elemento do Topo Preto -> {pilha.topPreto()}\n");
+						if(valor == 5) Console.WriteLine($"Elemento do Topo Vermelho -> {Pilha.TopVermelho()}\n");
+						else Console.WriteLine($"Elemento do Topo Preto -> {Pilha.TopPreto()}\n");
 						break;
 					case 7:
-						pilha.exibirPilhaRubroNegra();
+						Pilha.exibirPilhaRubroNegra();
 						break;
 					case 8:
-						Console.WriteLine($"Quantidade de Elementos da Pilha Rubro-Negra -> {pilha.size()}\n");
+						Console.WriteLine($"Quantidade de Elementos da Pilha Rubro-Negra -> {Pilha.Size()}\n");
 						break;
 					default:
 						Console.WriteLine("Operação informada inexistente!");
 						break;
 				}
 			} 
-			catch (PilhaVaziaExcecao mensagem) { Console.WriteLine(mensagem); }
+			catch (PilhaVaziaExcecao ex) { Console.WriteLine(ex.mensagem); }
 			catch (Exception) { Console.WriteLine($"Valor inválido para essa operação!"); }	
 		}
 	}
 	
-	public static int menu()
+	public static int Menu()
 	{
 		Console.WriteLine("------------- Operações da PilhaArray Rubro-Negra -------------");
 		Console.WriteLine("\n[1]Inserir Elemento Lado Vermelho   [5]Elemento do Topo Vermelho");

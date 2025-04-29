@@ -2,157 +2,157 @@ using System;
 
 public class PilhaRubroNegra<T> : Pilha<T>
 {
-	private int topoR;						// Atributo do topo vermelho da pilha			
-	private int topoN;						// Atributo do topo preto da pilha
-	private int capacidade;					// Atributo da capacidade da pilha
+	private int TopoR;						// Atributo do topo vermelho da pilha			
+	private int TopoN;						// Atributo do topo preto da pilha
+	private int Capacidade;					// Atributo da capacidade da pilha
 	private int FC;							// Atributo do fator de crescimento da pilha
-	private T[] pilhaArray;					// PilhaArray
+	private T[] PilhaArray;					// PilhaArray
 	
 	public PilhaRubroNegra(int capacidade, int crescimento)
 	{
-		this.capacidade = capacidade;		// Definindo a capacidade da PilhaArray
+		Capacidade = capacidade;			// Definindo a capacidade da PilhaArray
 		
 		if(crescimento<=0) FC = 0;			// Redirecionamento de capacidade Duplicativo
 		else FC = crescimento;				// Redirecionamento de capacidade Incremental
 		
-		pilhaArray = new T[capacidade];		// Criação da PilhaArray
+		PilhaArray = new T[Capacidade];		// Criação da PilhaArray
 		
-		topoR = -1;							// Definição do topo vermelho
-		topoN = capacidade;					// Definição do topo preto
+		TopoR = -1;							// Definição do topo vermelho
+		TopoN = Capacidade;					// Definição do topo preto
 	}
 	
-	public void aumentarCapacidade()
+	public void AumentarCapacidade()
 	{
-		if(topoR==topoN - 1)										// Verificação da capacidade da PilhaArray (TRUE = Cheia, FALSE = Livre)
+		if(TopoR==TopoN - 1)										// Verificação da capacidade da PilhaArray (TRUE = Cheia, FALSE = Livre)
 		{
-			int indiceCapacidadeAntiga = capacidade - 1;			// Variavel auxiliar do índice máximo da capacidade antiga
+			int indiceCapacidadeAntiga = Capacidade - 1;			// Variavel auxiliar do índice máximo da capacidade antiga
 			
-			if(FC==0) capacidade *= 2;								// Estratégia Duplicativa
-			else capacidade += FC;									// Estratégia Incremental
+			if(FC==0) Capacidade *= 2;								// Estratégia Duplicativa
+			else Capacidade += FC;									// Estratégia Incremental
 			
-			int indiceCapacidadeNova = capacidade - 1;				// Variavel auxiliar do índice máximo da capacidade nova
+			int indiceCapacidadeNova = Capacidade - 1;				// Variavel auxiliar do índice máximo da capacidade nova
 	
-			T[] arrayTemp = new T[capacidade];						// Criação da PilhaArray auxiliar temporária
+			T[] arrayTemp = new T[Capacidade];						// Criação da PilhaArray auxiliar temporária
 			
-			for(int i = 0; i <= topoR; i++)					
+			for(int i = 0; i <= TopoR; i++)					
 			{
-				arrayTemp[i] = pilhaArray[i];						// Transferindo elementos vermelhos para a PilhaArray auxiliar
+				arrayTemp[i] = PilhaArray[i];						// Transferindo elementos vermelhos para a PilhaArray auxiliar
 			}
 			
-			for(int j = indiceCapacidadeAntiga; j >= topoN; j--)
+			for(int j = indiceCapacidadeAntiga; j >= TopoN; j--)
 			{
-				arrayTemp[indiceCapacidadeNova] = pilhaArray[j];	// Transferindo elementos pretos para a PilhaArray auxiliar
+				arrayTemp[indiceCapacidadeNova] = PilhaArray[j];	// Transferindo elementos pretos para a PilhaArray auxiliar
 				indiceCapacidadeNova--;
 			}
 
-			topoN = indiceCapacidadeNova + 1;						// Novo topo preto para a PilhaArray
+			TopoN = indiceCapacidadeNova + 1;						// Novo topo preto para a PilhaArray
 			
-			pilhaArray = arrayTemp;									// PilhaArray temporária passa a ser a PilhaArray principal
+			PilhaArray = arrayTemp;									// PilhaArray temporária passa a ser a PilhaArray principal
 		}
 	}
 	
-	public void pushVermelho(T objeto)
+	public void PushVermelho(T objeto)
 	{	
-		aumentarCapacidade();										// Verifica a capacidade antes do push do elemento vermelho
-		pilhaArray[++topoR] = objeto;								// Adiciona o elemento vermelho na PilhaArray
+		AumentarCapacidade();										// Verifica a capacidade antes do push do elemento vermelho
+		PilhaArray[++TopoR] = objeto;								// Adiciona o elemento vermelho na PilhaArray
 	}
 	
-	public void pushPreto(T objeto)
+	public void PushPreto(T objeto)
 	{
-		aumentarCapacidade();										// Verifica a capacidade antes do push do elemento preto
-		pilhaArray[--topoN] = objeto;								// Adiciona o elemento preto na PilhaArray
+		AumentarCapacidade();										// Verifica a capacidade antes do push do elemento preto
+		PilhaArray[--TopoN] = objeto;								// Adiciona o elemento preto na PilhaArray
 	}
 
-	public void reduzirCapacidade()
+	public void ReduzirCapacidade()
     {
-        if(size() <= capacidade/3)									// Verificação da capacidade da PilhaArray (TRUE = Abaixo da Capacidade Esperada, FALSE = Capacidade Esperada)
+        if(Size() <= Capacidade/3)									// Verificação da capacidade da PilhaArray (TRUE = Abaixo da Capacidade Esperada, FALSE = Capacidade Esperada)
         {
-            int indiceCapacidadeAntiga = capacidade - 1;			// Variavel auxiliar do índice máximo da capacidade antiga
+            int indiceCapacidadeAntiga = Capacidade - 1;			// Variavel auxiliar do índice máximo da capacidade antiga
 
-            capacidade /= 2;										// Redução da capacidade da PilhaArray pela metade
+            Capacidade /= 2;										// Redução da capacidade da PilhaArray pela metade
 
-            int indiceCapacidadeNova = capacidade - 1;				// Variavel auxiliar do índice máximo da capacidade nova
+            int indiceCapacidadeNova = Capacidade - 1;				// Variavel auxiliar do índice máximo da capacidade nova
 
-			T[] arrayTemp = new T[capacidade];						// Criação da PilhaArray auxiliar temporária
+			T[] arrayTemp = new T[Capacidade];						// Criação da PilhaArray auxiliar temporária
 			
-			for(int i = 0; i <= topoR; i++)
+			for(int i = 0; i <= TopoR; i++)
 			{
-				arrayTemp[i] = pilhaArray[i];						// Transferindo elementos vermelhos para a PilhaArray auxiliar
+				arrayTemp[i] = PilhaArray[i];						// Transferindo elementos vermelhos para a PilhaArray auxiliar
 			}
 			
-			for(int j = indiceCapacidadeAntiga; j >= topoN; j--)
+			for(int j = indiceCapacidadeAntiga; j >= TopoN; j--)
 			{
-				arrayTemp[indiceCapacidadeNova] = pilhaArray[j];	// Transferindo elementos pretos para a PilhaArray auxiliar
+				arrayTemp[indiceCapacidadeNova] = PilhaArray[j];	// Transferindo elementos pretos para a PilhaArray auxiliar
 				indiceCapacidadeNova--;
 			}
 
-			topoN = indiceCapacidadeNova + 1;						// Novo topo preto para a PilhaArray
+			TopoN = indiceCapacidadeNova + 1;						// Novo topo preto para a PilhaArray
 			
-			pilhaArray = arrayTemp;									// PilhaArray temporária passa a ser a PilhaArray principal
+			PilhaArray = arrayTemp;									// PilhaArray temporária passa a ser a PilhaArray principal
         }
     }
 	
-	public T popVermelho()
+	public T PopVermelho()
 	{
-		isEmptyVermelho();											// Verifica se o lado vermelho da PilhaArray está vazio
-        reduzirCapacidade();										// Verifica a capacidade antes do pop do elemento vermelho
-		T removido = pilhaArray[topoR--];							// Remoção e armazenamento do elemento vermelho removido
+		IsEmptyVermelho();											// Verifica se o lado vermelho da PilhaArray está vazio
+        ReduzirCapacidade();										// Verifica a capacidade antes do pop do elemento vermelho
+		T removido = PilhaArray[TopoR--];							// Remoção e armazenamento do elemento vermelho removido
 		return removido;											// Retorno do elemento vermelho removido
 	}
 	
-	public T popPreto()
+	public T PopPreto()
 	{
-		isEmptyPreto();												// Verifica se o lado preto da PilhaArray está vazio
-        reduzirCapacidade();										// Verifica a capacidade antes do pop do elemento preto
-		T excluido = pilhaArray[topoN++];							// Remoção e armazenamento do elemento preto removido
+		IsEmptyPreto();												// Verifica se o lado preto da PilhaArray está vazio
+        ReduzirCapacidade();										// Verifica a capacidade antes do pop do elemento preto
+		T excluido = PilhaArray[TopoN++];							// Remoção e armazenamento do elemento preto removido
 		return excluido;											// Retorno do elemento preto removido	
 	}
 	
-	public T topVermelho()
+	public T TopVermelho()
 	{
-		isEmptyVermelho();											// Verifica se o lado vermelho da PilhaArray está vazio
-		return pilhaArray[topoR]; 									// Retorno do elemento do topo vermelho
+		IsEmptyVermelho();											// Verifica se o lado vermelho da PilhaArray está vazio
+		return PilhaArray[TopoR]; 									// Retorno do elemento do topo vermelho
 	}
 	
-	public T topPreto()
+	public T TopPreto()
 	{
-		isEmptyPreto();												// Verifica se o lado preto da PilhaArray está vazio
-		return pilhaArray[topoN]; 									// Retorno do elemento do topo preto
+		IsEmptyPreto();												// Verifica se o lado preto da PilhaArray está vazio
+		return PilhaArray[TopoN]; 									// Retorno do elemento do topo preto
 	}
 	
-	public void isEmptyVermelho()
+	public void IsEmptyVermelho()
 	{
-		if(topoR == -1) throw new PilhaVaziaExcecao("Não há Elementos Vermelhos na Pilha");	// Verifica se o lado vermelho da PilhaArray está vazio (TopoVermelho = -1 -> Vazio)
+		if(TopoR == -1) throw new PilhaVaziaExcecao("Não há Elementos Vermelhos na Pilha");			// Verifica se o lado vermelho da PilhaArray está vazio (TopoVermelho = -1 -> Vazio)
 	}
 	
-	public void isEmptyPreto()
+	public void IsEmptyPreto()
 	{
-		if(topoN == capacidade) throw new PilhaVaziaExcecao("Não há Elementos Pretos na Pilha");	// Verifica se o lado preto da PilhaArray está vazio (TopoPreto = Capacidade -> Vazio)
+		if(TopoN == Capacidade) throw new PilhaVaziaExcecao("Não há Elementos Pretos na Pilha");	// Verifica se o lado preto da PilhaArray está vazio (TopoPreto = Capacidade -> Vazio)
 	}
 	
-	public int size()
+	public int Size()
 	{
-		return (topoR + 1) + (capacidade - topoN);					// Retorno da quantidade de elementos da PilhaArray Rubro-Negra
+		return (TopoR + 1) + (Capacidade - TopoN);					// Retorno da quantidade de elementos da PilhaArray Rubro-Negra
 	}
 
-	public void exibirPilhaRubroNegra()
+	public void ExibirPilhaRubroNegra()
 	{
 		Console.WriteLine("Pilha Rubro-Negra");
 
-		for (int i = 0; i < pilhaArray.Length; i++)					// Exibir todos os elementos da PilhaArray Rubro-Negra
+		for (int i = 0; i < PilhaArray.Length; i++)					// Exibir todos os elementos da PilhaArray Rubro-Negra
 		{
-			if (i <= topoR)											// Exibir elementos vermelhos da PilhaArray
+			if (i <= TopoR)											// Exibir elementos vermelhos da PilhaArray
 			{
 				Console.ForegroundColor = ConsoleColor.Red;
 				Console.BackgroundColor = ConsoleColor.Gray;
-				Console.Write($"| {pilhaArray[i]} |");
+				Console.Write($"| {PilhaArray[i]} |");
 				Console.ResetColor();
 			}
-			else if (i >= topoN)									// Exibir elementos pretos da PilhaArray
+			else if (i >= TopoN)									// Exibir elementos pretos da PilhaArray
 			{
 				Console.ForegroundColor = ConsoleColor.Black;
 				Console.BackgroundColor = ConsoleColor.Gray;
-				Console.Write($"| {pilhaArray[i]} |");
+				Console.Write($"| {PilhaArray[i]} |");
 				Console.ResetColor();
 			}
 			else													// Exibir espaços vazios da PilhaArray

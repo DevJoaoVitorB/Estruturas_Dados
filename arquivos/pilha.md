@@ -2,12 +2,10 @@
 <p align="center">🎯 <strong>Estrutura LIFO (Last In, First Out)</strong></p>
 <p align="center">⚠️ Elemento <strong>inserido por último</strong> é o <strong>primeiro a ser removido</strong>.</p>
 
-
 ## 🔧 Operações Principais
 
 - `push(object)` → Adiciona um elemento ao **topo** da pilha.
 - `object pop()` → Remove e retorna o elemento do **topo** da pilha.
-
 
 ## 🧰 Operações Auxiliares
 
@@ -175,9 +173,9 @@ interface Pilha<T>                          // Interface com os Métodos de uma 
  
 class PilhaArray<T> : Pilha<T>
 {
-  private int Capacidade;   // Capacidade da PilhaArray
   private int Topo;         // Atributo de referência do Topo da Pilha
   private int FC;           // Fator de Crescimento da PilhaArray - Incremental ou Duplicativa
+  private int Capacidade;   // Capacidade da PilhaArray
   private T[] PilhaArray;   // Array utilizado como Pilha
 
   public PilhaArray(int capacidade, int crescimento)
@@ -201,7 +199,7 @@ class PilhaArray<T> : Pilha<T>
       {
         tempArray[i] = PilhaArray[i];       // Colocar os elementos do antigo Array (PilhaArray) para o novo Array (tempArray)
       }
-      PilhaArray = tempArray;               // PilhaArray passa a ser o novo Array
+      PilhaArray = tempArray;               // tempArray passa a ser o novo Array
     }
     PilhaArray[++Topo] = objeto;            // Adicionar o novo elemento a PilhaArray
   }

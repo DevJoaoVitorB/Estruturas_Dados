@@ -7,7 +7,6 @@
 - `enqueue(object)` → Adiciona um elemento ao **fim** da fila.
 - `object dequeue()` → Remove e retorna o elemento do **inicio** da pilha.
 
-
 ## 🧰 Operações Auxiliares
 
 - `object first()` ou `object peek()` → Retorna o elemento do inicio **sem remover**.
@@ -32,7 +31,7 @@
 
 <br>
 
-## 🧱 Implementação Usando Array (Filas baseadas em Arrays)
+## 🧱 Implementação Usando Array (Filas baseadas em Array Circular)
 
 > Uma implementação de fila utilizando um **array fixo**, que pode ser otimizada com a técnica de **alocação circular**.
 
@@ -64,7 +63,7 @@
   ```text
   (f + 1) % N == i
   ```
-- Isso garante que:
+- **✅ Isso garante que:**
   - O array seja **plenamente utilizado**.
   - Não haja desperdício de espaço.
   - A fila continue funcionando de forma eficiente mesmo com remoções e inserções contínuas.
@@ -85,13 +84,13 @@ Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
 
 ### ⏱️ Desempenho das Operações
 
-| Operação           | Complexidade | Descrição |
-|--------------------|--------------|-----------|
-| `enqueue(object)`  | O(1)         | Adiciona no final e incrementa -> `(f + 1) % N` |
-| `object dequeue()` | O(1)         | Remove do inicio e incrementa -> `(i + 1) % N`  |
-| `object first()`   | O(1)         | Retorna o primeiro elemento                     |
-| `isEmpty()`        | O(1)         | Verifica se está vazia                          |
-| `size()`           | O(1)         | Retorna a quantidade de elementos               |
+| Operação           | Complexidade | Descrição                         |
+|--------------------|--------------|-----------------------------------|
+| `enqueue(object)`  | O(1)         | Adiciona no final                 |
+| `object dequeue()` | O(1)         | Remove do inicio                  |
+| `object first()`   | O(1)         | Retorna o primeiro elemento       |
+| `isEmpty()`        | O(1)         | Verifica se está vazia            |
+| `size()`           | O(1)         | Retorna a quantidade de elementos |
 
 <br>
 
@@ -100,13 +99,7 @@ Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
 - **Capacidade Fixa**: Arrays possuem capacidade fixa. Quando a fila atinge seu limite, operações como `enqueue(object)` se tornam inviáveis, gerando problemas de **overflow**.
 - **Espaço Desperdiçado**: Em uma fila simples baseada em array linear (sem circularidade), quando você remove elementos do início com `dequeue()`, os espaços não são reutilizados automaticamente, gerando uma exceção de EFilaCheia com espaços disponivéis.
 
-> ⚠️ Por isso, para garantir a eficiência e escalabilidade das filas, são implementadas estratégias de **redimensionamento dinâmico** e **configuração circular**.
-
-<br>
-
-### 🔃 Estratégias de Redimensionamento
-
-Ao atingir a capacidade máxima, o array da fila é substituído por um novo array maior. As duas principais estratégias são: [**Estratégia Incremental**](pilha.md/#1-estratégia-incremental) e [**Estratégia Duplicativa (Exponencial)**](pilha.md/#2-estratégia-duplicativa-exponencial).
+> ⚠️ Por isso, para garantir a eficiência e escalabilidade das filas, são implementadas estratégias de **redimensionamento dinâmico** ([**Estratégia Incremental**](pilha.md/#1-estratégia-incremental) e [**Estratégia Duplicativa (Exponencial)**](pilha.md/#2-estratégia-duplicativa-exponencial).) e **configuração circular**.
 
 <br>
 
@@ -114,7 +107,7 @@ Ao atingir a capacidade máxima, o array da fila é substituído por um novo arr
 ```csharp
 using System;
 
-class FilaVaziaException : Exception    // Classe de Exceção de Fila Vazia
+class FilaVaziaExcecao : Exception      // Classe de Exceção de Fila Vazia
 {
   public FilaVaziaExcecao() : base("A Fila está vazia!") {}
   public FilaVaziaExcecao(string mensagem) : base(mensagem) {}
@@ -132,16 +125,16 @@ interface Fila<T>                       // Interface com os Métodos de uma Fila
 
 class FilaArray<T> : Fila<T>
 {
-  private int Inicio;
-  private int Final;
-  private int FC;
-  private int Capacidade;
-  private T[] FilaArray;
+  private int Inicio;                   // Atributo de referência do Inicio da Fila
+  private int Final;                    // Atributo de referência do Final da Fila
+  private int FC;                       // Fator de Crescimento da FilaArray - Incremental ou Duplicativa
+  private int Capacidade;               // Capacidade da FilaArray
+  private T[] FilaArray;                // Array utilizado como Fila
 
   public FilaArray(int capacidade, int crescimento)
   {
     Capacidade = capacidade;          // Definir a capacidade da FilaArray
-    Inicio = Final = -1;              // Sem elementos na FilaArray
+    Inicio = Final = 0;               // Sem elementos na FilaArray
     if(crescimento <= 0) FC = 0;      // Fator de Crescimento por Duplicação
     else FC = crescimento;            // Fator de Crescimento por Incrementação
     FilaArray = new T[Capacidade];    // Inicializando a FilaArray
@@ -151,8 +144,26 @@ class FilaArray<T> : Fila<T>
   {
     if(Size() == Capacidade - 1)
     {
+      int novaCapacidade;                                             // Variável auxiliar contendo a nova capacidade da FilaArray
 
+      if(FC == 0) novaCapacidade *= 2;                                // Redimensionamento por Duplicação
+      else novaCapacidade += FC;                                      // Redimensionamento por Incrementação
+
+      T[] tempArray = new T[novaCapacidade];                          // Criação de um Array temporário
+      int inicioAux = Inicio;                                         // Variável auxiliar contendo o Inicio da FilaArray
+
+      for(int i = 0; i < Size(); i++)
+      {
+        tempArray[i] = FilaArray[inicioAux];                          // Colocar os elementos do antigo Array (FilaArray) para o novo Array (tempArray)
+        inicioAux = (inicioAux + 1) % Capacidade;                     // Iterar por todos os elementos da FilaArray
+      }
+
+      FilaArray = tempArray;                                          // tempArray passa a ser o novo Array
+      Inicio = 0;                                                     // Novo Inicio
+      Final = Size();                                                 // Novo Final
+      Capacidade = novaCapacidade;                                    // Nova Capacidade
     }
+
     FilaArray[Final] = objeto;                  // Adicionar o novo elemento a FilaArray
     Final = (Final + 1) % Capacidade;           // Novo Final
   }
@@ -160,8 +171,8 @@ class FilaArray<T> : Fila<T>
   public T Dequeue()
   {
     if(IsEmpty()) throw new FilaVaziaExcecao;   // Verificar se a FilaArray está Vazia
-    T removido = PilhaArray[Inicio];            // Remover o elemento do Inicio da FilaArray
-    Inicio = (Inicio + 1) % N;                  // Novo Inicio
+    T removido = FilaArray[Inicio];             // Remover o elemento do Inicio da FilaArray
+    Inicio = (Inicio + 1) % Capacidade;         // Novo Inicio
     return removido;                            // Retorna o elemento removido
   }
 
@@ -182,5 +193,3 @@ class FilaArray<T> : Fila<T>
   }
 }
 ```
-
-<br>
