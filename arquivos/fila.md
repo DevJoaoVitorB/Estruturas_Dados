@@ -73,8 +73,8 @@
 
 ```text
 Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
-Índices:   ↑                   ↑
-         i = 1               f = 4
+Índices:        ↑              ↑
+              i = 1          f = 4
 ```
 
 - **📖 Explicação**
@@ -114,25 +114,72 @@ Ao atingir a capacidade máxima, o array da fila é substituído por um novo arr
 ```csharp
 using System;
 
-class FilaVaziaException : Exception
+class FilaVaziaException : Exception    // Classe de Exceção de Fila Vazia
 {
-     public FilaVaziaExcecao() : base("A Fila está vazia!") {}
-     public FilaVaziaExcecao(string mensagem) : base(mensagem) {}
-     public FilaVaziaExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}
+  public FilaVaziaExcecao() : base("A Fila está vazia!") {}
+  public FilaVaziaExcecao(string mensagem) : base(mensagem) {}
+  public FilaVaziaExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}
 }
 
-interface Fila<T>
+interface Fila<T>                       // Interface com os Métodos de uma Fila
 {
-      void Enqueue(T objeto);
-      T Dequeue();
-      T First();
-      bool IsEmpty();
-      int Size();
+  void Enqueue(T objeto);               // Método para Adicionar Elemento no Final da Fila
+  T Dequeue();                          // Método para Remover Elemento do Inicio da Fila
+  T First();                            // Método de Retorno do Primeiro Elemento da Fila
+  bool IsEmpty();                       // Método para Verificar se a Fila está Vazia
+  int Size();                           // Método de Retorno da Quantidade de Elementos da Fila
 }
 
 class FilaArray<T> : Fila<T>
 {
-      
+  private int Inicio;
+  private int Final;
+  private int FC;
+  private int Capacidade;
+  private T[] FilaArray;
+
+  public FilaArray(int capacidade, int crescimento)
+  {
+    Capacidade = capacidade;          // Definir a capacidade da FilaArray
+    Inicio = Final = -1;              // Sem elementos na FilaArray
+    if(crescimento <= 0) FC = 0;      // Fator de Crescimento por Duplicação
+    else FC = crescimento;            // Fator de Crescimento por Incrementação
+    FilaArray = new T[Capacidade];    // Inicializando a FilaArray
+  }
+
+  public void Enqueue(T objeto)
+  {
+    if(Size() == Capacidade - 1)
+    {
+
+    }
+    FilaArray[Final] = objeto;                  // Adicionar o novo elemento a FilaArray
+    Final = (Final + 1) % Capacidade;           // Novo Final
+  }
+
+  public T Dequeue()
+  {
+    if(IsEmpty()) throw new FilaVaziaExcecao;   // Verificar se a FilaArray está Vazia
+    T removido = PilhaArray[Inicio];            // Remover o elemento do Inicio da FilaArray
+    Inicio = (Inicio + 1) % N;                  // Novo Inicio
+    return removido;                            // Retorna o elemento removido
+  }
+
+  public T First()
+  {
+    if(IsEmpty()) throw new FilaVaziaExcecao;   // Verificar se a FilaArray está Vazia
+    return FilaArray[Inicio];                   // Retorna o primeiro elemento
+  }
+
+  public bool IsEmpty()
+  {
+    return Inicio == Final;                             // Verificar se a Inicio da FilaArray é igual ao Final, ou seja, está Vazia
+  }
+
+  public int Size()
+  {
+    return (Capacidade - Inicio + Final) % Capacidade   // Retorna a quantidade de elementos da FilaArray
+  }
 }
 ```
 
