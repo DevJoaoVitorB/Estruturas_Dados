@@ -4,7 +4,7 @@ public class Program
 {
 	public static void Main()
 	{
-		PilhaRubroNegra<object> Pilha = new PilhaRubroNegra<object>(10, 0);
+		PilhaRubroNegra<object> Pilha = new PilhaRubroNegra<object>(10, 0);		// Inicializando a Pilha Rubro-Negra com 10 de Capacidade e Estrategia Duplicativa
 
 		int valor = -1;
 		while(valor != 0)
@@ -45,18 +45,18 @@ public class Program
 						else Console.WriteLine($"Elemento do Topo Preto -> {Pilha.TopPreto()}\n");
 						break;
 					case 7:
-						Pilha.exibirPilhaRubroNegra();
+						Pilha.ExibirPilhaRubroNegra();
 						break;
 					case 8:
 						Console.WriteLine($"Quantidade de Elementos da Pilha Rubro-Negra -> {Pilha.Size()}\n");
 						break;
 					default:
-						Console.WriteLine("Operação informada inexistente!");
+						Console.WriteLine("Operação informada inexistente! \n");
 						break;
 				}
 			} 
-			catch (PilhaVaziaExcecao ex) { Console.WriteLine(ex.mensagem); }
-			catch (Exception) { Console.WriteLine($"Valor inválido para essa operação!"); }	
+			catch (PilhaVaziaExcecao ex) { Console.WriteLine(ex.Message); }
+			catch (Exception) { Console.WriteLine($"Valor inválido para essa operação! \n"); }	
 		}
 	}
 	
