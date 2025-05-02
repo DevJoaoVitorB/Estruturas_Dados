@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Pilha_Rubro_Negra")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4a3595848329d4822cbb8d3a9833e6700290b8d4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5d6643d6ee191056848b2b4fd5cb79ad31fda64f")]
 [assembly: System.Reflection.AssemblyProductAttribute("Pilha_Rubro_Negra")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Pilha_Rubro_Negra")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

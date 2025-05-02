@@ -157,7 +157,7 @@ class DequeArray<T> : Deque<T>
   private int Final;        // Atributo de referência do Final do Deque
   private int FC;           // Fator de Crescimento do DequeArray - Incremental ou Duplicativa
   private int Capacidade;   // Capacidade do DequeArray
-  private T[] DequeArray;   // Array utilizado como Deque
+  private T[] ArrayDeque;   // Array utilizado como Deque
 
   public DequeArray(int capacidade, int crescimento)
   {
@@ -165,12 +165,12 @@ class DequeArray<T> : Deque<T>
     Inicio = Final = 0;                 // Sem elementos no DequeArray
     if(crescimento <= 0) FC = 0;        // Fator de Crescimento por Duplicação
     else FC = crescimento;              // Fator de Crescimento por Incrementação
-    DequeArray = new T[Capacidade];     // Inicializando o DequeArray
+    ArrayDeque = new T[Capacidade];     // Inicializando o DequeArray
   }
 
   private void Redimensionar()
   {
-    int novaCapacidade;                                             // Variável auxiliar contendo a nova capacidade do DequeArray
+    int novaCapacidade = 0;                                         // Variável auxiliar contendo a nova capacidade do DequeArray
 
     if(FC == 0) novaCapacidade *= 2;                                // Redimensionamento por Duplicação
     else novaCapacidade += FC;                                      // Redimensionamento por Incrementação
@@ -178,10 +178,10 @@ class DequeArray<T> : Deque<T>
     T[] tempArray = new T[novaCapacidade];                          // Criação de um Array temporário
     for (int i = 0; i < Size(); i++)
     {
-      tempArray[i] = DequeArray[(Inicio + i) % Capacidade];         // Colocar os elementos do antigo Array (DequeArray) para o novo Array (tempArray)
+      tempArray[i] = ArrayDeque[(Inicio + i) % Capacidade];         // Colocar os elementos do antigo Array (ArrayDeque) para o novo Array (tempArray)
     }
 
-    DequeArray = tempArray;                                         // tempArray passa a ser o novo Array
+    ArrayDeque = tempArray;                                         // tempArray passa a ser o novo Array
     Inicio = 0;                                                     // Novo Inicio
     Final = Size();                                                 // Novo Final
     Capacidade = novaCapacidade;                                    // Nova Capacidade
@@ -193,7 +193,7 @@ class DequeArray<T> : Deque<T>
       Redimensionar();
 
     Inicio = (Inicio - 1 + Capacidade) % Capacidade;                // Novo Inicio
-    DequeArray[Inicio] = objeto;                                    // Adicionar o novo primeiro elemento no DequeArray
+    ArrayDeque[Inicio] = objeto;                                    // Adicionar o novo primeiro elemento no DequeArray
   }
 
   public void AddLast(T objeto)
@@ -201,14 +201,14 @@ class DequeArray<T> : Deque<T>
     if (Size() == Capacidade - 1)                                   // Redimensionamento do tamanho do DequeArray - Excedeu o Limite
       Redimensionar();
 
-    DequeArray[Final] = objeto;                                     // Adicionar o novo último elemento no DequeArray
+    ArrayDeque[Final] = objeto;                                     // Adicionar o novo último elemento no DequeArray
     Final = (Final + 1) % Capacidade;                               // Novo Final
   }
 
   public T RemoveFirst()
   {
     if (IsEmpty()) throw new DequeVazioExcecao();                   // Verificar se o DequeArray está Vazio
-    T removido = DequeArray[Inicio];                                // Remover o elemento do Inicio do DequeArray
+    T removido = ArrayDeque[Inicio];                                // Remover o elemento do Inicio do DequeArray
     Inicio = (Inicio + 1) % Capacidade;                             // Novo Inicio   
     return removido;                                                // Retorna o elemento removido
   }
@@ -217,20 +217,20 @@ class DequeArray<T> : Deque<T>
   {
     if (IsEmpty()) throw new DequeVazioExcecao();                   // Verificar se o DequeArray está Vazio
     Final = (Final - 1 + Capacidade) % Capacidade;                  // Remover o elemento do Final do DequeArray
-    T removido = DequeArray[Final];                                 // Novo Final
+    T removido = ArrayDeque[Final];                                 // Novo Final
     return removido;                                                // Retorna o elemento removido
   }
 
   public T First()
   {
     if (IsEmpty()) throw new DequeVazioExcecao();                   // Verificar se o DequeArray está Vazio
-    return DequeArray[Inicio];                                      // Retorna o primeiro elemento 
+    return ArrayDeque[Inicio];                                      // Retorna o primeiro elemento 
   }
 
   public T Last()
   {
     if (IsEmpty()) throw new DequeVazioExcecao();                   // Verificar se o DequeArray está Vazio
-    return DequeArray[(Final - 1 + Capacidade) % Capacidade];       // Retorna o último elemento 
+    return ArrayDeque[(Final - 1 + Capacidade) % Capacidade];       // Retorna o último elemento 
   }
 
   public bool IsEmpty()

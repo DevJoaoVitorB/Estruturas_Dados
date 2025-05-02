@@ -3,3 +3,13 @@
 /workspaces/Estruturas_Dados_Lineares/atividades_desafios/Fila_ArrayList/obj/Debug/net8.0/Fila_ArrayList.AssemblyInfo.cs
 /workspaces/Estruturas_Dados_Lineares/atividades_desafios/Fila_ArrayList/obj/Debug/net8.0/Fila_ArrayList.csproj.CoreCompileInputs.cache
 /workspaces/Estruturas_Dados_Lineares/atividades_desafios/Fila_ArrayList/obj/Debug/net8.0/Fila_ArrayList.sourcelink.json
+/workspaces/Estruturas_Dados_Lineares/atividades_desafios/Fila_ArrayList/bin/Debug/net8.0/Fila_ArrayList
+/workspaces/Estruturas_Dados_Lineares/atividades_desafios/Fila_ArrayList/bin/Debug/net8.0/Fila_ArrayList.deps.json
+/workspaces/Estruturas_Dados_Lineares/atividades_desafios/Fila_ArrayList/bin/Debug/net8.0/Fila_ArrayList.runtimeconfig.json
+/workspaces/Estruturas_Dados_Lineares/atividades_desafios/Fila_ArrayList/bin/Debug/net8.0/Fila_ArrayList.dll
+/workspaces/Estruturas_Dados_Lineares/atividades_desafios/Fila_ArrayList/bin/Debug/net8.0/Fila_ArrayList.pdb
+/workspaces/Estruturas_Dados_Lineares/atividades_desafios/Fila_ArrayList/obj/Debug/net8.0/Fila_ArrayList.dll
+/workspaces/Estruturas_Dados_Lineares/atividades_desafios/Fila_ArrayList/obj/Debug/net8.0/refint/Fila_ArrayList.dll
+/workspaces/Estruturas_Dados_Lineares/atividades_desafios/Fila_ArrayList/obj/Debug/net8.0/Fila_ArrayList.pdb
+/workspaces/Estruturas_Dados_Lineares/atividades_desafios/Fila_ArrayList/obj/Debug/net8.0/Fila_ArrayList.genruntimeconfig.cache
+/workspaces/Estruturas_Dados_Lineares/atividades_desafios/Fila_ArrayList/obj/Debug/net8.0/ref/Fila_ArrayList.dll

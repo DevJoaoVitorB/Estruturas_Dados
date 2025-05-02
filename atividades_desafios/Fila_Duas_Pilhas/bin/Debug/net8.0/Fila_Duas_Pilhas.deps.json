@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Fila_Duas_Pilhas/1.0.0": {
+        "runtime": {
+          "Fila_Duas_Pilhas.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Fila_Duas_Pilhas/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

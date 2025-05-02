@@ -18,18 +18,18 @@ public class Program
                     case 0:
                         break;
 					case 1:
-                        Console.Write("Inserindo Valor a Fila - Qual o Valor: ");
-						object objeto; = Console.ReadLine();
-						Fila.Dequeue(objeto);
+                        Console.Write("Inserindo Valor à Fila - Qual o Valor: ");
+						object objeto = Console.ReadLine();
+						Fila.Enqueue(objeto);
 						break;
 					case 2:
-						Console.WriteLine($"Elemento Removido da Fila -> {Fila.Enqueue()}\n");
+						Console.WriteLine($"Elemento Removido da Fila -> {Fila.Dequeue()}\n");
 						break;
 					case 3:
 						Console.WriteLine($"Elemento do Inicio da Fila -> {Fila.First()}\n");
 						break;
 					case 4:
-						Fila.exibirFila();
+						Fila.ExibirFilaArrayList();
 						break;
 					case 5:
 						Console.WriteLine($"Quantidade de Elementos da Fila -> {Fila.Size()}\n");
@@ -51,6 +51,6 @@ public class Program
 		Console.WriteLine("[2]Remover Elemento da Fila      [5]Quantidade de Elementos da Fila");
 		Console.WriteLine("[3]Primeiro Elemento da Fila     [0]Sair\n");
 		Console.Write("Informe uma Operação: ");		
-		return int.tryParse(Console.ReadLine(), out valor);
+		return int.Parse(Console.ReadLine());
 	}
 }

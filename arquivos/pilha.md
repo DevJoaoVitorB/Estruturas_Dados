@@ -176,7 +176,7 @@ class PilhaArray<T> : Pilha<T>
   private int Topo;         // Atributo de referência do Topo da Pilha
   private int FC;           // Fator de Crescimento da PilhaArray - Incremental ou Duplicativa
   private int Capacidade;   // Capacidade da PilhaArray
-  private T[] PilhaArray;   // Array utilizado como Pilha
+  private T[] ArrayPilha;   // Array utilizado como Pilha
 
   public PilhaArray(int capacidade, int crescimento)
   {
@@ -184,7 +184,7 @@ class PilhaArray<T> : Pilha<T>
     Topo = -1;                        // Sem elementos na PilhaArray
     if(crescimento <= 0) FC = 0;      // Fator de Crescimento por Duplicação
     else FC = crescimento;            // Fator de Crescimento por Incrementação
-    PilhaArray = new T[Capacidade];   // Inicializando a PilhaArray
+    ArrayPilha = new T[Capacidade];   // Inicializando a PilhaArray
   }
 
   public void Push(T objeto)
@@ -195,26 +195,26 @@ class PilhaArray<T> : Pilha<T>
       else Capacidade += FC;                // Redimensionamento por Incrementação
 
       T[] tempArray = new T[Capacidade];    // Criação de um Array temporário
-      for(int i = 0; i < PilhaArray.Length; i++)
+      for(int i = 0; i < ArrayPilha.Length; i++)
       {
-        tempArray[i] = PilhaArray[i];       // Colocar os elementos do antigo Array (PilhaArray) para o novo Array (tempArray)
+        tempArray[i] = ArrayPilha[i];       // Colocar os elementos do antigo Array (ArrayPilha) para o novo Array (tempArray)
       }
-      PilhaArray = tempArray;               // tempArray passa a ser o novo Array
+      ArrayPilha = tempArray;               // tempArray passa a ser o novo Array
     }
-    PilhaArray[++Topo] = objeto;            // Adicionar o novo elemento a PilhaArray
+    ArrayPilha[++Topo] = objeto;            // Adicionar o novo elemento a PilhaArray
   }
 
   public T Pop()
   {
-    if(IsEmpty()) throw new PilhaVaziaExcecao;  // Verificar se a PilhaArray está Vazia
-    T removido = PilhaArray[Topo--];            // Remover o elemento do Topo da PilhaArray
-    return removido;                            // Retorna o elemento removido
+    if(IsEmpty()) throw new PilhaVaziaExcecao();  // Verificar se a PilhaArray está Vazia
+    T removido = ArrayPilha[Topo--];              // Remover o elemento do Topo da PilhaArray
+    return removido;                              // Retorna o elemento removido
   }
 
   public T Top()
   {
-    if(IsEmpty()) throw new PilhaVaziaExcecao;  // Verificar se a PilhaArray está Vazia
-    return PilhaArray[Topo];                    // Retorna o elemento do Topo
+    if(IsEmpty()) throw new PilhaVaziaExcecao();  // Verificar se a PilhaArray está Vazia
+    return ArrayPilha[Topo];                      // Retorna o elemento do Topo
   }
 
   public bool IsEmpty()
