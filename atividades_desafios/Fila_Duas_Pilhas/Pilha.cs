@@ -1,4 +1,5 @@
 using System;
+
 class PilhaArray<T> : Pilha<T>
 {
   private int Topo;         // Atributo de referência do Topo da Pilha
@@ -48,11 +49,11 @@ class PilhaArray<T> : Pilha<T>
 
   public int Size()
   {
-    return Topo + 1;                       // Retorna a quantidade de elementos da PilhaArray
+    return Topo + 1;                        // Retorna a quantidade de elementos da PilhaArray
   }
 
   public T[] Array()
   {
-    return ArrayPilha;
+    return ArrayPilha;                      // Retorna a PilhaArray
   }
 }

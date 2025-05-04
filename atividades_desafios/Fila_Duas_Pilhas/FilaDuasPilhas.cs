@@ -3,7 +3,7 @@ using System;
 class FilaDuasPilhas<T> : Fila<T>
 {
   private PilhaArray<object> PilhaEntrada;  // Pilha para a Entrada de elementos na Fila
-  private PilhaArray<object> PilhaSaida;    // Pilha para a Saida de elementos na fila
+  private PilhaArray<object> PilhaSaida;    // Pilha para a Saida de elementos na Fila
 
   public FilaDuasPilhas(int capacidade)
   {
@@ -26,7 +26,7 @@ class FilaDuasPilhas<T> : Fila<T>
         PilhaSaida.Push(PilhaEntrada.Pop());              // Usado para passar todos os elementos da Pilha de Entrada para a Pilha de Saida invertendo-os
       }
     }
-    return (T)PilhaSaida.Pop();                           // Elimina o primeiro elemento que entrou na Pilha de Entrada
+    return (T)PilhaSaida.Pop();                           // Remover e retorna o primeiro elemento que entrou na Pilha de Entrada
   }
 
   public T First()
@@ -39,7 +39,7 @@ class FilaDuasPilhas<T> : Fila<T>
         PilhaSaida.Push(PilhaEntrada.Pop());              // Usado para passar todos os elementos da Pilha de Entrada para a Pilha de Saida invertendo-os
       }
     }
-    return (T)PilhaSaida.Top();                           // Elimina o primeiro elemento que entrou na Pilha de Entrada
+    return (T)PilhaSaida.Top();                           // Retorna o primeiro elemento que entrou na Pilha de Entrada
   }
 
   public bool IsEmpty()

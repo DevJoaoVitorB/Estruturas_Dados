@@ -10,12 +10,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("Fila_Circular")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("Pilha_Duas_Filas")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d72c91e54089abef1035621569b387a22d5eba68")]
-[assembly: System.Reflection.AssemblyProductAttribute("Fila_Circular")]
-[assembly: System.Reflection.AssemblyTitleAttribute("Fila_Circular")]
+[assembly: System.Reflection.AssemblyProductAttribute("Pilha_Duas_Filas")]
+[assembly: System.Reflection.AssemblyTitleAttribute("Pilha_Duas_Filas")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Gerado pela classe WriteCodeFragment do MSBuild.
