@@ -84,13 +84,13 @@ Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
 
 ### ⏱️ Desempenho das Operações
 
-| Operação           | Complexidade | Descrição                         |
-|--------------------|--------------|-----------------------------------|
-| `enqueue(object)`  | O(1)         | Adiciona no final                 |
-| `object dequeue()` | O(1)         | Remove do inicio                  |
-| `object first()`   | O(1)         | Retorna o primeiro elemento       |
-| `isEmpty()`        | O(1)         | Verifica se está vazia            |
-| `size()`           | O(1)         | Retorna a quantidade de elementos |
+| Operação            | Complexidade | Descrição                         |
+|---------------------|--------------|-----------------------------------|
+| `enqueue(object)`   | O(1)         | Adiciona no final                 |
+| `object dequeue()`  | O(1)         | Remove do inicio                  |
+| `object first()`    | O(1)         | Retorna o primeiro elemento       |
+| `interger size()`   | O(1)         | Retorna a quantidade de elementos |
+| `boolean isEmpty()` | O(1)         | Verifica se está vazia            |
 
 <br>
 

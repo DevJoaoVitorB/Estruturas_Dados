@@ -43,13 +43,13 @@
 
 ### ⏱️ Desempenho das Operações
 
-| Operação         | Complexidade | Descrição |
-|------------------|--------------|-----------|
-| `push(object)`   | O(1)         | Adiciona no topo (incrementa índice) |
-| `object pop()`   | O(1)         | Remove do topo (decrementa índice)   |
-| `object top()`   | O(1)         | Retorna o topo                       |
-| `isEmpty()`      | O(1)         | Verifica se está vazia               |
-| `size()`         | O(1)         | Retorna a quantidade de elementos    |
+| Operação            | Complexidade | Descrição |
+|---------------------|--------------|-----------|
+| `push(object)`      | O(1)         | Adiciona no topo (incrementa índice) |
+| `object pop()`      | O(1)         | Remove do topo (decrementa índice)   |
+| `object top()`      | O(1)         | Retorna o topo                       |
+| `interger size()`   | O(1)         | Retorna a quantidade de elementos    |
+| `boolean isEmpty()` | O(1)         | Verifica se está vazia               |
 
 <br>
 

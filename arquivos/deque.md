@@ -112,8 +112,8 @@ Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
 | `object removeLast()` | O(1)         | Remove do final                    |
 | `object first()`      | O(1)         | Acessa início sem remover          |
 | `object last()`       | O(1)         | Acessa final sem remover           |
-| `isEmpty()`           | O(1)         | Verifica se está vazio             |
-| `size()`              | O(1)         | Retorna a quantidade de elementos  |
+| `interger size()`     | O(1)         | Retorna a quantidade de elementos  |
+| `boolean isEmpty()`   | O(1)         | Verifica se está vazio             |
 
 <br>
 
