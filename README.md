@@ -13,4 +13,6 @@
 ### 1. 🗃️ [TAD - Pilha](arquivos/pilha.md)
 ### 2. 📚 [TAD - Fila](arquivos/fila.md)
 ### 3. ↔️ [TAD - Deque](arquivos/deque.md)
-### 4. 📋 [TAD - Lista](arquivos/lista.md)
+### 4. 🗂️ [TAD - Vetor](arquivos/vetor.md)
+### 5. 📋 [TAD - Lista](arquivos/lista.md)
+### 6. 🔢 [TAD - Sequência](arquivos/sequencia.md)
