@@ -157,74 +157,74 @@ using System;
 
 class PilhaVaziaExcecao : Exception         // Classe de Exceção de Pilha Vazia
 {
-  public PilhaVaziaExcecao() : base("A Pilha está vazia!") {}
-  public PilhaVaziaExcecao(string mensagem) : base(mensagem) {}
-  public PilhaVaziaExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}
+    public PilhaVaziaExcecao() : base("A Pilha está vazia!") {}
+    public PilhaVaziaExcecao(string mensagem) : base(mensagem) {}
+    public PilhaVaziaExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}
 }
 
 interface Pilha<T>                          // Interface com os Métodos de uma Pilha
 {
-  void Push(T objeto);                      // Método para Adicionar Elemento no Topo da Pilha
-  T Pop();                                  // Método para Remover Elemento do Topo da Pilha
-  T Top();                                  // Método de Retorno do Elemento do Topo da Pilha
-  bool IsEmpty();                           // Método para Verificar se a Pilha está Vazia
-  int Size();                               // Método de Retorno da Quantidade de Elementos da Pilha
+    void Push(T objeto);                      // Método para Adicionar Elemento no Topo da Pilha
+    T Pop();                                  // Método para Remover Elemento do Topo da Pilha
+    T Top();                                  // Método de Retorno do Elemento do Topo da Pilha
+    bool IsEmpty();                           // Método para Verificar se a Pilha está Vazia
+    int Size();                               // Método de Retorno da Quantidade de Elementos da Pilha
 }
  
 class PilhaArray<T> : Pilha<T>
 {
-  private int Topo;         // Atributo de referência do Topo da Pilha
-  private int FC;           // Fator de Crescimento da PilhaArray - Incremental ou Duplicativa
-  private int Capacidade;   // Capacidade da PilhaArray
-  private T[] ArrayPilha;   // Array utilizado como Pilha
+    private int Topo;         // Atributo de referência do Topo da Pilha
+    private int FC;           // Fator de Crescimento da PilhaArray - Incremental ou Duplicativa
+    private int Capacidade;   // Capacidade da PilhaArray
+    private T[] ArrayPilha;   // Array utilizado como Pilha
 
-  public PilhaArray(int capacidade, int crescimento)
-  {
-    Capacidade = capacidade;          // Definir a capacidade da PilhaArray
-    Topo = -1;                        // Sem elementos na PilhaArray
-    if(crescimento <= 0) FC = 0;      // Fator de Crescimento por Duplicação
-    else FC = crescimento;            // Fator de Crescimento por Incrementação
-    ArrayPilha = new T[Capacidade];   // Inicializando a PilhaArray
-  }
-
-  public void Push(T objeto)
-  {
-    if(Topo >= Capacidade-1)                // Redimensionamento do tamanho da PilhaArray - Excedeu o Limite
+    public PilhaArray(int capacidade, int crescimento)
     {
-      if(FC == 0) Capacidade *= 2;          // Redimensionamento por Duplicação
-      else Capacidade += FC;                // Redimensionamento por Incrementação
-
-      T[] tempArray = new T[Capacidade];    // Criação de um Array temporário
-      for(int i = 0; i < ArrayPilha.Length; i++)
-      {
-        tempArray[i] = ArrayPilha[i];       // Colocar os elementos do antigo Array (ArrayPilha) para o novo Array (tempArray)
-      }
-      ArrayPilha = tempArray;               // tempArray passa a ser o novo Array
+        Capacidade = capacidade;          // Definir a capacidade da PilhaArray
+        Topo = -1;                        // Sem elementos na PilhaArray
+        if(crescimento <= 0) FC = 0;      // Fator de Crescimento por Duplicação
+        else FC = crescimento;            // Fator de Crescimento por Incrementação
+        ArrayPilha = new T[Capacidade];   // Inicializando a PilhaArray
     }
-    ArrayPilha[++Topo] = objeto;            // Adicionar o novo elemento a PilhaArray
-  }
 
-  public T Pop()
-  {
-    if(IsEmpty()) throw new PilhaVaziaExcecao();  // Verificar se a PilhaArray está Vazia
-    T removido = ArrayPilha[Topo--];              // Remover o elemento do Topo da PilhaArray
-    return removido;                              // Retorna o elemento removido
-  }
+    public void Push(T objeto)
+    {
+        if(Topo >= Capacidade-1)                // Redimensionamento do tamanho da PilhaArray - Excedeu o Limite
+        {
+            if(FC == 0) Capacidade *= 2;          // Redimensionamento por Duplicação
+            else Capacidade += FC;                // Redimensionamento por Incrementação
 
-  public T Top()
-  {
-    if(IsEmpty()) throw new PilhaVaziaExcecao();  // Verificar se a PilhaArray está Vazia
-    return ArrayPilha[Topo];                      // Retorna o elemento do Topo
-  }
+            T[] tempArray = new T[Capacidade];    // Criação de um Array temporário
+            for(int i = 0; i < ArrayPilha.Length; i++)
+            {
+              tempArray[i] = ArrayPilha[i];       // Colocar os elementos do antigo Array (ArrayPilha) para o novo Array (tempArray)
+            }
+            ArrayPilha = tempArray;               // tempArray passa a ser o novo Array
+        }
+        ArrayPilha[++Topo] = objeto;            // Adicionar o novo elemento a PilhaArray
+    }
 
-  public bool IsEmpty()
-  {
-    return Topo == -1;                     // Verificar se a Topo da PilhaArray é igual a -1, ou seja, está Vazia
-  }
+    public T Pop()
+    {
+        if(IsEmpty()) throw new PilhaVaziaExcecao();  // Verificar se a PilhaArray está Vazia
+        T removido = ArrayPilha[Topo--];              // Remover o elemento do Topo da PilhaArray
+        return removido;                              // Retorna o elemento removido
+    }
 
-  public int Size()
-  {
-    return Topo + 1;                       // Retorna a quantidade de elementos da PilhaArray
-  }
+    public T Top()
+    {
+        if(IsEmpty()) throw new PilhaVaziaExcecao();  // Verificar se a PilhaArray está Vazia
+        return ArrayPilha[Topo];                      // Retorna o elemento do Topo
+    }
+
+    public bool IsEmpty()
+    {
+        return Topo == -1;                     // Verificar se a Topo da PilhaArray é igual a -1, ou seja, está Vazia
+    }
+
+    public int Size()
+    {
+        return Topo + 1;                       // Retorna a quantidade de elementos da PilhaArray
+    }
 }
 ```

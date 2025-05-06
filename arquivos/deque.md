@@ -134,113 +134,111 @@ using System;
 
 class DequeVazioExcecao : Exception     // Classe de Exceção de Deque Vazio
 {
-  public DequeVazioExcecao() : base("O Deque está vazio!") {}
-  public DequeVazioExcecao(string mensagem) : base(mensagem) {}
-  public DequeVazioExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}
+    public DequeVazioExcecao() : base("O Deque está vazio!") {}
+    public DequeVazioExcecao(string mensagem) : base(mensagem) {}
+    public DequeVazioExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}'
 }
 
 interface Deque<T>              // Interface com os Métodos de uma Pilha
 {
-  void AddFirst(T objeto);      // Método para Adicionar Elemento no Inicio do Deque
-  void AddLast(T objeto);       // Método para Adicionar Elemento no Final do Deque
-  T RemoveFirst();              // Método para Remover Elemento do Inicio do Deque
-  T RemoveLast();               // Método para Remover Elemento do Final do Deque
-  T First();                    // Método de Retorno do Primeiro Elemento do Deque
-  T Last();                     // Método de Retorno do Último Elemento do Deque
-  bool IsEmpty();               // Método para Verificar se o Deque está Vazio
-  int Size();                   // Método de Retorno da Quantidade de Elementos da Pilha
+    void AddFirst(T objeto);      // Método para Adicionar Elemento no Inicio do Deque
+    void AddLast(T objeto);       // Método para Adicionar Elemento no Final do Deque
+    T RemoveFirst();              // Método para Remover Elemento do Inicio do Deque
+    T RemoveLast();               // Método para Remover Elemento do Final do Deque
+    T First();                    // Método de Retorno do Primeiro Elemento do Deque
+    T Last();                     // Método de Retorno do Último Elemento do Deque
+    bool IsEmpty();               // Método para Verificar se o Deque está Vazio
+    int Size();                   // Método de Retorno da Quantidade de Elementos da Pilha
 }
 
 class DequeArray<T> : Deque<T>
 {
-  private int Inicio;       // Atributo de referência do Inicio do Deque
-  private int Final;        // Atributo de referência do Final do Deque
-  private int FC;           // Fator de Crescimento do DequeArray - Incremental ou Duplicativa
-  private int Capacidade;   // Capacidade do DequeArray
-  private T[] ArrayDeque;   // Array utilizado como Deque
+    private int Inicio;       // Atributo de referência do Inicio do Deque
+    private int Final;        // Atributo de referência do Final do Deque
+    private int FC;           // Fator de Crescimento do DequeArray - Incremental ou Duplicativa
+    private int Capacidade;   // Capacidade do DequeArray
+    private T[] ArrayDeque;   // Array utilizado como Deque
 
-  public DequeArray(int capacidade, int crescimento)
-  {
-    Capacidade = capacidade;            // Definir a capacidade do DequeArray
-    Inicio = Final = 0;                 // Sem elementos no DequeArray
-    if(crescimento <= 0) FC = 0;        // Fator de Crescimento por Duplicação
-    else FC = crescimento;              // Fator de Crescimento por Incrementação
-    ArrayDeque = new T[Capacidade];     // Inicializando o DequeArray
-  }
-
-  private void Redimensionar()
-  {
-    int novaCapacidade = 0;                                         // Variável auxiliar contendo a nova capacidade do DequeArray
-
-    if(FC == 0) novaCapacidade *= 2;                                // Redimensionamento por Duplicação
-    else novaCapacidade += FC;                                      // Redimensionamento por Incrementação
-    
-    T[] tempArray = new T[novaCapacidade];                          // Criação de um Array temporário
-    for (int i = 0; i < Size(); i++)
+    public DequeArray(int capacidade, int crescimento)
     {
-      tempArray[i] = ArrayDeque[(Inicio + i) % Capacidade];         // Colocar os elementos do antigo Array (ArrayDeque) para o novo Array (tempArray)
+        Capacidade = capacidade;            // Definir a capacidade do DequeArray
+        Inicio = Final = 0;                 // Sem elementos no DequeArray
+        if(crescimento <= 0) FC = 0;        // Fator de Crescimento por Duplicação
+        else FC = crescimento;              // Fator de Crescimento por Incrementação
+        ArrayDeque = new T[Capacidade];     // Inicializando o DequeArray
     }
 
-    ArrayDeque = tempArray;                                         // tempArray passa a ser o novo Array
-    Inicio = 0;                                                     // Novo Inicio
-    Final = Size();                                                 // Novo Final
-    Capacidade = novaCapacidade;                                    // Nova Capacidade
-  }
+    private void Redimensionar()
+    {
+        int novaCapacidade = 0;                                         // Variável auxiliar contendo a nova capacidade do DequeArray
 
-  public void AddFirst(T objeto)
-  {
-    if (Size() == Capacidade - 1)                                   // Redimensionamento do tamanho do DequeArray - Excedeu o Limite
-      Redimensionar();
+        if(FC == 0) novaCapacidade *= 2;                                // Redimensionamento por Duplicação
+        else novaCapacidade += FC;                                      // Redimensionamento por Incrementação
+        
+        T[] tempArray = new T[novaCapacidade];                          // Criação de um Array temporário
+        for (int i = 0; i < Size(); i++)
+        {
+            tempArray[i] = ArrayDeque[(Inicio + i) % Capacidade];         // Colocar os elementos do antigo Array (ArrayDeque) para o novo Array (tempArray)
+        }
 
-    Inicio = (Inicio - 1 + Capacidade) % Capacidade;                // Novo Inicio
-    ArrayDeque[Inicio] = objeto;                                    // Adicionar o novo primeiro elemento no DequeArray
-  }
+        ArrayDeque = tempArray;                                         // tempArray passa a ser o novo Array
+        Inicio = 0;                                                     // Novo Inicio
+        Final = Size();                                                 // Novo Final
+        Capacidade = novaCapacidade;                                    // Nova Capacidade
+    }
 
-  public void AddLast(T objeto)
-  {
-    if (Size() == Capacidade - 1)                                   // Redimensionamento do tamanho do DequeArray - Excedeu o Limite
-      Redimensionar();
+    public void AddFirst(T objeto)
+    {
+        if (Size() == Capacidade - 1) Redimensionar();                  // Redimensionamento do tamanho do DequeArray - Excedeu o Limite
 
-    ArrayDeque[Final] = objeto;                                     // Adicionar o novo último elemento no DequeArray
-    Final = (Final + 1) % Capacidade;                               // Novo Final
-  }
+        Inicio = (Inicio - 1 + Capacidade) % Capacidade;                // Novo Inicio
+        ArrayDeque[Inicio] = objeto;                                    // Adicionar o novo primeiro elemento no DequeArray
+    }
 
-  public T RemoveFirst()
-  {
-    if (IsEmpty()) throw new DequeVazioExcecao();                   // Verificar se o DequeArray está Vazio
-    T removido = ArrayDeque[Inicio];                                // Remover o elemento do Inicio do DequeArray
-    Inicio = (Inicio + 1) % Capacidade;                             // Novo Inicio   
-    return removido;                                                // Retorna o elemento removido
-  }
+    public void AddLast(T objeto)
+    {
+        if (Size() == Capacidade - 1) Redimensionar();                  // Redimensionamento do tamanho do DequeArray - Excedeu o Limite
 
-  public T RemoveLast()
-  {
-    if (IsEmpty()) throw new DequeVazioExcecao();                   // Verificar se o DequeArray está Vazio
-    Final = (Final - 1 + Capacidade) % Capacidade;                  // Remover o elemento do Final do DequeArray
-    T removido = ArrayDeque[Final];                                 // Novo Final
-    return removido;                                                // Retorna o elemento removido
-  }
+        ArrayDeque[Final] = objeto;                                     // Adicionar o novo último elemento no DequeArray
+        Final = (Final + 1) % Capacidade;                               // Novo Final
+    }
 
-  public T First()
-  {
-    if (IsEmpty()) throw new DequeVazioExcecao();                   // Verificar se o DequeArray está Vazio
-    return ArrayDeque[Inicio];                                      // Retorna o primeiro elemento 
-  }
+    public T RemoveFirst()
+    {
+        if (IsEmpty()) throw new DequeVazioExcecao();                   // Verificar se o DequeArray está Vazio
+        T removido = ArrayDeque[Inicio];                                // Remover o elemento do Inicio do DequeArray
+        Inicio = (Inicio + 1) % Capacidade;                             // Novo Inicio   
+        return removido;                                                // Retorna o elemento removido
+    }
 
-  public T Last()
-  {
-    if (IsEmpty()) throw new DequeVazioExcecao();                   // Verificar se o DequeArray está Vazio
-    return ArrayDeque[(Final - 1 + Capacidade) % Capacidade];       // Retorna o último elemento 
-  }
+    public T RemoveLast()
+    {
+        if (IsEmpty()) throw new DequeVazioExcecao();                   // Verificar se o DequeArray está Vazio
+        Final = (Final - 1 + Capacidade) % Capacidade;                  // Remover o elemento do Final do DequeArray
+        T removido = ArrayDeque[Final];                                 // Novo Final
+        return removido;                                                // Retorna o elemento removido
+    }
 
-  public bool IsEmpty()
-  {
-    return Inicio == Final;                                         // Verificar se a Inicio do DequeArray é igual ao Final, ou seja, está Vazio
-  }
+    public T First()
+    {
+        if (IsEmpty()) throw new DequeVazioExcecao();                   // Verificar se o DequeArray está Vazio
+        return ArrayDeque[Inicio];                                      // Retorna o primeiro elemento 
+    }
 
-  public int Size()
-  {
-    return (Capacidade - Inicio + Final) % Capacidade   // Retorna a quantidade de elementos do DequeArray
-  }
+    public T Last()
+    {
+        if (IsEmpty()) throw new DequeVazioExcecao();                   // Verificar se o DequeArray está Vazio
+        return ArrayDeque[(Final - 1 + Capacidade) % Capacidade];       // Retorna o último elemento 
+    }
+
+    public bool IsEmpty()
+    {
+        return Inicio == Final;                                         // Verificar se a Inicio do DequeArray é igual ao Final, ou seja, está Vazio
+    }
+
+    public int Size()
+    {
+        return (Capacidade - Inicio + Final) % Capacidade   // Retorna a quantidade de elementos do DequeArray
+    }
 }
 ```
