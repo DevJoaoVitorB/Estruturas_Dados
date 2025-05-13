@@ -99,7 +99,9 @@ Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
 - **Capacidade Fixa**: Arrays possuem capacidade fixa. Quando a fila atinge seu limite, operações como `enqueue(object)` se tornam inviáveis, gerando problemas de **overflow**.
 - **Espaço Desperdiçado**: Em uma fila simples baseada em array linear (sem circularidade), quando você remove elementos do início com `dequeue()`, os espaços não são reutilizados automaticamente, gerando uma exceção de EFilaCheia com espaços disponivéis.
 
-> ⚠️ Por isso, para garantir a eficiência e escalabilidade das filas, são implementadas estratégias de **redimensionamento dinâmico** ([**Estratégia Incremental**](pilha.md/#1-estratégia-incremental) e [**Estratégia Duplicativa (Exponencial)**](pilha.md/#2-estratégia-duplicativa-exponencial).) e **configuração circular**.
+> ⚠️ Por isso, para garantir a eficiência e escalabilidade das filas, são implementadas estratégias de **configuração circular** e **redimensionamento dinâmico** como:
+>  * [**Estratégia Incremental**](pilha.md/#1-estratégia-incremental) 
+>  * [**Estratégia Duplicativa (Exponencial)**](pilha.md/#2-estratégia-duplicativa-exponencial)
 
 <br>
 
@@ -119,8 +121,8 @@ interface Fila<T>                       // Interface com os Métodos de uma Fila
     void Enqueue(T objeto);               // Método para Adicionar Elemento no Final da Fila
     T Dequeue();                          // Método para Remover Elemento do Inicio da Fila
     T First();                            // Método de Retorno do Primeiro Elemento da Fila
-    bool IsEmpty();                       // Método para Verificar se a Fila está Vazia
     int Size();                           // Método de Retorno da Quantidade de Elementos da Fila
+    bool IsEmpty();                       // Método para Verificar se a Fila está Vazia
 }
 
 using System;
@@ -184,14 +186,14 @@ class FilaArray<T> : Fila<T>
         return ArrayFila[Inicio];                       // Retorna o primeiro elemento
     }
 
-    public bool IsEmpty()
-    {
-        return Inicio == Final;                             // Verificar se a Inicio da FilaArray é igual ao Final, ou seja, está Vazia
-    }
-
     public int Size()
     {
         return (Capacidade - Inicio + Final) % Capacidade;  // Retorna a quantidade de elementos da FilaArray
+    }
+
+    public bool IsEmpty()
+    {
+        return Inicio == Final;                             // Verificar se a Inicio da FilaArray é igual ao Final, ou seja, está Vazia
     }
 }
 ```

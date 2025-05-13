@@ -123,7 +123,9 @@ Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
 - **Gerenciamento de índices**: É necessário controle do "loop circular" ao usar array fixo.
 - **Redimensionamento necessário**: Para permitir crescimento dinâmico, exige realocação com cópia.
 
-> ⚠️ Para melhor escalabilidade, o array pode ser **dinamicamente redimensionado**, com estratégias semelhantes às usadas em pilhas e filas ([**Estratégia Incremental**](pilha.md/#1-estratégia-incremental) e [**Estratégia Duplicativa (Exponencial)**](pilha.md/#2-estratégia-duplicativa-exponencial).).
+> ⚠️ Por isso, para garantir a eficiência e escalabilidade dos Deques, são implementadas estratégias de **redimensionamento dinâmico** usado em TADs Pilha e Fila como:
+>  * [**Estratégia Incremental**](pilha.md/#1-estratégia-incremental) 
+>  * [**Estratégia Duplicativa (Exponencial)**](pilha.md/#2-estratégia-duplicativa-exponencial)
 
 <br>
 
@@ -147,8 +149,8 @@ interface Deque<T>              // Interface com os Métodos de uma Pilha
     T RemoveLast();               // Método para Remover Elemento do Final do Deque
     T First();                    // Método de Retorno do Primeiro Elemento do Deque
     T Last();                     // Método de Retorno do Último Elemento do Deque
+    int Size();                   // Método de Retorno da Quantidade de Elementos do Deque
     bool IsEmpty();               // Método para Verificar se o Deque está Vazio
-    int Size();                   // Método de Retorno da Quantidade de Elementos da Pilha
 }
 
 class DequeArray<T> : Deque<T>
@@ -231,14 +233,14 @@ class DequeArray<T> : Deque<T>
         return ArrayDeque[(Final - 1 + Capacidade) % Capacidade];       // Retorna o último elemento 
     }
 
-    public bool IsEmpty()
-    {
-        return Inicio == Final;                                         // Verificar se a Inicio do DequeArray é igual ao Final, ou seja, está Vazio
-    }
-
     public int Size()
     {
         return (Capacidade - Inicio + Final) % Capacidade   // Retorna a quantidade de elementos do DequeArray
+    }
+
+    public bool IsEmpty()
+    {
+        return Inicio == Final;                                         // Verificar se a Inicio do DequeArray é igual ao Final, ou seja, está Vazio
     }
 }
 ```

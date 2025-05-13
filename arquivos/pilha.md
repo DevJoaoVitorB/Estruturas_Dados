@@ -167,8 +167,8 @@ interface Pilha<T>                          // Interface com os Métodos de uma 
     void Push(T objeto);                      // Método para Adicionar Elemento no Topo da Pilha
     T Pop();                                  // Método para Remover Elemento do Topo da Pilha
     T Top();                                  // Método de Retorno do Elemento do Topo da Pilha
-    bool IsEmpty();                           // Método para Verificar se a Pilha está Vazia
     int Size();                               // Método de Retorno da Quantidade de Elementos da Pilha
+    bool IsEmpty();                           // Método para Verificar se a Pilha está Vazia
 }
  
 class PilhaArray<T> : Pilha<T>
@@ -217,14 +217,14 @@ class PilhaArray<T> : Pilha<T>
         return ArrayPilha[Topo];                      // Retorna o elemento do Topo
     }
 
-    public bool IsEmpty()
-    {
-        return Topo == -1;                     // Verificar se a Topo da PilhaArray é igual a -1, ou seja, está Vazia
-    }
-
     public int Size()
     {
         return Topo + 1;                       // Retorna a quantidade de elementos da PilhaArray
+    }
+
+    public bool IsEmpty()
+    {
+        return Topo == -1;                     // Verificar se a Topo da PilhaArray é igual a -1, ou seja, está Vazia
     }
 }
 ```

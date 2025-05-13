@@ -7,7 +7,7 @@
 - `insertLast(object)` → Insere um elemento no **final** da lista.
 - `insertAfter(object, object)` → Insere elemento **depois** de outro elemento.
 - `insertBefore(object, object)` → Insere um elemento **antes** de outro elemento.
-- `replaceElement(object, object)` → Substitui um **elemento antigo** por um **elemento novo**.
+- `object replaceElement(object, object)` → Substitui um **elemento antigo** por um **elemento novo**.
 - `swapElement(object, object)` → Troca de posição de um elemento com outro elemento.
 - `object remove(object)` → Remove e retorna um elemento da lista.
 
@@ -196,6 +196,7 @@ class ListaSimplismenteLigada<T> : Lista<T>
         }
         atualNo.Next = novoNo;                          // Referência posterior da referência anterior do Nó de referência é o novo Nó
         noReferencia.Next = null;                       // Anular o próximo do Nó que será substituido
+        return noReferencia.Objeto;                     // Retorna o objeto do Nó de referência
     }
 
     public void SwapElement(T objetoRef1, T objetoRef2)
@@ -471,7 +472,7 @@ class ListaDuplamenteLigada<T> : Lista<T>
         QtdElement++;                               // Quantidade de elementos +1
     }
 
-     public void ReplaceElement(T objetoRef, T objeto)
+    public T ReplaceElement(T objetoRef, T objeto)
     {
         if(IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
         No<T> novoNo = new No<T>();                     // Criando um novo Nó
@@ -483,7 +484,8 @@ class ListaDuplamenteLigada<T> : Lista<T>
         novoNo.Prev = noRefPrev;                        // Referência anterior do novoNo é a referência anterior do Nó de referência
         noRefNext.Prev = novoNo;                        // Referência anterior da referência posterior do Nó de referência é o novo Nó
         noRefPrev.Next = novoNo;                        // Referência posterior da referência anterior do Nó de referência é o novo Nó
-        noReferencia.Next = noReferencia.Prev = null    // Anular a referência posterior e anterior do Nó que será substituido 
+        noReferencia.Next = noReferencia.Prev = null;   // Anular a referência posterior e anterior do Nó que será substituido 
+        return noReferencia.Objeto;                     // Retorna o objeto do Nó de referência
     }
 
     public void SwapElement(T objetoRef1, T objetoRef2)
@@ -495,11 +497,11 @@ class ListaDuplamenteLigada<T> : Lista<T>
         No<T> noRefPrev1 = noReferencia1.Prev;          // Referência anterior do Nó de referência 1
         No<T> noRefNext2 = noReferencia2.Next;          // Referência posterior do Nó de referência 2
         No<T> noRefPrev2 = noReferencia2.Prev;          // Referência anterior do Nó de referência 2
-        No<T> noAuxiliar = noReferencia1                // Nó auxiliar para a operação de troca - Inicializando como Nó de referência 1
-        noAuxiliar.Next = noReferencia2.Next            // Referencia posterior do Nó de referência 1 é a referência posterior do Nó de referência 2
-        noAuxiliar.Prev = noReferencia2.Prev            // Referencia anterior do Nó de referência 1 é a referência anterior do Nó de referência 2
-        noReferencia2.Next = noReferencia1.Next         // Referencia posterior do Nó de referência 2 é a referência posterior do Nó de referência 1
-        noReferencia2.Prev = noReferencia1.Prev         // Referencia anterior do Nó de referência 2 é a referência anterior do Nó de referência 1
+        No<T> noAuxiliar = noReferencia1;               // Nó auxiliar para a operação de troca - Inicializando como Nó de referência 1
+        noAuxiliar.Next = noReferencia2.Next;           // Referencia posterior do Nó de referência 1 é a referência posterior do Nó de referência 2
+        noAuxiliar.Prev = noReferencia2.Prev;           // Referencia anterior do Nó de referência 1 é a referência anterior do Nó de referência 2
+        noReferencia2.Next = noReferencia1.Next;        // Referencia posterior do Nó de referência 2 é a referência posterior do Nó de referência 1
+        noReferencia2.Prev = noReferencia1.Prev;        // Referencia anterior do Nó de referência 2 é a referência anterior do Nó de referência 1
         noReferencia1 = noAuxiliar;                     // Novas informações para o Nó de referência 1
         noRefNext1.Prev = noReferencia2;                // Referência anterior da referência posterior do Nó de referência 1 é o Nó de referência 2
         noRefPrev1.Next = noReferencia2;                // Referência posterior da referência anterior do Nó de referência 1 é o Nó de referência 2
