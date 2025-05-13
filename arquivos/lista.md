@@ -1,42 +1,42 @@
-<h1 align="center">📚 TAD - Lista</h1>
+<h1 align="center">📋 TAD - Lista</h1>
 <p align="center">🎯 <strong>Estrutura Sequencial Linear Abstrata</strong></p>
 <p align="center">⚠️ Permite inserções, remoções e acessos em posições arbitrárias.</p>
 
 ## 🔧 Operações Principais
-- `insertFirst(object)` → Insere um elemento no **início** da lista.
-- `insertLast(object)` → Insere um elemento no **final** da lista.
-- `insertAfter(object, object)` → Insere elemento **depois** de outro elemento.
-- `insertBefore(object, object)` → Insere um elemento **antes** de outro elemento.
-- `object replaceElement(object, object)` → Substitui um **elemento antigo** por um **elemento novo**.
-- `swapElement(object, object)` → Troca de posição de um elemento com outro elemento.
-- `object remove(object)` → Remove e retorna um elemento da lista.
+* `insertFirst(object)` → Insere um elemento no **início**.
+* `insertLast(object)` → Insere um elemento no **final**.
+* `insertAfter(object, object)` → Insere elemento **depois** de outro elemento.
+* `insertBefore(object, object)` → Insere um elemento **antes** de outro elemento.
+* `object replaceElement(object, object)` → Substitui um **elemento antigo** por um **elemento novo**.
+* `swapElement(object, object)` → Troca de posição de um elemento com outro elemento.
+* `object remove(object)` → Remove e retorna um elemento.
 
 ## 🧰 Operações Auxiliares
-- `object first()` → Retorna o **primeiro elemento**.
-- `object last()` → Retorna o **último elemento**.
-- `boolean inFirst(object)` → Verifica se o elemento está na **primeira posição**.
-- `boolean inLast(object)` → Verifica se o elemento está na **última posição**.
-- `object after(object)` → Retorna um elemento **posterior** a outro elemento.
-- `object before(object)` → Retorna um elemento **anterior** a outro elemento.
-- `interger size()` → Retorna o **número de elementos** na lista.
-- `boolean isEmpty()` → Verifica se a lista está **vazia**.
-- `object search(object)` → Retorna o **elemento** da lista se ele existir.
+* `object first()` → Retorna o **primeiro elemento**.
+* `object last()` → Retorna o **último elemento**.
+* `boolean inFirst(object)` → Verifica se o elemento está na **primeira posição**.
+* `boolean inLast(object)` → Verifica se o elemento está na **última posição**.
+* `object after(object)` → Retorna um elemento **posterior** a outro elemento.
+* `object before(object)` → Retorna um elemento **anterior** a outro elemento.
+* `interger size()` → Retorna o **número de elementos** na lista.
+* `boolean isEmpty()` → Verifica se a lista está **vazia**.
+* `object search(object)` → Retorna o **elemento** se ele existir.
 
 <br>
 
 ## ⚠️ Exceções
 
-- **EListaVazia:** Tentativa de remoção, troca ou retorno com a lista vazia.
-- **ENaoEncontrado:** Elemento não encontrado durante o `search()`.
+* **EListaVazia:** Tentativa de remoção, troca ou retorno com a lista vazia.
+* **ENaoEncontrado:** Elemento não encontrado durante o `search()`.
 
 <br>
 
 ## 🛠️ Exemplos Práticos
 
-- Editor de texto (inserção/remoção no meio de parágrafos)
-- Listas de reprodução (playlists)
-- Navegação (voltar/avançar em histórico)
-- Gerenciadores de tarefas encadeadas
+* Editor de texto (inserção/remoção no meio de parágrafos)
+* Listas de reprodução (playlists)
+* Navegação (voltar/avançar em histórico)
+* Gerenciadores de tarefas encadeadas
 
 <br>
 
@@ -50,27 +50,27 @@
 Head -> [A] -> [B] -> [C] -> Tail
 ```
 
-- A lista possui dois nós especiais: `Head` e `Tail`
-- O primeiro elemento da lista vem **após `Head`**
-- O fim da lista é **antes de `Tail`**
-- A estrutura evita `null` e facilita inserções/remoções
+* A lista possui dois nós especiais: `Head` e `Tail`
+* O primeiro elemento da lista vem **após `Head`**
+* O fim da lista é **antes de `Tail`**
+* A estrutura evita `null` e facilita inserções/remoções
 
 <br>
 
 ### ⚙️ Modo de Funcionamento
 
-- `Head` aponta para o primeiro **nó real** (ou para `Tail` se estiver vazia).
-- Cada nó aponta para o **próximo**, até chegar ao `Tail`.
-- Inserções são feitas redirecionando ponteiros do nó anterior.
-- Remoções são feitas pulando o nó a ser removido.
-- Para acessar um nó anterior (`Before()`), é necessário percorrer a lista desde o `Head`.
+* `Head` aponta para o primeiro **nó real** (ou para `Tail` se estiver vazia).
+* Cada nó aponta para o **próximo**, até chegar ao `Tail`.
+* Inserções são feitas redirecionando ponteiros do nó anterior.
+* Remoções são feitas pulando o nó a ser removido.
+* Para acessar um nó anterior (`Before()`), é necessário percorrer a lista desde o `Head`.
 
 <br>
 
 ### ❌ Limitações
 
-- Acesso aleatório **não é eficiente** → precisa iterar do início.
-- Percorrer `before(position)` é **custoso**, pois não há ponteiro para o nó anterior.
+* Acesso aleatório **não é eficiente** → precisa iterar do início.
+* Percorrer `before(position)` é **custoso**, pois não há ponteiro para o nó anterior.
 
 <br>
 
@@ -326,33 +326,33 @@ class ListaSimplismenteLigada<T> : Lista<T>
 Head <-> [A] <-> [B] <-> [C] <-> Tail
 ```
 
-- `Head` aponta para o primeiro nó válido
-- `Tail` aponta para o último nó válido
-- Inserções e remoções são feitas com ajustes em dois ponteiros
+* `Head` aponta para o primeiro nó válido
+* `Tail` aponta para o último nó válido
+* Inserções e remoções são feitas com ajustes em dois ponteiros
 
 <br>
 
 ### ⚙️ Modo de Funcionamento
 
-- `Head` aponta para o primeiro **nó real** através de `Head.After()`.
-- `Tail` é apontado pelo último nó real através de `Tail.Before()`.
-- Cada nó possui ponteiros **para frente e para trás**, permitindo acesso eficiente nas duas direções.
-- Inserções e remoções em qualquer posição são feitas em **tempo constante**, desde que a posição seja conhecida.
+* `Head` aponta para o primeiro **nó real** através de `Head.After()`.
+* `Tail` é apontado pelo último nó real através de `Tail.Before()`.
+* Cada nó possui ponteiros **para frente e para trás**, permitindo acesso eficiente nas duas direções.
+* Inserções e remoções em qualquer posição são feitas em **tempo constante**, desde que a posição seja conhecida.
 
 <br>
 
 ### ✅ Vantagens
 
-- Operações `before()` e `after()` são **eficientes** - O(1)
-- Fácil de percorrer nos dois sentidos
-- Remoções e trocas de elementos são mais diretas
+* Operações `before()` e `after()` são **eficientes** - O(1)
+* Fácil de percorrer nos dois sentidos
+* Remoções e trocas de elementos são mais diretas
 
 <br>
 
 ### ❌ Limitações
 
-- Ocupa **mais memória** por conta do ponteiro extra
-- Levemente mais complexa de implementar
+* Ocupa **mais memória** por conta do ponteiro extra
+* Levemente mais complexa de implementar
 
 <br>
 
@@ -591,23 +591,23 @@ class ListaDuplamenteLigada<T> : Lista<T>
 
 <br>
 
-### ⏱️ Desempenho das Operações
+## ⏱️ Desempenho das Operações
 
-| Operação                         | Lista Simples | Lista Dupla | Descrição                                                   |
-|----------------------------------|---------------|-------------|-------------------------------------------------------------|
-| `insertFirst(object)`            | O(1)          | O(1)        | Insere um elemento **X** depois do **Head**                 |
-| `insertLast(object)`             | O(1)          | O(1)        | Insere um elemento **X** antes do **Tail**                  |
-| `insertAfter(object, object)`    | O(1)          | O(1)        | Insere um elemento **X** depois de um elemento **Y**        |
-| `insertBefore(object, object)`   | O(n)          | O(1)        | Insere um elemento **X** antes de um elemento **Y**         |
-| `replaceElement(object, object)` | O(n)          | O(1)        | Troca um elemento **X** por um elemento **Y**               |
-| `swapElement(object, object)`    | O(n)          | O(1)        | Troca de posição de um elemento **X** por um elemento **Y** |
-| `object remove(object)`          | O(n)          | O(1)        | Remove e retorna um elemento **X**                          |
-| `object first()`                 | O(1)          | O(1)        | Retorna o **primeiro** elemento                             |
-| `object last()`                  | O(n)          | O(1)        | Retorna o **último** elemento                               |
-| `boolean inFirst(object)`        | O(1)          | O(1)        | Retorna **True** se o elemento é o **primeiro**             |
-| `boolean inLast(object)`         | O(1)          | O(1)        | Retorna **True** se o elemento é o **último**               |
-| `object after(object)`           | O(1)          | O(1)        | Retorna o elemento **depois** de um elemento **X**          |
-| `object before(object)`          | O(n)          | O(1)        | Retorna o elemento **antes** de um elemento **X**           |
-| `interger size()`                | O(1)          | O(1)        | Retorna a quantidade de elementos                           |
-| `boolean isEmpty()`              | O(1)          | O(1)        | Verifica se está vazia                                      |
-| `object search(object)`          | O(n)          | O(n)        | Encontra um elemento **X**                                  |
+| Operação                                | Lista Simples | Lista Dupla | Descrição                                                   |
+|-----------------------------------------|---------------|-------------|-------------------------------------------------------------|
+| `insertFirst(object)`                   | O(1)          | O(1)        | Insere um elemento **X** depois do **Head**                 |
+| `insertLast(object)`                    | O(1)          | O(1)        | Insere um elemento **X** antes do **Tail**                  |
+| `insertAfter(object, object)`           | O(1)          | O(1)        | Insere um elemento **X** depois de um elemento **Y**        |
+| `insertBefore(object, object)`          | O(n)          | O(1)        | Insere um elemento **X** antes de um elemento **Y**         |
+| `object replaceElement(object, object)` | O(n)          | O(1)        | Troca um elemento **X** por um elemento **Y**               |
+| `swapElement(object, object)`           | O(n)          | O(1)        | Troca de posição de um elemento **X** por um elemento **Y** |
+| `object remove(object)`                 | O(n)          | O(1)        | Remove e retorna um elemento **X**                          |
+| `object first()`                        | O(1)          | O(1)        | Retorna o **primeiro** elemento                             |
+| `object last()`                         | O(n)          | O(1)        | Retorna o **último** elemento                               |
+| `boolean inFirst(object)`               | O(1)          | O(1)        | Retorna **True** se o elemento é o **primeiro**             |
+| `boolean inLast(object)`                | O(1)          | O(1)        | Retorna **True** se o elemento é o **último**               |
+| `object after(object)`                  | O(1)          | O(1)        | Retorna o elemento **depois** de um elemento **X**          |
+| `object before(object)`                 | O(n)          | O(1)        | Retorna o elemento **antes** de um elemento **X**           |
+| `integer size()`                        | O(1)          | O(1)        | Retorna a quantidade de elementos                           |
+| `boolean isEmpty()`                     | O(1)          | O(1)        | Verifica se está vazia                                      |
+| `object search(object)`                 | O(n)          | O(n)        | Encontra um elemento **X**                                  |

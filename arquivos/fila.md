@@ -4,30 +4,30 @@
 
 ## 🔧 Operações Principais
 
-- `enqueue(object)` → Adiciona um elemento ao **fim** da fila.
-- `object dequeue()` → Remove e retorna o elemento do **inicio** da pilha.
+* `enqueue(object)` → Adiciona um elemento ao **fim**.
+* `object dequeue()` → Remove e retorna o elemento do **inicio**.
 
 ## 🧰 Operações Auxiliares
 
-- `object first()` ou `object peek()` → Retorna o elemento do inicio **sem remover**.
-- `integer size()` → Retorna o **número de elementos** na fila.
-- `boolean isEmpty()` → Verifica se a fila está **vazia**.
+* `object first()` ou `object peek()` → Retorna o elemento do inicio **sem remover**.
+* `integer size()` → Retorna o **número de elementos** na fila.
+* `boolean isEmpty()` → Verifica se a fila está **vazia**.
 
 <br>
 
 ## ⚠️ Exceções
 
-- **EFilaVazia:** Tentativa de `dequeue()` ou `first()` com a fila vazia.
-- **EFilaCheia:** Tentativa de `enqueue()` em uma fila sem espaço disponível.
+* **EFilaVazia:** Tentativa de `dequeue()` ou `first()` com a fila vazia.
+* **EFilaCheia:** Tentativa de `enqueue()` em uma fila sem espaço disponível.
 
 <br>
 
 ## 🛠️ Exemplos Práticos
 
-- Filas de espera
-- Programação paralela
-- Execução de multitarefas em ordens (**Downloads em Fila**)
-- Filas de processos no sistema operacional
+* Filas de espera
+* Programação paralela
+* Execução de multitarefas em ordens (**Downloads em Fila**)
+* Filas de processos no sistema operacional
 
 <br>
 
@@ -37,10 +37,10 @@
 
 ### 🔧 Estrutura Básica
 
-- Utiliza-se um **array de tamanho fixo `N`**.
-- A fila é controlada por **dois índices**:
-  - `i` 👉 Índice do **início da fila** (onde os elementos são removidos).
-  - `f` 👉 Índice **imediatamente após o fim da fila** (onde os elementos são inseridos).
+* Utiliza-se um **array de tamanho fixo `N`**.
+* A fila é controlada por **dois índices**:
+  * `i` 👉 Índice do **início da fila** (onde os elementos são removidos).
+  * `f` 👉 Índice **imediatamente após o fim da fila** (onde os elementos são inseridos).
 
 <br>
 
@@ -48,27 +48,27 @@
 
 #### 🧩 Configuração Padrão (Sem Circularidade)
 
-- À medida que elementos são **removidos**, o índice `i` é incrementado.
-- O índice `f` cresce com as **inserções**.
-- **Problema:** Mesmo com espaço livre no início do array, ele **não é reutilizado**.
-- **Resultado:** Pode parecer que a fila está cheia mesmo havendo espaço ― desperdício de memória.
+* À medida que elementos são **removidos**, o índice `i` é incrementado.
+* O índice `f` cresce com as **inserções**.
+* **Problema:** Mesmo com espaço livre no início do array, ele **não é reutilizado**.
+* **Resultado:** Pode parecer que a fila está cheia mesmo havendo espaço ― desperdício de memória.
 
 <br>
 
 #### 🔁 Configuração Circular (Otimizada)
 
-- O array é tratado como um **anel fechado**.
-- Quando `f` chega ao fim do array, ele **retorna ao início** (`f = 0`) e começa a preencher os espaços vazios deixados por `i`.
-- A fila está **cheia** quando:
+* O array é tratado como um **anel fechado**.
+* Quando `f` chega ao fim do array, ele **retorna ao início** (`f = 0`) e começa a preencher os espaços vazios deixados por `i`.
+* A fila está **cheia** quando:
   ```text
   (f + 1) % N == i
   ```
-- **✅ Isso garante que:**
-  - O array seja **plenamente utilizado**.
-  - Não haja desperdício de espaço.
-  - A fila continue funcionando de forma eficiente mesmo com remoções e inserções contínuas.
+* **✅ Isso garante que:**
+  * O array seja **plenamente utilizado**.
+  * Não haja desperdício de espaço.
+  * A fila continue funcionando de forma eficiente mesmo com remoções e inserções contínuas.
 
-- **🔍 Visualização (Fila Circular)**
+* **🔍 Visualização (Fila Circular)**
 
 ```text
 Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
@@ -76,9 +76,9 @@ Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
               i = 1          f = 4
 ```
 
-- **📖 Explicação**
-  - Elementos `B`, `C`, `D` estão na fila. \
-  - Após mais inserções, `f` pode voltar ao índice `0` para reutilizar a posição vazia.
+* **📖 Explicação**
+  * Elementos `B`, `C`, `D` estão na fila. \
+  * Após mais inserções, `f` pode voltar ao índice `0` para reutilizar a posição vazia.
 
 <br>
 
@@ -89,15 +89,15 @@ Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
 | `enqueue(object)`   | O(1)         | Adiciona no final                 |
 | `object dequeue()`  | O(1)         | Remove do inicio                  |
 | `object first()`    | O(1)         | Retorna o primeiro elemento       |
-| `interger size()`   | O(1)         | Retorna a quantidade de elementos |
+| `integer size()`    | O(1)         | Retorna a quantidade de elementos |
 | `boolean isEmpty()` | O(1)         | Verifica se está vazia            |
 
 <br>
 
 ### ⚠️ Limitações das Filas Baseadas em Arrays
 
-- **Capacidade Fixa**: Arrays possuem capacidade fixa. Quando a fila atinge seu limite, operações como `enqueue(object)` se tornam inviáveis, gerando problemas de **overflow**.
-- **Espaço Desperdiçado**: Em uma fila simples baseada em array linear (sem circularidade), quando você remove elementos do início com `dequeue()`, os espaços não são reutilizados automaticamente, gerando uma exceção de EFilaCheia com espaços disponivéis.
+* **Capacidade Fixa**: Arrays possuem capacidade fixa. Quando a fila atinge seu limite, operações como `enqueue(object)` se tornam inviáveis, gerando problemas de **overflow**.
+* **Espaço Desperdiçado**: Em uma fila simples baseada em array linear (sem circularidade), quando você remove elementos do início com `dequeue()`, os espaços não são reutilizados automaticamente, gerando uma exceção de EFilaCheia com espaços disponivéis.
 
 > ⚠️ Por isso, para garantir a eficiência e escalabilidade das filas, são implementadas estratégias de **configuração circular** e **redimensionamento dinâmico** como:
 >  * [**Estratégia Incremental**](pilha.md/#1-estratégia-incremental) 

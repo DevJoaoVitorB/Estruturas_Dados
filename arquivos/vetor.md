@@ -18,7 +18,7 @@
 
 ## ⚠️ Exceções
 
-* **ERankInvalido:** Quando o índice `R` está fora dos limites do vetor.
+* **EPosicaoInvalida:** Quando o índice `R` está fora dos limites do vetor.
 * **EVetorVazio:** Tentativa de acessar, substituir ou remover elementos de um vetor que está vazio.
 * **EVetorCheio:** Tentativa de inserção quando o vetor está com a capacidade máxima.
 
@@ -68,14 +68,14 @@ Depois: [10] [99] [30] [--] [--] [--]
 
 ### ⏱️ Desempenho das Operações
 
-| Operação              | Complexidade | Descrição                      |
-| --------------------- | ------------ | ------------------------------ |
-| `insertAtRank(r, e)`  | O(n)         | Desloca elementos para inserir |
-| `removeAtRank(r)`     | O(n)         | Desloca elementos para remover |
-| `replaceAtRank(r, e)` | O(1)         | Substitui valor                |
-| `elemAtRank(r)`       | O(1)         | Acesso direto                  |
-| `size()`              | O(1)         | Retorna o número de elementos  |
-| `isEmpty()`           | O(1)         | Verifica se está vazio         |
+| Operação                                | Complexidade | Descrição                      |
+| --------------------------------------- | ------------ | ------------------------------ |
+| `insertAtRank(integer, object)`         | O(n)         | Desloca elementos para inserir |
+| `object removeAtRank(integer)`          | O(n)         | Desloca elementos para remover |
+| `object replaceAtRank(integer, object)` | O(1)         | Substitui valor                |
+| `object elemAtRank(integer)`            | O(1)         | Acesso direto                  |
+| `integer size()`                        | O(1)         | Retorna o número de elementos  |
+| `boolean isEmpty()`                     | O(1)         | Verifica se está vazio         |
 
 <br>
 
@@ -95,14 +95,14 @@ Depois: [10] [99] [30] [--] [--] [--]
 ```csharp
 using System;
 
-class VetorVazioExcecao : Exception      // Classe de Exceção de Vetor Vazio
+class VetorVazioExcecao : Exception         // Classe de Exceção de Vetor Vazio
 {
     public VetorVazioExcecao() : base("O Vetor esta vazio!") {}
     public VetorVazioExcecao(string mensagem) : base(mensagem) {}
     public VetorVazioExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}
 }
 
-class RankInvalidoExcecao : Exception     // Classe de Exceção de Posição Inválida no Vetor
+class PosicaoInvalidaExcecao : Exception    // Classe de Exceção de Posição Inválida no Vetor
 {
     public RankInvalidoExcecao() : base("Posição informada invalida!") {}
     public RankInvalidoExcecao(string mensagem) : base(mensagem) {}

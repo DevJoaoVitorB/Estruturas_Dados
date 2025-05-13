@@ -4,30 +4,30 @@
 
 ## 🔧 Operações Principais
 
-- `push(object)` → Adiciona um elemento ao **topo** da pilha.
-- `object pop()` → Remove e retorna o elemento do **topo** da pilha.
+* `push(object)` → Adiciona um elemento ao **topo**.
+* `object pop()` → Remove e retorna o elemento do **topo** da pilha.
 
 ## 🧰 Operações Auxiliares
 
-- `object top()` ou `object peek()` → Retorna o elemento do topo **sem remover**.
-- `integer size()` → Retorna o **número de elementos** na pilha.
-- `boolean isEmpty()` → Verifica se a pilha está **vazia**.
+* `object top()` ou `object peek()` → Retorna o elemento do topo **sem remover**.
+* `integer size()` → Retorna o **número de elementos** na pilha.
+* `boolean isEmpty()` → Verifica se a pilha está **vazia**.
 
 <br>
 
 ## ⚠️ Exceções
 
-- **EPilhaVazia:** Tentativa de `pop()` ou `top()` com a pilha vazia.
-- **EPilhaCheia:** Tentativa de `push()` em uma pilha sem espaço disponível.
+* **EPilhaVazia:** Tentativa de `pop()` ou `top()` com a pilha vazia.
+* **EPilhaCheia:** Tentativa de `push()` em uma pilha sem espaço disponível.
 
 <br>
 
 ## 🛠️ Exemplos Práticos
 
-- Navegação de páginas no **browser** (voltar)
-- Botão **Desfazer** em editores de texto
-- Execução de **algoritmos recursivos**
-- Parte integrante de **outras estruturas de dados**
+* Navegação de páginas no **browser** (voltar)
+* Botão **Desfazer** em editores de texto
+* Execução de **algoritmos recursivos**
+* Parte integrante de **outras estruturas de dados**
 
 <br>
 
@@ -35,9 +35,9 @@
 
 > Utiliza-se um **vetor/array** como estrutura de armazenamento.
 
-- Forma **simples** de implementação
-- Elementos são adicionados da **esquerda para a direita**
-- Uso de uma **variável auxiliar** que armazena o índice do topo
+* Forma **simples** de implementação
+* Elementos são adicionados da **esquerda para a direita**
+* Uso de uma **variável auxiliar** que armazena o índice do topo
 
 <br>
 
@@ -48,15 +48,15 @@
 | `push(object)`      | O(1)         | Adiciona no topo (incrementa índice) |
 | `object pop()`      | O(1)         | Remove do topo (decrementa índice)   |
 | `object top()`      | O(1)         | Retorna o topo                       |
-| `interger size()`   | O(1)         | Retorna a quantidade de elementos    |
+| `integer size()`    | O(1)         | Retorna a quantidade de elementos    |
 | `boolean isEmpty()` | O(1)         | Verifica se está vazia               |
 
 <br>
 
 ### ⚠️ Limitações das Pilhas Baseadas em Arrays
 
-- **Capacidade Fixa**: Arrays possuem capacidade fixa. Quando a pilha atinge seu limite, operações como `push(object)` se tornam inviáveis, gerando problemas de **overflow**.
-- **Espaço Desperdiçado**: Inicialmente, o array reserva um espaço fixo de memória, que pode não ser totalmente utilizado quando a pilha está parcialmente vazia.
+* **Capacidade Fixa**: Arrays possuem capacidade fixa. Quando a pilha atinge seu limite, operações como `push(object)` se tornam inviáveis, gerando problemas de **overflow**.
+* **Espaço Desperdiçado**: Inicialmente, o array reserva um espaço fixo de memória, que pode não ser totalmente utilizado quando a pilha está parcialmente vazia.
 
 > ⚠️ Por isso, para garantir a eficiência e escalabilidade das pilhas, são implementadas estratégias de **redimensionamento dinâmico**.
 
@@ -68,14 +68,14 @@ Ao atingir a capacidade máxima, o array da pilha é substituído por um novo ar
 
 ### 1. Estratégia Incremental
 
-- ❓ **Como funciona?**
-  - Aumenta a capacidade do array em um valor fixo `c` a cada vez que ele fica cheio.
-  - Simples de implementar, mas pode ser ineficiente quando `n` cresce muito.
+* ❓ **Como funciona?**
+  * Aumenta a capacidade do array em um valor fixo `c` a cada vez que ele fica cheio.
+  * Simples de implementar, mas pode ser ineficiente quando `n` cresce muito.
 
-- 📊 **Análise Matemática**
-  - A cada `c` inserções, é necessário realocar um novo array maior e copiar os elementos antigos.
-  - Se fizermos `n` operações `push`, teremos `k = n / c` redimensionamentos.
-  - O custo total será:
+* 📊 **Análise Matemática**
+  * A cada `c` inserções, é necessário realocar um novo array maior e copiar os elementos antigos.
+  * Se fizermos `n` operações `push`, teremos `k = n / c` redimensionamentos.
+  * O custo total será:
 
 ```math
 T(n) = n + c + 2c + 3c + \dots + kc
@@ -92,27 +92,27 @@ T(n) = n + c + 2c + 3c + \dots + kc
 
 ---
 
-- ⏲️ **Tempo Amortizado:**
+* ⏲️ **Tempo Amortizado:**
 
 ```math
 \frac{T(n)}{n} = O(n)
 ```
 
-- 📋 **Resumo**:
-  - Redimensiona linearmente, mas tem custo **quadrático total**.
-  - Ineficiente para muitos elementos.
+* 📋 **Resumo**:
+  * Redimensiona linearmente, mas tem custo **quadrático total**.
+  * Ineficiente para muitos elementos.
 
 <br>
 
 ### 2. Estratégia Duplicativa (Exponencial)
 
-- ❓ **Como funciona?**
-  - A cada vez que o array fica cheio, sua capacidade é duplicada.
-  - Mais eficiente para crescimento exponencial da pilha.
+* ❓ **Como funciona?**
+  * A cada vez que o array fica cheio, sua capacidade é duplicada.
+  * Mais eficiente para crescimento exponencial da pilha.
 
-- 📊 **Análise Matemática**
-  - O número de redimensionamentos será `k = log₂(n)`.
-  - A cada redimensionamento, o custo de cópia é proporcional ao tamanho anterior:
+* 📊 **Análise Matemática**
+  * O número de redimensionamentos será `k = log₂(n)`.
+  * A cada redimensionamento, o custo de cópia é proporcional ao tamanho anterior:
 
 ```math
 T(n) = n + 1 + 2 + 4 + 8 + \dots + 2^k
@@ -132,15 +132,15 @@ T(n) = n + 1 + 2 + 4 + 8 + \dots + 2^k
 
 ---
 
-- ⏲️ **Tempo Amortizado:**
+* ⏲️ **Tempo Amortizado:**
 
 ```math
 \frac{T(n)}{n} = O(1)
 ```
 
-- 📋 **Resumo**:
-  - Redimensiona exponencialmente.
-  - Muito mais eficiente: custo total linear e tempo amortizado constante.
+* 📋 **Resumo**:
+  * Redimensiona exponencialmente.
+  * Muito mais eficiente: custo total linear e tempo amortizado constante.
 
 ##### 📊 Comparativo Final
 
