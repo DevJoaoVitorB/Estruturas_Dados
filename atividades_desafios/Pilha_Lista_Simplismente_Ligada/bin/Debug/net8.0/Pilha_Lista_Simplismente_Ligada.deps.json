@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Pilha_Lista_Simplismente_Ligada/1.0.0": {
+        "runtime": {
+          "Pilha_Lista_Simplismente_Ligada.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Pilha_Lista_Simplismente_Ligada/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
