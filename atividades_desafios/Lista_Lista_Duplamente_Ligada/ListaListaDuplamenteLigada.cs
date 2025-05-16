@@ -67,7 +67,7 @@ class ListaDuplamenteLigada<T> : Lista<T>
 
     public T ReplaceElement(T objetoRef, T objeto)
     {
-        if (IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
+        if (IsEmpty()) throw new ListaVaziaExcecao();   // Verificar se a Lista está vazia
         No<T> novoNo = new No<T>();                     // Criando um novo Nó
         novoNo.Objeto = objeto;                         // Adicionando o objeto ao Nó
         No<T> noReferencia = Search(objetoRef);         // Nó de referência para ser substituido pelo novo Nó
@@ -83,60 +83,60 @@ class ListaDuplamenteLigada<T> : Lista<T>
 
     public void SwapElement(T objetoRef1, T objetoRef2)
     {
-        // ANALISAR O CÓDIGO E ENTENDE-LO
-        if (IsEmpty()) throw new ListaVaziaExcecao();
+        if (IsEmpty()) throw new ListaVaziaExcecao();   // Verificar se a Lista está vazia
+        No<T> noRef1 = Search(objetoRef1);              // Nó de referência 1 para ser trocado pelo Nó de referência 2
+        No<T> noRef2 = Search(objetoRef2);              // Nó de referência 2 para ser trocado pelo Nó de referência 1
 
-        No<T> no1 = Search(objetoRef1);
-        No<T> no2 = Search(objetoRef2);
+        // CASO 1 - Mesmo Nó
+        // Não realizar a troca!
 
-        if (no1.Next == no2)
+        if (EqualityComparer<T>.Default.Equals(objetoRef1, objetoRef2)) return; // Não realizar a troca se forem o mesmo Nó
+
+        // CASO 2 - Nós Adjacentes
+        // 1º Nó possui referência posterior no 2º Nó   | 1º | -> | 2º |
+        // 2º Nó possui referência anterior no 1º Nó    | 1º | <- | 2º |
+        // OU
+        // 1º Nó possui referência anterior no 2º Nó    | 2º | <- | 1º |
+        // 2º Nó possui referência posterior no 1º Nó   | 2º | -> | 1º |
+        // ERRO! Nesse caso, ao trocarem referências os Nós podem estarem referênciando eles mesmo:
+        // EX.: A referência posterior do 2º Nó passa a ser a referência posterior é o Nó 1º: | 1º | -> | 2º | -> | 2º | -> | 2º |
+
+        if (noRef1.Next == noRef2)                      // Verificar se Nó de referência 1 é adjacente do Nó de referência 2
         {
-            No<T> prev = no1.Prev;
-            No<T> next = no2.Next;
-
-            prev.Next = no2;
-            no2.Prev = prev;
-
-            no2.Next = no1;
-            no1.Prev = no2;
-
-            no1.Next = next;
-            next.Prev = no1;
-            return;
+            AdjacentElements(noRef1, noRef2);           // Realizar a troca dos Nó adjacentes
+            return;                                     // Fim da operação de troca
         }
-        else if (no2.Next == no1)
+        else if (noRef2.Next == noRef1)                 // Verificar se Nó de referência 2 é adjacente do Nó de referência 1
         {
-            No<T> prev = no2.Prev;
-            No<T> next = no1.Next;
-
-            prev.Next = no1;
-            no1.Prev = prev;
-
-            no1.Next = no2;
-            no2.Prev = no1;
-
-            no2.Next = next;
-            next.Prev = no2;
-            return;
+            AdjacentElements(noRef2, noRef1);           // Realizar a troca dos Nó adjacentes
+            return;                                     // Fim da operação de troca
         }
 
-        // Nós intermediários entre Head e Tail
-        No<T> prev1 = no1.Prev;
-        No<T> next1 = no1.Next;
-        No<T> prev2 = no2.Prev;
-        No<T> next2 = no2.Next;
+        // CASO 3 - Nós não Adjacentes
+        // Realização de troca padrão!
 
-        // Atualiza os vizinhos de no1
-        prev1.Next = no2;
-        next1.Prev = no2;
+        No<T> next1 = noRef1.Next;                      // Referência posterior do Nó de referência 1
+        No<T> prev1 = noRef1.Prev;                      // Referência anterior do Nó de referência 1
+        No<T> next2 = noRef2.Next;                      // Referência posterior do Nó de referência 2
+        No<T> prev2 = noRef2.Prev;                      // Referência anterior do Nó de referência 2
+        next1.Prev = noRef2;                            // A referência anterior da referência posterior do Nó de referência 1 é Nó de referência 2
+        prev1.Next = noRef2;                            // A referência posterior da referência anterior do Nó de referência 1 é Nó de referência 2
+        next2.Prev = noRef1;                            // A referência anterior da referência posterior do Nó de referência 2 é Nó de referência 1
+        prev2.Next = noRef1;                            // A referência posterior da referência anterior do Nó de referência 2 é Nó de referência 1
+        (noRef1.Next, noRef2.Next) = (next2, next1);    // Trocar as referências dos posteriores dos Nós de referência entre sí
+        (noRef1.Prev, noRef2.Prev) = (prev2, prev1);    // Trocar as referências dos anteriores dos Nós de referência entre sí
+    }
 
-        // Atualiza os vizinhos de no2
-        prev2.Next = no1;
-        next2.Prev = no1;
-
-        // Troca os ponteiros internos
-        (no1.Prev, no2.Prev) = (prev2, prev1);
-        (no1.Next, no2.Next) = (next2, next1);
+    private void AdjacentElements(No<T> noRef1, No<T> noRef2)
+    {
+        No<T> next = noRef2.Next;                   // Referência posterior do Nó de referência 2
+        No<T> prev = noRef1.Prev;                   // Referência anterior do Nó de referência 1
+        prev.Next = noRef2;                         // Referência posterior da referência anterior do Nó de referência 1 passa a ser Nó de referência 2 
+        noRef2.Next = noRef1;                       // Referência posterior do Nó de referência 2 é Nó de referência 1
+        noRef2.Prev = prev;                         // Referência anterior do Nó de referência 2 é referência anterior do Nó de referência 1                        
+        noRef1.Next = next;                         // Referência posterior do Nó de referência 1 é referência posterior do Nó de referência 2                        
+        noRef1.Prev = noRef2;                       // Referência anterior do Nó de referência 1 é Nó de referência 2
+        next.Prev = noRef1;                         // Referência anterior da referência posterior do Nó de referência 2 passa a ser Nó de referência 1
     }
 
     public T Remove(T objeto)
@@ -221,12 +221,12 @@ class ListaDuplamenteLigada<T> : Lista<T>
     {
         if (IsEmpty()) throw new ListaVaziaExcecao();           // Verificar se a Lista está vazia
         No<T> atualNo = Head;                                   // Nó auxiliar para o inicio da Fila
-        while(atualNo.Next != Tail)
+        while (atualNo.Next != Tail)
         {
             atualNo = atualNo.Next;                             // Condição de parada - último Nó
             Console.Write($"| {atualNo.Objeto} |");             // Imprimir outros valores da Fila
         }
-        
+
         Console.WriteLine("\n");                                // Pular Linha!
     }
 }
