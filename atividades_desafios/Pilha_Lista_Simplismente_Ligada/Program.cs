@@ -46,7 +46,7 @@ public class Program
 	
 	public static int Menu()
 	{
-		Console.WriteLine("------------- Operações da Pilha com Array -------------");
+		Console.WriteLine("------------- Operações da Pilha com Lista Simplismente Ligada -------------");
 		Console.WriteLine("\n[1]Inserir Elemento na Pilha      [4]Exibir a Pilha");
 		Console.WriteLine("[2]Remover Elemento da Pilha      [5]Quantidade de Elementos da Pilha");
 		Console.WriteLine("[3]Primeiro Elemento da Pilha     [0]Sair\n");
