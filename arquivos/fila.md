@@ -193,7 +193,7 @@ class FilaArray<T> : Fila<T>
 
     public bool IsEmpty()
     {
-        return Inicio == Final;                             // Verificar se a Inicio da FilaArray é igual ao Final, ou seja, está Vazia
+        return Inicio == Final;                             // Verificar se a Fila está vazia
     }
 }
 ```

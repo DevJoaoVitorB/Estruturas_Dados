@@ -224,7 +224,7 @@ class PilhaArray<T> : Pilha<T>
 
     public bool IsEmpty()
     {
-        return Topo == -1;                     // Verificar se a Topo da PilhaArray é igual a -1, ou seja, está Vazia
+        return Topo == -1;                     // Verificar se a Pilha está vazia
     }
 }
 ```

@@ -240,7 +240,7 @@ class DequeArray<T> : Deque<T>
 
     public bool IsEmpty()
     {
-        return Inicio == Final;                                         // Verificar se a Inicio do DequeArray é igual ao Final, ou seja, está Vazio
+        return Inicio == Final;                                         // Verificar se o Deque está vazio
     }
 }
 ```

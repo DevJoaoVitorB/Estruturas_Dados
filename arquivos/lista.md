@@ -575,7 +575,7 @@ class ListaDuplamenteLigada<T> : Lista<T>
 
     public T Remove(T objeto)
     {
-        if (IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
+        if (IsEmpty()) throw new ListaVaziaExcecao();   // Verificar se a Lista está vazia
         No<T> noRemovido = Search(objeto);              // Encontrar o Nó que será removido
         No<T> noRemoveNext = noRemovido.Next;           // Referência posterior do Nó que será removido
         No<T> noRemovePrev = noRemovido.Prev;           // Referência anterior do Nó que será removido
@@ -588,44 +588,44 @@ class ListaDuplamenteLigada<T> : Lista<T>
 
     public No<T> First()
     {
-        if (IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
+        if (IsEmpty()) throw new ListaVaziaExcecao();   // Verificar se a Lista está vazia
         return Head.Next;                               // Retorna o primeiro Nó da Lista
     }
 
     public No<T> Last()
     {
-        if (IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
+        if (IsEmpty()) throw new ListaVaziaExcecao();   // Verificar se a Lista está vazia
         return Tail.Prev;                               // Retorna o último Nó da Lista
     }
 
     public bool InFirst(T objeto)
     {
-        if (IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
+        if (IsEmpty()) throw new ListaVaziaExcecao();   // Verificar se a Lista está vazia
         No<T> noReferencia = Search(objeto);            // Nó de referência que quer saber se está no inicio da Lista
         bool inFirst = false;                           // Váriavel auxiliar para saber se o Nó de referência está no inicio da Lista
-        if (Head.Next == noReferencia) inFirst = true;   // Verificação para saber se o Nó de referência está no inicio da Lista
+        if (Head.Next == noReferencia) inFirst = true;  // Verificação para saber se o Nó de referência está no inicio da Lista
         return inFirst;                                 // Retorna a reposta - TRUE ou FALSE - se o Nó de referência está no inicio da Lista
     }
 
     public bool InLast(T objeto)
     {
-        if (IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
+        if (IsEmpty()) throw new ListaVaziaExcecao();   // Verificar se a Lista está vazia
         No<T> noReferencia = Search(objeto);            // Nó de referência que quer saber se está no final da Lista
         bool inLast = false;                            // Váriavel auxiliar para saber se o Nó de referência está no final da Lista
-        if (Tail.Prev == noReferencia) inLast = true;    // Verificação para saber se o Nó de referência está no final da Lista
+        if (Tail.Prev == noReferencia) inLast = true;   // Verificação para saber se o Nó de referência está no final da Lista
         return inLast;                                  // Retorna a reposta - TRUE ou FALSE - se o Nó de referência está no final da Lista
     }
 
     public No<T> After(T objeto)
     {
-        if (IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
+        if (IsEmpty()) throw new ListaVaziaExcecao();   // Verificar se a Lista está vazia
         No<T> noReferencia = Search(objeto);            // Nó de referência para encontrar o próximo Nó a ele
         return noReferencia.Next;                       // Retorna o próximo Nó ao Nó de referência
     }
 
     public No<T> Before(T objeto)
     {
-        if (IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
+        if (IsEmpty()) throw new ListaVaziaExcecao();   // Verificar se a Lista está vazia
         No<T> noReferencia = Search(objeto);            // Nó de referência para encontrar o Nó anterior a ele
         return noReferencia.Prev;                       // Retorna o Nó anterior ao Nó de referência
     }
