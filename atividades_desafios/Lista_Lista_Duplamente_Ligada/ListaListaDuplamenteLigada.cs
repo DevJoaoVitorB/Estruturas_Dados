@@ -213,7 +213,7 @@ class ListaDuplamenteLigada<T> : Lista<T>
         {
             atualNo = atualNo.Next;                                                                                 // Encontra o Nó que possui o elemento
         }
-        if (!EqualityComparer<T>.Default.Equals(atualNo.Objeto, objeto)) throw new ObjetoNaoEncontradoExcecao();     // Verificar se existi o Nó com o elemento na Lista
+        if (!EqualityComparer<T>.Default.Equals(atualNo.Objeto, objeto)) throw new ObjetoNaoEncontradoExcecao();    // Verificar se existi o Nó com o elemento na Lista
         return atualNo;
     }
 

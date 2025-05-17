@@ -69,7 +69,7 @@ public class Program
                         Lista.ExibirLista();
                         Console.Write("Remover Valor - Qual o Valor: ");
                         objetoRef = Console.ReadLine();
-                        Console.WriteLine($"\nValor Substituido da Lista -> {Lista.Remove(objetoRef)} \n");
+                        Console.WriteLine($"\nValor Removido da Lista -> {Lista.Remove(objetoRef)} \n");
                         break;
                     case 8:
                         Console.WriteLine($"A Lista possui {Lista.Size()} Elementos! \n");

@@ -15,8 +15,8 @@ public class Program
 				Console.Clear();
                 
                 object objeto;      //  Variavel para guarda os objetos a serem colocados na Lista
-                object posicao;     //  Variavel para guarda a posição de um objeto da Lista
-                object posicao2;    //  Variavel para guarda uma 2ª posição de um objeto da Lista
+                int posicao;     //  Variavel para guarda a posição de um objeto da Lista
+                int posicao2;    //  Variavel para guarda uma 2ª posição de um objeto da Lista
 
 				switch (valor)
                 {
@@ -35,7 +35,7 @@ public class Program
                     case 3:
                         Lista.ExibirLista();
                         Console.Write("Posição do Valor de Referência - Qual a Posição: ");
-                        posicao = Console.ReadLine();
+                        posicao = int.Parse(Console.ReadLine());
                         Console.Write("\nInserindo Valor Posterior - Qual o Valor: ");
                         objeto = Console.ReadLine();
                         Lista.InsertAfter(posicao, objeto);
@@ -43,7 +43,7 @@ public class Program
                     case 4:
                         Lista.ExibirLista();
                         Console.Write("Posição do Valor de Referência - Qual a Posição: ");
-                        posicao = Console.ReadLine();
+                        posicao = int.Parse(Console.ReadLine());
                         Console.Write("\nInserindo Valor Anterior - Qual o Valor: ");
                         objeto = Console.ReadLine();
                         Lista.InsertBefore(posicao, objeto);
@@ -51,7 +51,7 @@ public class Program
                     case 5:
                         Lista.ExibirLista();
                         Console.Write("Posição do Valor à Substituir - Qual a Posição: ");
-                        posicao = Console.ReadLine();
+                        posicao = int.Parse(Console.ReadLine());
                         Console.Write("\nValor Substituto - Qual o Valor: ");
                         objeto = Console.ReadLine();
                         Console.WriteLine($"\nValor Substituido da Lista -> {Lista.ReplaceElement(posicao, objeto)} \n");
@@ -59,17 +59,17 @@ public class Program
                     case 6:
                         Lista.ExibirLista();
                         Console.Write("Posição do Primeiro Valor da Troca - Qual a Posição: ");
-                        posicao = Console.ReadLine();
+                        posicao = int.Parse(Console.ReadLine());
                         Lista.ExibirLista();
                         Console.Write("\nPosição do Segundo Valor da Troca - Qual a Posição: ");
-                        posicao2 = Console.ReadLine();
+                        posicao2 = int.Parse(Console.ReadLine());
                         Lista.SwapElement(posicao, posicao2);
                         break;
                     case 7:
                         Lista.ExibirLista();
                         Console.Write("Remover Valor - Qual a Posição: ");
-                        posicao = Console.ReadLine();
-                        Console.WriteLine($"\nValor Substituido da Lista -> {Lista.Remove(posicao)} \n");
+                        posicao = int.Parse(Console.ReadLine());
+                        Console.WriteLine($"\nValor Removido da Lista -> {Lista.Remove(posicao)} \n");
                         break;
                     case 8:
                         Console.WriteLine($"A Lista possui {Lista.Size()} Elementos! \n");
