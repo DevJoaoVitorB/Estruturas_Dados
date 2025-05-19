@@ -4,7 +4,7 @@ public class Program
 {
 	public static void Main()
 	{
-		VetorArray<object> Vetor = new VetorArray<object>(10);       // Inicializando a Vetor com 10 de capacidade
+		VetorArray<object> Vetor = new VetorArray<object>(10);       // Inicializando o Vetor com 10 de capacidade
 
 		int valor = -1;
 		while(valor != 0)
@@ -14,8 +14,8 @@ public class Program
 				valor = Menu();
 				Console.Clear();
                 
-                object objeto;   //  Variavel para guarda os objetos a serem colocados na Lista
-                int posicao;     //  Variavel para guarda a posição de um objeto da Lista
+                object objeto;   //  Variavel para guarda os objetos a serem colocados no Vetor
+                int posicao;     //  Variavel para guarda a posição de um objeto do Vetor
 
 				switch (valor)
                 {
