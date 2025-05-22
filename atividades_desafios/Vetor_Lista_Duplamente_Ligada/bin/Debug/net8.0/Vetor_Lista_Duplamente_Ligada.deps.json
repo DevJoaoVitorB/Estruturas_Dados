@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Vetor_Lista_Duplamente_Ligada/1.0.0": {
+        "runtime": {
+          "Vetor_Lista_Duplamente_Ligada.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Vetor_Lista_Duplamente_Ligada/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -1,10 +1,10 @@
-class VetorArray<T> : Vetor<T>
+class VetorListaDuplamenteLigada<T> : Vetor<T>
 {
     private No<T> Head;                     // Nó Sentinela Head
     private No<T> Tail;                     // Nó Sentinela Tail
     private int QtdElement;                 // Quantidade de elementos da Lista
 
-    public VetorArray()
+    public VetorListaDuplamenteLigada()
     {
         Head = new No<T>();                 // Inicializando o Nó Sentinela Head
         Tail = new No<T>();                 // Inicializando o Nó Sentinela Tail
@@ -23,10 +23,12 @@ class VetorArray<T> : Vetor<T>
         novoNo.Prev = noRefPrev;                                    // Referência anterior do novo Nó é a referência anterior do Nó de referência
         noRefPrev.Next = novoNo;                                    // Referência posterior da referência anterior do Nó de referência é o novo Nó
         noReferencia.Prev = novoNo;                                 // Referência anterior do Nó de referência é o novo Nó
+        QtdElement++;                                               // Quantidade de elementos +1
     }
 
     public T RemoveAtRank(int posicao)
     {
+        if (IsEmpty()) throw new VetorVazioExcecao();               // Verificar se o Vetor está vazio
         if (posicao >= Size()) throw new PosicaoInvalidaExcecao();  // Verificar se a posição informada está inválida
         No<T> noRemovido = Search(posicao);                         // Encontrar o Nó que será removido
         No<T> noRefNext = noRemovido.Next;                          // Referência posterior do Nó que será removido
@@ -35,11 +37,13 @@ class VetorArray<T> : Vetor<T>
         noRefNext.Prev = noRefPrev;                                 // Referência anterior da referência posterior do Nó de que será removido é a referência anterior do Nó que será removido
         noRefPrev.Next = noRefNext;                                 // Referência posterior da referência anterior do Nó de que será removido é a referência posterior do Nó que será removido
         noRemovido.Next = noRemovido.Prev = null;                   // Anulando as referências posterior e anterior do Nó que será removido
+        QtdElement--;                                               // Quantidade de elementos -1
         return objeto;                                              // Retorna objeto do Nó que será removido
     }
 
     public T ReplaceAtRank(int posicao, T objeto)
     {
+        if (IsEmpty()) throw new VetorVazioExcecao();               // Verificar se o Vetor está vazio
         if (posicao >= Size()) throw new PosicaoInvalidaExcecao();  // Verificar se a posição informada está inválida
         No<T> novoNo = new No<T>(objeto);                           // Criar um novo Nó com o objeto informado
         No<T> noSubstituido = Search(posicao);                      // Obter o Nó que será substituido pelo novo Nó
@@ -50,14 +54,16 @@ class VetorArray<T> : Vetor<T>
         novoNo.Prev = noRefPrev;                                    // Referência anterior do novo Nó é a referência anterior do Nó que será substituido
         noRefNext.Prev = novoNo;                                    // Referência anterior da referência posterior do Nó que será substituido e o novo Nó
         noRefPrev.Next = novoNo;                                    // Referência posterior da referência anterior do Nó que será substituido e o novo Nó
-        noSubstituido.Next = noSubstituido.Prev = null;             // Anulando as referências posterior e anterior do Nó que será substituido 
+        noSubstituido.Next = noSubstituido.Prev = null;             // Anulando as referências posterior e anterior do Nó que será substituido
         return objetoRef;                                           // Retorna objeto do Nó que será substituido
     }
 
     public T ElemAtRank(int posicao)
     {
+        if (IsEmpty()) throw new VetorVazioExcecao();               // Verificar se o Vetor está vazio
         if (posicao >= Size()) throw new PosicaoInvalidaExcecao();  // Verificar se a posição informada está inválida
-        
+        No<T> noReferencia = Search(posicao);                       // Nó de referência da posição informada
+        return noReferencia.Objeto;                                 // Retorna objeto do Nó de referência
     }
 
     public int Size()
@@ -85,6 +91,19 @@ class VetorArray<T> : Vetor<T>
 
     public void ExibirVetor()
     {
+        No<T> atualNo = Head;                                                       // Nó auxiliar para o inicio do Vetor
+        Console.Write("Objetos -> ");
+        while (atualNo.Next != Tail)
+        {
+            atualNo = atualNo.Next;                                                 // Condição de parada - último Nó
+            Console.Write($"| {atualNo.Objeto} |");                                 // Imprimir valores da Vetor
+        }
 
+        Console.WriteLine("\n");                                                    // Pular Linha!
+
+        Console.Write("Posição -> ");
+        for (int i = 0; i <= Size(); i++) Console.Write($"| {i} |");                // Imprimir posição dos valores do Vetor
+
+        Console.WriteLine("\n");                                                    // Pular Linha!
     }
 }

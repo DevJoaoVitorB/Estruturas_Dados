@@ -220,11 +220,11 @@ class ListaDuplamenteLigada<T> : Lista<T>
     public void ExibirLista()
     {
         if (IsEmpty()) throw new ListaVaziaExcecao();           // Verificar se a Lista está vazia
-        No<T> atualNo = Head;                                   // Nó auxiliar para o inicio da Fila
+        No<T> atualNo = Head;                                   // Nó auxiliar para o inicio da Lista
         while (atualNo.Next != Tail)
         {
             atualNo = atualNo.Next;                             // Condição de parada - último Nó
-            Console.Write($"| {atualNo.Objeto} |");             // Imprimir outros valores da Fila
+            Console.Write($"| {atualNo.Objeto} |");             // Imprimir outros valores da Lista
         }
 
         Console.WriteLine("\n");                                // Pular Linha!
