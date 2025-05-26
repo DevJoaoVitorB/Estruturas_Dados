@@ -18,213 +18,226 @@
 ## ⚠️ Exceções
 
 * **EPilhaVazia:** Tentativa de `pop()` ou `top()` com a pilha vazia.
-* **EPilhaCheia:** Tentativa de `push()` em uma pilha sem espaço disponível.
+* **EPilhaCheia:** Tentativa de `push()` em uma pilha sem espaço disponível (em implementações estáticas).
 
 <br>
 
-## 🛠️ Exemplos Práticos
+## 🛠️ Aplicações Práticas
 
-* Navegação de páginas no **browser** (voltar)
+* Navegação de páginas no **browser** (botão Voltar)
 * Botão **Desfazer** em editores de texto
 * Execução de **algoritmos recursivos**
+* Avaliação de expressões matemáticas
 * Parte integrante de **outras estruturas de dados**
 
 <br>
 
-## 🧱 Implementação Usando Array (Pilhas baseadas em Arrays)
+## 🧱 Implementação Usando Array
 
 > Utiliza-se um **vetor/array** como estrutura de armazenamento.
 
 * Forma **simples** de implementação
-* Elementos são adicionados da **esquerda para a direita**
+* Elementos são adicionados sequencialmente
 * Uso de uma **variável auxiliar** que armazena o índice do topo
 
 <br>
 
-### ⏱️ Desempenho das Operações
+### ⏱️ Complexidade das Operações
 
 | Operação            | Complexidade | Descrição |
 |---------------------|--------------|-----------|
-| `push(object)`      | O(1)         | Adiciona no topo (incrementa índice) |
+| `push(object)`      | O(1)*        | Adiciona no topo (incrementa índice) |
 | `object pop()`      | O(1)         | Remove do topo (decrementa índice)   |
 | `object top()`      | O(1)         | Retorna o topo                       |
 | `integer size()`    | O(1)         | Retorna a quantidade de elementos    |
 | `boolean isEmpty()` | O(1)         | Verifica se está vazia               |
 
+> *O(1) amortizado quando usando redimensionamento duplicativo
+
 <br>
 
 ### ⚠️ Limitações das Pilhas Baseadas em Arrays
 
-* **Capacidade Fixa**: Arrays possuem capacidade fixa. Quando a pilha atinge seu limite, operações como `push(object)` se tornam inviáveis, gerando problemas de **overflow**.
-* **Espaço Desperdiçado**: Inicialmente, o array reserva um espaço fixo de memória, que pode não ser totalmente utilizado quando a pilha está parcialmente vazia.
+* **Capacidade Fixa:** Arrays possuem tamanho fixo, podendo causar **overflow**.
+* **Espaço Desperdiçado:** Pode alocar mais memória do que o necessário.
 
-> ⚠️ Por isso, para garantir a eficiência e escalabilidade das pilhas, são implementadas estratégias de **redimensionamento dinâmico**.
+> ⚠️ Para contornar esses problemas, utilizam-se estratégias de **redimensionamento dinâmico**.
 
 <br>
 
 ### 🔃 Estratégias de Redimensionamento
 
-Ao atingir a capacidade máxima, o array da pilha é substituído por um novo array maior. As duas principais estratégias são:
+Ao atingir a capacidade máxima, o array é substituído por um maior. Principais abordagens:
+
+<br>
 
 ### 1. Estratégia Incremental
 
 * ❓ **Como funciona?**
-  * Aumenta a capacidade do array em um valor fixo `c` a cada vez que ele fica cheio.
-  * Simples de implementar, mas pode ser ineficiente quando `n` cresce muito.
+  * Aumenta a capacidade em um valor fixo `c` quando cheio.
+  * Simples, mas ineficiente para grandes volumes.
 
 * 📊 **Análise Matemática**
-  * A cada `c` inserções, é necessário realocar um novo array maior e copiar os elementos antigos.
-  * Se fizermos `n` operações `push`, teremos `k = n / c` redimensionamentos.
-  * O custo total será:
+  * Número de redimensionamentos: `k = n / c`
+  * Fator de crescimento: c (constante fixa)
+  * Número de cópias após n inserções:
+    ```math
+    \text{Total cópias} = n + \sum_{k=1}^{n/c} (k \cdot c) = n + \frac{c \cdot (n/c)(n/c + 1)}{2}
+    ```
+  * Exemplo Prático (c = 10, n = 1000):
+    ```math
+    \text{Operações} = 1000 + (10 + 20 + 30 + ... + 100) = 1000 + 550 = 1550
+    ```
+  * Custo total:
+    ```math
+    T(n) = n + c \cdot \frac{(n/c)(n/c + 1)}{2} = O(n^2)
+    ```
+  * Tempo Amortizado:
+    ```math
+    \frac{T(n)}{n} = O(n)
+    ```
 
-```math
-T(n) = n + c + 2c + 3c + \dots + kc
-     = n + c(1 + 2 + 3 + \dots + k)
-     = n + c \cdot \frac{k(k+1)}{2}
-```
----
+* 📋 Resumo:
 
-> [!WARNING]
-> Substituindo `k = n / c`:
-> ```math
-> T(n) = n + c \cdot \frac{(n/c)(n/c + 1)}{2} = O(n + n^2/c) = O(n^2)
-> ```
-
----
-
-* ⏲️ **Tempo Amortizado:**
-
-```math
-\frac{T(n)}{n} = O(n)
-```
-
-* 📋 **Resumo**:
-  * Redimensiona linearmente, mas tem custo **quadrático total**.
-  * Ineficiente para muitos elementos.
+  * ✅ Simples implementação
+  * ❌ Custo quadrático total
+  * ❌ Ineficiente para muitos elementos
 
 <br>
 
 ### 2. Estratégia Duplicativa (Exponencial)
 
-* ❓ **Como funciona?**
-  * A cada vez que o array fica cheio, sua capacidade é duplicada.
-  * Mais eficiente para crescimento exponencial da pilha.
+* ❓ Como funciona?
+  * Duplica a capacidade quando cheio.
+  * Mais eficiente para crescimento rápido.
 
-* 📊 **Análise Matemática**
-  * O número de redimensionamentos será `k = log₂(n)`.
-  * A cada redimensionamento, o custo de cópia é proporcional ao tamanho anterior:
+* 📊 Análise Matemática
+  * Número de redimensionamentos: k = log₂(n)
+  * Fator de crescimento: 2× (sempre dobra)
+  * Número de cópias após n inserções:
+    ```math
+    \text{Total cópias} = n + \sum_{k=0}^{\lfloor \log_2 n \rfloor} 2^k \approx 3n
+    ```
+  * Exemplo Prático (n = 1000):
+    ```math
+    \text{Operações} ≈ 1000 + (1 + 2 + 4 + 8 + 16 + 32 + 64 + 128 + 256 + 512) ≈ 3000
+    ```
+  * Custo total:
+    ```math
+    T(n) \leq 3n - 1 = O(n)
+    ```
+  * Tempo Amortizado:
+    ```math
+    \frac{T(n)}{n} = O(1)]
+    ```
+* 📋 Resumo:
 
-```math
-T(n) = n + 1 + 2 + 4 + 8 + \dots + 2^k
-```
+  * ✅ Custo linear total
+  * ✅ Tempo amortizado constante
+  * ✅ Ideal para cenários dinâmicos
 
----
+<br>
 
-> [!WARNING]
-> Essa é uma **progressão geométrica**, cuja soma é:
-> ```math
->  1 + 2 + 4 + \dots + 2^k = 2^{k+1} - 1 \leq 2n - 1
-> ```
-> Então:
-> ```math
-> T(n) \leq n + (2n - 1) = 3n - 1 = O(n)
-> ```
+### 📊 Comparativo de Estratégias
 
----
-
-* ⏲️ **Tempo Amortizado:**
-
-```math
-\frac{T(n)}{n} = O(1)
-```
-
-* 📋 **Resumo**:
-  * Redimensiona exponencialmente.
-  * Muito mais eficiente: custo total linear e tempo amortizado constante.
-
-##### 📊 Comparativo Final
-
-| Estratégia        | T(n) Total     | Tempo Amortizado  | Eficiência  |
-|-------------------|----------------|-------------------|-------------|
-| Incremental       | `O(n²)`        | `O(n)`            | Baixa       |
-| Duplicativa       | `O(n)`         | `O(1)`            | Alta        |
+| Estratégia	| Custo Total	| Tempo Amortizado |	Adequação      |
+|-------------|-------------|------------------|-----------------|
+| Incremental	| O(n²)	      | O(n)	           | Casos simples   |
+| Duplicativa	| O(n)	      | O(1)	           | Cenários gerais |
 
 <br>
 
 ### ✏️ Implementação em C#
+
 ```csharp
 using System;
 
-class PilhaVaziaExcecao : Exception         // Classe de Exceção de Pilha Vazia
+// Exceção personalizada para pilha vazia
+class PilhaVaziaExcecao : Exception
 {
-    public PilhaVaziaExcecao() : base("A Pilha está vazia!") {}
-    public PilhaVaziaExcecao(string mensagem) : base(mensagem) {}
-    public PilhaVaziaExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}
+    public PilhaVaziaExcecao() : base("Operação inválida: pilha vazia!") {}
 }
 
-interface Pilha<T>                          // Interface com os Métodos de uma Pilha
+// Interface do TAD Pilha
+interface IPilha<T>
 {
-    void Push(T objeto);                      // Método para Adicionar Elemento no Topo da Pilha
-    T Pop();                                  // Método para Remover Elemento do Topo da Pilha
-    T Top();                                  // Método de Retorno do Elemento do Topo da Pilha
-    int Size();                               // Método de Retorno da Quantidade de Elementos da Pilha
-    bool IsEmpty();                           // Método para Verificar se a Pilha está Vazia
+    void Push(T elemento);  
+    T Pop();                
+    T Top();                
+    int Size();             
+    bool IsEmpty();
 }
- 
-class PilhaArray<T> : Pilha<T>
-{
-    private int Topo;         // Atributo de referência do Topo da Pilha
-    private int FC;           // Fator de Crescimento da PilhaArray - Incremental ou Duplicativa
-    private int Capacidade;   // Capacidade da PilhaArray
-    private T[] ArrayPilha;   // Array utilizado como Pilha
 
-    public PilhaArray(int capacidade, int crescimento)
+// Implementação com array
+class PilhaArray<T> : IPilha<T>
+{
+    private T[] elementos;
+    private int topo;
+    private int capacidade;
+    private readonly int fatorCrescimento;
+
+    public PilhaArray(int capacidadeInicial = 10, int fatorCrescimento = 0)
     {
-        Capacidade = capacidade;          // Definir a capacidade da PilhaArray
-        Topo = -1;                        // Sem elementos na PilhaArray
-        if(crescimento <= 0) FC = 0;      // Fator de Crescimento por Duplicação
-        else FC = crescimento;            // Fator de Crescimento por Incrementação
-        ArrayPilha = new T[Capacidade];   // Inicializando a PilhaArray
+        this.capacidade = capacidadeInicial;
+        this.topo = -1;
+        this.fatorCrescimento = fatorCrescimento;
+        this.elementos = new T[capacidadeInicial];
     }
 
-    public void Push(T objeto)
+    public void Push(T elemento)
     {
-        if(Topo >= Capacidade-1)                // Redimensionamento do tamanho da PilhaArray - Excedeu o Limite
+        if (topo == capacidade - 1)
         {
-            if(FC == 0) Capacidade *= 2;          // Redimensionamento por Duplicação
-            else Capacidade += FC;                // Redimensionamento por Incrementação
-
-            T[] tempArray = new T[Capacidade];    // Criação de um Array temporário
-            for(int i = 0; i < ArrayPilha.Length; i++)
-            {
-              tempArray[i] = ArrayPilha[i];       // Colocar os elementos do antigo Array (ArrayPilha) para o novo Array (tempArray)
-            }
-            ArrayPilha = tempArray;               // tempArray passa a ser o novo Array
+            Redimensionar();
         }
-        ArrayPilha[++Topo] = objeto;            // Adicionar o novo elemento a PilhaArray
+        elementos[++topo] = elemento;
     }
 
     public T Pop()
     {
-        if(IsEmpty()) throw new PilhaVaziaExcecao();  // Verificar se a PilhaArray está Vazia
-        T removido = ArrayPilha[Topo--];              // Remover o elemento do Topo da PilhaArray
-        return removido;                              // Retorna o elemento removido
+        if (EstaVazia())
+        {
+            throw new PilhaVaziaExcecao();
+        }
+        return elementos[topo--];
     }
 
     public T Top()
     {
-        if(IsEmpty()) throw new PilhaVaziaExcecao();  // Verificar se a PilhaArray está Vazia
-        return ArrayPilha[Topo];                      // Retorna o elemento do Topo
+        if (EstaVazia())
+        {
+            throw new PilhaVaziaExcecao();
+        }
+        return elementos[topo];
     }
 
-    public int Size()
+    public int Tamanho()
     {
-        return Topo + 1;                       // Retorna a quantidade de elementos da PilhaArray
+        return topo + 1;
     }
 
-    public bool IsEmpty()
+    public bool EstaVazia()
     {
-        return Topo == -1;                     // Verificar se a Pilha está vazia
+        return topo == -1;
+    }
+
+    // Método privado para redimensionamento
+    private void Redimensionar()
+    {
+        int novaCapacidade = fatorCrescimento == 0 ? 
+                            capacidade * 2 : 
+                            capacidade + fatorCrescimento;
+
+        T[] novoArray = new T[novaCapacidade];
+        
+        // Cópia dos elementos
+        for (int i = 0; i <= topo; i++)
+        {
+            novoArray[i] = elementos[i];
+        }
+
+        elementos = novoArray;
+        capacidade = novaCapacidade;
     }
 }
 ```

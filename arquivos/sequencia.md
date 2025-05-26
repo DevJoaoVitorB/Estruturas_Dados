@@ -42,8 +42,8 @@
 
 * **EPosicaoInvalida**: Posição fora dos limites da sequência.
 * **ENaoEncontrado:** Elemento não encontrado durante o `search()`.
-* **ESequenciaVazia**: Tentativa de acessar/remover elemento de uma sequência **vazio**.
-* **ESequenciaCheia**: Tentativa de inserir em sequência **cheio**.
+* **ESequenciaVazia**: Tentativa de acessar/remover elemento de uma sequência **vazia**.
+* **ESequenciaCheia**: Tentativa de inserir em sequência **cheia**.
 
 <br>
 
@@ -57,26 +57,26 @@
 
 <br>
 
-## 🧱 Implementação com Array
+## 🧱 Implementação com Array Circular
 
-> A sequência é representada com um **array fixo** contendo **nós como objetos**. Cada nó possui:
+> A sequência é representada com um **array circular** contendo **nós como objetos**. Cada nó possui:
 >
 > * O **valor** armazenado
-> * O **rank (índice lógico)** em que se encontra
+> * O **rank (posição lógica)** em que se encontra (diferente do índice do array)
 
 ### 🔧 Estrutura Básica
 
-  * 🔹 Cada elemento do array é um objeto Nó, que armazena tanto o valor quanto seu índice lógico na estrutura.
-  * 🔹 Como é um array, o acesso por posição (rank) é feito diretamente via índice.
-  * 🔹 O array possui tamanho limitado. Caso atinja sua capacidade, é necessário redimensioná-lo manualmente ou implementar uma lógica de redimensionamento dinâmico.
-  * 🔹 A posição é representada como um wrapper ao índice; o nó sabe sua própria posição, facilitando operações de ponte.
-  * 🔹 Operações de leitura são rápidas, mas inserções e remoções internas são custosas por envolver deslocamento de elementos.
+* 🔹 Cada elemento do array é um objeto Nó, que armazena o valor e seu rank lógico na estrutura.
+* 🔹 O array é circular: quando se alcança o final, volta-se ao início.
+* 🔹 O rank não é o mesmo que o índice do array - é a posição lógica baseada na ordem de inserção.
+* 🔹 Ao remover um elemento do meio, os ranks são reajustados para manter a sequência lógica.
+* 🔹 Operações de leitura são rápidas, mas inserções e remoções internas são custosas por envolver deslocamento de elementos.
 
 ```text
-Array:  [ Nó(10) ] [ Nó(20) ] [ Nó(30) ] [ -- ] [ -- ] [ -- ]
-Ranks:     0         1         2
+Array Circular: 
+[ Nó(30, rank=2) ] [ -- ][ -- ][ Nó(10, rank=0) ] [ Nó(20, rank=1) ]
 Tamanho: 3
-Capacidade: 6
+Capacidade: 5
 ```
 
 <br>
@@ -84,9 +84,12 @@ Capacidade: 6
 ### ⚙️ Modo de Funcionamento
 
 * Todas as operações (genéricas, de vetor, de lista e de ponte) são suportadas.
-* Acesso direto por rank é eficiente (O(1)).
-* Inserções e remoções envolvem deslocamento de elementos (O(n)).
-* Nós armazenam o índice lógico, facilitando a conversão entre rank e posição.
+* Acesso direto por rank é eficiente (O(1)) usando busca modular no array circular.
+* Inserções e remoções envolvem deslocamento de elementos (O(n)) e ajuste de ranks.
+* Ao remover um elemento do meio:
+    * Os elementos posteriores são deslocados para esquerda
+    *Seus ranks são decrementados em 1
+* Nós armazenam o rank lógico, facilitando a conversão entre rank e posição.
 
 <br>
 
@@ -100,247 +103,208 @@ Capacidade: 6
 
 ### ✏️ Implementação em C#
 ```csharp
-using System;
+using system;
 
-class SequenciaVaziaExcecao : Exception               // Classe de Exceção de Sequencia Vazia
-{
-    public SequenciaVaziaExcecao() : base("A Sequência está vazia!") {}
-    public SequenciaVaziaExcecao(string mensagem) : base(mensagem) {}
-    public SequenciaVaziaExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}
+public class EPosicaoInvalida : Exception {
+    public EPosicaoInvalida(string msg) : base(msg) { }
 }
 
-class ObjetoNaoEncontradoExcecao : Exception          // Classe de Exceção de Objeto não Encontrado na Sequência
-{
-    public ObjetoNaoEncontradoExcecao() : base("Objeto não foi encontrado na Sequência!") {}
-    public ObjetoNaoEncontradoExcecao(string mensagem) : base(mensagem) {}
-    public ObjetoNaoEncontradoExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}
+public class ENaoEncontrado : Exception {
+    public ENaoEncontrado(string msg) : base(msg) { }
 }
 
-class PosicaoInvalidaExcecao : Exception              // Classe de Exceção de Posição Inválida na Sequência
-{
-    public PosicaoInvalidaExcecao() : base("Posição informada invalida!") {}
-    public PosicaoInvalidaExcecao(string mensagem) : base(mensagem) {}
-    public PosicaoInvalidaExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}'
+public class ESequenciaVazia : Exception {
+    public ESequenciaVazia(string msg) : base(msg) { }
 }
 
-interface Sequencia<T>
-{
-    void InsertAtRank(int posicao, T objeto);       // Método para Adicionar Elemento em uma Posição X da Sequência
-    void InsertFirst(T objeto);                     // Método para Inserir Elemento no Início da Sequência
-    void InsertLast(T objeto);                      // Método para Inserir Elemento no Final da Sequência
-    void InsertAfter(T objetoRef, T objeto);        // Método para Inserir Elemento Depois de Outro Elemento da Sequência
-    void InsertBefore(T objetoRef, T objeto);       // Método para Inserir Elemento Antes de Outro Elemento da Sequência
-    T ReplaceAtRank(int posicao, T objeto);         // Método para Substituir um Elemento por Outro em uma Posição X da Sequência
-    T ReplaceElement(T objetoRef, T objeto);        // Método para Substituir Elemento Antigo da Sequência por Elemento Novo
-    void SwapElement(T objetoRef1, T objetoRef2);   // Método para Trocar Posição do Elemento com Outro Elemento da Sequência
-    T RemoveAtRank(int posicao);                    // Método para Remover Elemento em uma Posição X da Sequência
-    T Remove(T objeto);                             // Método para Remover e Retornar Elemento da Sequência
-    T ElemAtRank(int posicao);                      // Método de Retorno do Elemento da Posição X da Sequência
-    No<T> First();                                  // Método para Retornar o Primeiro Elemento da Sequência
-    No<T> Last();                                   // Método para Retornar o Último Elemento da Sequência
-    bool InFirst(T objeto);                         // Método para Verificar se Elemento está na Primeira Posição da Sequência
-    bool InLast(T objeto);                          // Método para Verificar se Elemento está na Última Posição da Sequência
-    No<T> After(T objeto);                          // Método para Retornar Elemento Posterior a Outro Elemento da Sequência
-    No<T> Before(T objeto);                         // Método para Retornar Elemento Anterior a Outro Elemento da Sequência
-    int Size();                                     // Método para Retornar Número de Elementos da Sequência
-    bool IsEmpty();                                 // Método para Verificar se a Sequência está Vazia
-    No<T> Search(T objeto);                         // Método para Retornar Elemento da Sequência se Existir
-    No<T> atRank(int posicao);                      // Método para Retornar Elemento da Posição X da Sequência
-    int rankOf(T objeto);                           // Método para Retornar Posição X do Elemento da Sequência
+public interface ISequencia<T> {
+    int Size();
+    bool IsEmpty();
+
+    void InsertAtRank(int rank, T element);
+    T RemoveAtRank(int rank);
+    T ReplaceAtRank(int rank, T element);
+    T ElemAtRank(int rank);
+
+    void InsertFirst(T element);
+    void InsertLast(T element);
+    void InsertAfter(T target, T element);
+    void InsertBefore(T target, T element);
+    T ReplaceElement(T oldElement, T newElement);
+    void SwapElement(T e1, T e2);
+    T Remove(T element);
+    T First();
+    T Last();
+    bool InFirst(T element);
+    bool InLast(T element);
+    T After(T element);
+    T Before(T element);
+    T Search(T element);
+
+    No<T> AtRank(int rank);
+    int RankOf(No<T> node);
 }
 
-class SequenciaArray<T> : Sequencia<T>
-{
-    private int Capacidade;                         // Capacidade da SequenciaArray
-    private int QtdElement;                         // Quantidade de Elementos da Sequência
-    private T[] ArraySequencia;                     // Array que Contém os Elementos da Sequência
+public class No<T> {
+    public T Element { get; set; }
+    public int Rank { get; set; }
 
-    public SequênciaArray(int capacidade)
-    {
-        Capacidade = capacidade;                // Definir a capacidade inicial da SequênciaArray
-        QtdElement = 0;                         // Sequência está vazia
-        ArraySequencia = new T[Capacidade];     // Inicializando SequênciaArray
+    public No(T element, int rank) {
+        Element = element;
+        Rank = rank;
+    }
+}
+
+public class SequenciaArray<T> : ISequencia<T> {
+    private No<T>[] array;
+    private int capacidade;
+    private int inicio;
+    private int tamanho;
+
+    public SequenciaArray(int capacidadeInicial = 10) {
+        capacidade = capacidadeInicial;
+        array = new No<T>[capacidade];
+        inicio = 0;
+        tamanho = 0;
     }
 
-    private void Redimensionar()
-    {
-        Capacidade *= 2;                          // Estratégia Duplicativa
-        T[] tempArray = new T[Capacidade];        // Criação de um Array temporário
-        for(int i = 0; i < Size(); i++)
-        {
-            tempArray[i] = ArraySequencia[i];     // Colocar os elementos do antigo Array (ArraySequencia) para o novo Array (tempArray)
+    public int Size() => tamanho;
+    public bool IsEmpty() => tamanho == 0;
+    private int Index(int r) => (inicio + r) % capacidade;
+
+    private void Redimensionar() {
+        int novaCapacidade = capacidade * 2;
+        No<T>[] novoArray = new No<T>[novaCapacidade];
+        for (int i = 0; i < tamanho; i++)
+            novoArray[i] = array[Index(i)];
+        array = novoArray;
+        capacidade = novaCapacidade;
+        inicio = 0;
+    }
+
+    public No<T> AtRank(int rank) {
+        if (rank < 0 || rank >= tamanho)
+            throw new EPosicaoInvalida("Rank inválido.");
+        return array[Index(rank)];
+    }
+
+    public int RankOf(No<T> no) {
+        for (int i = 0; i < tamanho; i++) {
+            if (array[Index(i)].Equals(no)) return i;
         }
-        ArraySequencia = tempArray;               // tempArray passa a ser o novo Array
+        throw new ENaoEncontrado("Elemento não encontrado.");
     }
 
-    public void InsertAtRank(int posicao, T objeto)
-    {
-        if (posicao > Size() || posicao >= Capacidade) throw new PosicaoInvalidaExcecao();    // Verificar se a posição informada está inválida
-        if (Size() == Capacidade) Redimensionar();                                            // Verificar se a SequênciaArray está cheia
-        if (posicao < Size())
-        {
-            for (int j = Size(); j > posicao; j--)
-            {
-                ArraySequencia[j] = ArraySequencia[j - 1];                                    // Deslocar para direita os Elementos da posição X até o último anteriormente adicionado
+    public void InsertAtRank(int rank, T element) {
+        if (rank < 0 || rank > tamanho)
+            throw new EPosicaoInvalida("Rank inválido.");
+        if (tamanho == capacidade) Redimensionar();
+        for (int i = tamanho; i > rank; i--) {
+            array[Index(i)] = array[Index(i - 1)];
+        }
+        array[Index(rank)] = new No<T>(element, rank);
+        tamanho++;
+    }
+
+    public T RemoveAtRank(int rank) {
+        if (IsEmpty()) throw new ESequenciaVazia("Sequência vazia.");
+        if (rank < 0 || rank >= tamanho)
+            throw new EPosicaoInvalida("Rank inválido.");
+        T elemento = array[Index(rank)].Element;
+        for (int i = rank; i < tamanho - 1; i++) {
+            array[Index(i)] = array[Index(i + 1)];
+        }
+        array[Index(tamanho - 1)] = null;
+        tamanho--;
+        return elemento;
+    }
+
+    public T ReplaceAtRank(int rank, T element) {
+        if (rank < 0 || rank >= tamanho)
+            throw new EPosicaoInvalida("Rank inválido.");
+        T antigo = array[Index(rank)].Element;
+        array[Index(rank)].Element = element;
+        return antigo;
+    }
+
+    public T ElemAtRank(int rank) {
+        return AtRank(rank).Element;
+    }
+
+    public void InsertFirst(T element) => InsertAtRank(0, element);
+    public void InsertLast(T element) => InsertAtRank(tamanho, element);
+
+    public void InsertAfter(T target, T element) {
+        int pos = IndexOf(target);
+        InsertAtRank(pos + 1, element);
+    }
+
+    public void InsertBefore(T target, T element) {
+        int pos = IndexOf(target);
+        InsertAtRank(pos, element);
+    }
+
+    public T ReplaceElement(T oldElement, T newElement) {
+        int pos = IndexOf(oldElement);
+        T antigo = array[Index(pos)].Element;
+        array[Index(pos)].Element = newElement;
+        return antigo;
+    }
+
+    public void SwapElement(T e1, T e2) {
+        int i1 = IndexOf(e1);
+        int i2 = IndexOf(e2);
+        var temp = array[Index(i1)].Element;
+        array[Index(i1)].Element = array[Index(i2)].Element;
+        array[Index(i2)].Element = temp;
+    }
+
+    public T Remove(T element) {
+        int pos = IndexOf(element);
+        return RemoveAtRank(pos);
+    }
+
+    public T First() {
+        if (IsEmpty()) throw new ESequenciaVazia("Sequência vazia.");
+        return array[Index(0)].Element;
+    }
+
+    public T Last() {
+        if (IsEmpty()) throw new ESequenciaVazia("Sequência vazia.");
+        return array[Index(tamanho - 1)].Element;
+    }
+
+    public bool InFirst(T element) => IndexOf(element) == 0;
+    public bool InLast(T element) => IndexOf(element) == tamanho - 1;
+
+    public T After(T element) {
+        int pos = IndexOf(element);
+        if (pos == tamanho - 1)
+            throw new EPosicaoInvalida("Último elemento não possui sucessor.");
+        return array[Index(pos + 1)].Element;
+    }
+
+    public T Before(T element) {
+        int pos = IndexOf(element);
+        if (pos == 0)
+            throw new EPosicaoInvalida("Primeiro elemento não possui anterior.");
+        return array[Index(pos - 1)].Element;
+    }
+
+    public T Search(T element) {
+        for (int i = 0; i < tamanho; i++) {
+            if (array[Index(i)].Element.Equals(element)) {
+                return array[Index(i)].Element;
             }
         }
-        ArraySequencia[posicao] = objeto;                                                     // Adicionar elemento a posição X
-        QtdElement++;                                                                         // Quantidade de elementos +1
+        throw new ENaoEncontrado("Elemento não encontrado.");
     }
 
-    public void InsertFirst(T objeto)
-    {
-        if (Size() == Capacidade) Redimensionar();                                      // Verificar se a SequênciaArray está cheia
-        for (int i = Size(); i > 0; i--) ArraySequencia[i] = ArraySequencia[i - 1];     // Deslocar os elementos da SequênciaArray para a direita a partir do inicio
-        ArraySequencia[0] = objeto;                                                     // Adicionar o elemento no inicio da Sequência
-        QtdElement++;                                                                   // Quantidade de elementos +1
-    }
-
-    public void InsertLast(T objeto)
-    {
-        if (Size() == Capacidade) Redimensionar();    // Verificar se a SequênciaArray está cheia
-        ArraySequencia[Size()] = objeto;              // Adicionar o elemento no final da Sequência
-        QtdElement++;                                 // Quantidade de elementos +1
-    }
-
-    public void InsertAfter(int posicao, T objeto)
-    {
-        if (posicao < 0 || posicao >= Size()) throw new PosicaoInvalidaExcecao();                 // Verificar se a posição está no range da Sequência
-        if (Size() == Capacidade) Redimensionar();                                                // Verificar se a SequênciaArray está cheia
-        for (int i = Size(); i > posicao + 1; i--) ArraySequencia[i] = ArraySequencia[i - 1];     // Deslocar os elementos da SequênciaArray para a direita a partir do próximo da posição do elemento de referência
-        ArraySequencia[posicao + 1] = objeto;                                                     // Adicionar o elemento depois do elemento da posição informada
-        QtdElement++;                                                                             // Quantidade de elementos +1
-    }
-
-    public void InsertBefore(int posicao, T objeto)
-    {
-        if (posicao < 0 || posicao >= Size()) throw new PosicaoInvalidaExcecao();             // Verificar se a posição está no range da Sequência
-        if (Size() == Capacidade) Redimensionar();                                            // Verificar se a SequênciaArray está cheia
-        for (int i = Size(); i > posicao; i--) ArraySequencia[i] = ArraySequencia[i - 1];     // Deslocar os elementos da SequênciaArray para a direita a partir da posição do elemento de referência
-        ArraySequencia[posicao] = objeto;                                                     // Adicionar o elemento antes do elemento da posição informada
-        QtdElement++;                                                                         // Quantidade de elementos +1
-    }
-
-    public T ReplaceAtRank(int posicao, T objeto)
-    {
-        if (IsEmpty()) throw new SequenciaVazioExcecao();                                       // Verificar se o SequênciaArray está Vazio
-        if (posicao >= Size() || posicao >= Capacidade) throw new PosicaoInvalidaExcecao();     // Verificar se a posição informada está inválida
-
-        T objetoSubstituido = ArraySequencia[posicao];                                          // Guarda o objeto que será substituido
-        ArraySequencia[posicao] = objeto;                                                       // Substituir o objeto antigo pelo objeto novo
-        return objetoSubstituido;                                                               // Retorna o objeto que será substituido
-    }
-
-    public T ReplaceElement(int posicao, T objeto)
-    {
-        if (posicao < 0 || posicao >= Size()) throw new PosicaoInvalidaExcecao();         // Verificar se a posição está no range da Sequência
-        T elementSubstituido = ArraySequencia[posicao];                                   // Elemento que será substituido 
-        ArraySequencia[posicao] = objeto;                                                 // Substituir o elemento da Sequência da posição informada por outro elemento
-        return elementSubstituido;                                                        // Retorna elemento que será substituido
-    }
-
-    public void SwapElement(int posicao1, int posicao2)
-    {
-        if (posicao1 < 0 || posicao1 >= Size() || posicao2 < 0 || posicao2 >= Size()) throw new PosicaoInvalidaExcecao();         // Verificar se a posição está no range da Sequência
-        T objeto1 = ArraySequencia[posicao1];                                                                                     // Primeiro elemento da troca
-        ArraySequencia[posicao1] = ArraySequencia[posicao2];                                                                      // Posição do elemento 1 passa a ser ocupada pelo elemento 2
-        ArraySequencia[posicao2] = objeto1;                                                                                       // Posição do elemento 2 passa a ser ocupada pelo elemento 1
-    }
-
-    public T RemoveAtRank(int posicao)
-    {
-        if (IsEmpty()) throw new SequenciaVaziaExcecao();                                           // Verificar se o SequênciaArray está Vazio
-        if (posicao >= Size() || posicao >= Capacidade) throw new PosicaoInvalidaExcecao();         // Verificar se a posição informada está inválida
-        T objetoRemovido = ArraySequencia[posicao];                                                 // Guardar o objeto a ser removido
-        for (int i = posicao; i < Size(); i++)
-        {
-            ArraySequencia[i] = ArraySequencia[i + 1];                                              // Deslocar para esquerda os Elementos da posição X+1 até o último anteriormente adicionado
+    private int IndexOf(T element) {
+        for (int i = 0; i < tamanho; i++) {
+            if (array[Index(i)].Element.Equals(element)) return i;
         }
-        QtdElement--;                                                                               // Quantidade de elementos -1
-        return objetoRemovido;                                                                      // Retornando o valor que será removido
-    }
-
-    public T Remove(int posicao)
-    {
-        if (posicao < 0 || posicao >= Size()) throw new PosicaoInvalidaExcecao();               // Verificar se a posição está no range da Sequência
-        if (IsEmpty()) throw new SequenciaVaziaExcecao();                                       // Verificar se a Sequência está vazia
-        T elementRemovido = ArraySequencia[posicao];                                            // Elemento que será removido
-        for (int i = posicao; i < Size() - 1; i++) ArraySequencia[i] = ArraySequencia[i + 1];   // Deslocar os elementos da SequênciaArray para a esquerda a partir da posição do elemento que será removido                   
-        QtdElement--;                                                                           // Quantidade de elementos -1
-        return elementRemovido;                                                                 // Retorna o elemento que será removido
-    }
-
-    public T ElemAtRank(int posicao)
-    {
-        if (IsEmpty()) throw new SequenciaVazioExcecao();                                       // Verificar se o SequênciaArray está Vazio
-        if (posicao >= Size() || posicao >= Capacidade) throw new PosicaoInvalidaExcecao();     // Verificar se a posição informada está inválida
-
-        return ArraySequencia[posicao];                                                         // Retorna o objeto da posição X
-    }
-
-    public T First()
-    {
-        if (IsEmpty()) throw new SequenciaVaziaExcecao();   // Verificar se a Sequência está vazia
-        return ArraySequência[0];                           // Retorna o primeiro elemento da Sequência
-    }
-
-    public T Last()
-    {
-        if (IsEmpty()) throw new SequenciaVaziaExcecao();   // Verificar se a Sequência está vazia
-        return ArraySequência[Size() - 1];                  // Retorna o último elemento da Sequência
-    }
-
-    public bool InFirst(int posicao)
-    {
-        if (IsEmpty()) throw new SequenciaVaziaExcecao();                                       // Verificar se a Sequência está vazia
-        if (posicao < 0 || posicao >= Size()) throw new PosicaoInvalidaExcecao();               // Verificar se a posição está no range da Sequência
-        return EqualityComparer<T>.Default.Equals(ArraySequencia[posicao], ArraySequencia[0]);  // Verificar se o elemento da posição informada é o primeiro
-    }
-
-    public bool InLast(int posicao)
-    {
-        if (IsEmpty()) throw new SequenciaVaziaExcecao();                                                 // Verificar se a Sequência está vazia
-        if (posicao < 0 || posicao >= Size()) throw new PosicaoInvalidaExcecao();                         // Verificar se a posição está no range da Sequência
-        return EqualityComparer<T>.Default.Equals(ArraySequencia[posicao], ArraySequencia[Size() - 1]);   // Verificar se o elemento da posição informada é o último
-    }
-
-    public T After(int posicao)
-    {
-        if (IsEmpty()) throw new SequenciaVaziaExcecao();                                 // Verificar se a Sequência está vazia
-        if (posicao < 0 || posicao >= Size()) throw new PosicaoInvalidaExcecao();         // Verificar se a posição está no range da Sequência
-        return ArraySequencia[posicao + 1];                                               // Retorna o elemento posterior ao elemento da posição informada
-    }
-
-    public T Before(int posicao)
-    {
-        if (IsEmpty()) throw new SequenciaVaziaExcecao();                                 // Verificar se a Sequência está vazia
-        if (posicao <= 0 || posicao >= Size()) throw new PosicaoInvalidaExcecao();        // Verificar se a posição está no range da Sequência
-        return ArraySequencia[posicao - 1];                                               // Retorna o elemento anterior ao elemento da posição informada
-    }
-
-    public int Size()
-    {
-        return QtdElement;                              // Retorna a quantidade de Nós da Sequência
-    }
-
-    public bool IsEmpty()
-    {
-        return QtdElement == 0;                         // Verificar se a Sequência está vazia
-    }
-
-    public No<T> Search(T objeto)
-    {
-      
-    }
-
-    public No<T> atRank(int posicao)
-    {
-
-    }
-
-    public int rankOf(T objeto)
-    {
-
+        throw new ENaoEncontrado("Elemento não encontrado.");
     }
 }
 ```
@@ -351,20 +315,22 @@ class SequenciaArray<T> : Sequencia<T>
 
 > A sequência é implementada como uma **lista duplamente ligada**, com **nós contendo**:
 >
-> * O **valor** armazenado
+> * O **valor** armazenado (objeto)
+> * O **rank** (posição) do nó na sequência
 > * Ponteiro para o **nó anterior (prev)**
 > * Ponteiro para o **nó seguinte (next)**
 
 ### 🔧 Estrutura Básica
 
-  * 🔹 Cada nó armazena o valor, além de ponteiros para o nó anterior e o seguinte.
+  * 🔹 Cada nó armazena o valor, seu rank, além de ponteiros para o nó anterior e o seguinte.
   * 🔹 O primeiro e o último nós (head e tail) são fixos e ajudam a simplificar inserções e remoções nos extremos.
   * 🔹 Graças aos ponteiros, é possível navegar para frente e para trás com eficiência (`before()` e `after()`).
   * 🔹 Exige varredura da lista até alcançar o índice desejado, já que não há indexação direta.
   * 🔹 Inserções e remoções em qualquer ponto são feitas rapidamente com atualização de ponteiros.
+  * 🔹 Ao remover um nó do meio da sequência, os ranks dos nós seguintes são decrementados em 1.
 
 ```text
-[Sentinela Head] ⇄ [ Nó(10) ] ⇄ [ Nó(20) ] ⇄ [ Nó(30) ] ⇄ [Sentinela Tail]
+[Sentinela Head] ⇄ [ Nó(10, rank=0) ] ⇄ [ Nó(20, rank=1) ] ⇄ [ Nó(30, rank=2) ] ⇄ [Sentinela Tail]
 ```
 
 <br>
@@ -375,6 +341,7 @@ class SequenciaArray<T> : Sequencia<T>
 * Navegação eficiente com ponteiros (`before()`, `after()`, `insertBefore()`, etc.).
 * Conversão entre posição e rank com `atRank()` e `rankOf()`.
 * Inserções e remoções em O(1) com ponteiros apropriados.
+* Atualização automática de ranks ao remover nós do meio da sequência.
 
 <br>
 
@@ -382,13 +349,265 @@ class SequenciaArray<T> : Sequencia<T>
 
 * Acesso por rank é O(n) (necessário percorrer da cabeça até o rank desejado).
 * Maior uso de memória devido aos ponteiros adicionais por nó.
-* Implementação mais complexa devido à manutenção das referências.
+* Implementação mais complexa devido à manutenção das referências e ranks.
+* Necessidade de atualizar ranks após operações de remoção no meio da lista.
 
 <br>
 
 ### ✏️ Implementação em C#
 ```csharp
+using System;
 
+// Exceções personalizadas
+public class EPosicaoInvalida : Exception {
+    public EPosicaoInvalida(string msg) : base(msg) { }
+}
+
+public class ENaoEncontrado : Exception {
+    public ENaoEncontrado(string msg) : base(msg) { }
+}
+
+public class ESequenciaVazia : Exception {
+    public ESequenciaVazia(string msg) : base(msg) { }
+}
+
+// Interface do TAD Sequência
+public interface ISequencia<T> {
+    int Size();
+    bool IsEmpty();
+
+    void InsertAtRank(int rank, T element);
+    T RemoveAtRank(int rank);
+    T ReplaceAtRank(int rank, T element);
+    T ElemAtRank(int rank);
+
+    void InsertFirst(T element);
+    void InsertLast(T element);
+    void InsertAfter(No<T> node, T element);
+    void InsertBefore(No<T> node, T element);
+    T ReplaceElement(No<T> node, T element);
+    void SwapElement(No<T> n1, No<T> n2);
+    T Remove(No<T> node);
+    T First();
+    T Last();
+    bool InFirst(No<T> node);
+    bool InLast(No<T> node);
+    No<T> After(No<T> node);
+    No<T> Before(No<T> node);
+    No<T> Search(T element);
+
+    No<T> AtRank(int rank);
+    int RankOf(No<T> node);
+}
+
+// Nó da lista duplamente ligada
+public class No<T> {
+    public T Element { get; set; }
+    public No<T> Prev { get; set; }
+    public No<T> Next { get; set; }
+
+    public No(T element, No<T> prev = null, No<T> next = null) {
+        Element = element;
+        Prev = prev;
+        Next = next;
+    }
+}
+
+// Implementação com Lista Duplamente Ligada
+public class SequenciaLista<T> : ISequencia<T> {
+    private No<T> header; // Sentinela inicial
+    private No<T> trailer; // Sentinela final
+    private int size;
+
+    public SequenciaLista() {
+        header = new No<T>(default); // Nó fictício de início
+        trailer = new No<T>(default); // Nó fictício de fim
+        header.Next = trailer;
+        trailer.Prev = header;
+        size = 0;
+    }
+
+    public int Size() => size;
+    public bool IsEmpty() => size == 0;
+
+    // Insere elemento entre dois nós
+    private No<T> InsertBetween(T element, No<T> prev, No<T> next) {
+        No<T> novo = new No<T>(element, prev, next);
+        prev.Next = novo;
+        next.Prev = novo;
+        size++;
+        return novo;
+    }
+
+    // Remove um nó da sequência
+    private T RemoveNode(No<T> node) {
+        No<T> prev = node.Prev;
+        No<T> next = node.Next;
+        prev.Next = next;
+        next.Prev = prev;
+        size--;
+        return node.Element;
+    }
+
+    // Retorna o nó de posição lógica (rank)
+    public No<T> AtRank(int rank) {
+        if (rank < 0 || rank >= size)
+            throw new EPosicaoInvalida("Rank inválido.");
+
+        No<T> node;
+
+        // Otimização: anda pela esquerda ou pela direita
+        if (rank <= size / 2) {
+            node = header.Next;
+            for (int i = 0; i < rank; i++)
+                node = node.Next;
+        } else {
+            node = trailer.Prev;
+            for (int i = size - 1; i > rank; i--)
+                node = node.Prev;
+        }
+        return node;
+    }
+
+    // Retorna o rank de um nó
+    public int RankOf(No<T> no) {
+        No<T> n = header.Next;
+        int r = 0;
+        while (n != trailer) {
+            if (n == no) return r;
+            n = n.Next;
+            r++;
+        }
+        throw new ENaoEncontrado("Nó não está na sequência.");
+    }
+
+    public void InsertAtRank(int rank, T element) {
+        if (rank < 0 || rank > size)
+            throw new EPosicaoInvalida("Rank inválido.");
+        No<T> refNode = (rank == size) ? trailer : AtRank(rank);
+        InsertBefore(refNode, element);
+    }
+
+    public T RemoveAtRank(int rank) {
+        if (IsEmpty()) throw new ESequenciaVazia("Sequência vazia.");
+        return Remove(AtRank(rank));
+    }
+
+    public T ReplaceAtRank(int rank, T element) {
+       
+    }
+
+    public T ElemAtRank(int rank) => AtRank(rank).Element;
+
+    public void InsertFirst(T element) => InsertBetween(element, header, header.Next);
+
+    public void InsertLast(T element) => InsertBetween(element, trailer.Prev, trailer);
+
+    public void InsertAfter(No<T> node, T element) => InsertBetween(element, node, node.Next);
+
+    public void InsertBefore(No<T> node, T element) => InsertBetween(element, node.Prev, node);
+
+    public T ReplaceElement(No<T> node, T element) {
+        if (node == header || node == trailer)
+            throw new EPosicaoInvalida("Não é possível substituir sentinelas.");
+
+        T antigo = node.Element;
+
+        // Cria novo nó e conecta nos mesmos vizinhos
+        No<T> novo = new No<T>(element, node.Prev, node.Next);
+        node.Prev.Next = novo;
+        node.Next.Prev = novo;
+
+        // Desconecta o nó antigo
+        node.Prev = null;
+        node.Next = null;
+
+        return antigo;
+    }
+
+
+    public void SwapElement(No<T> n1, No<T> n2) {
+        if (n1 == header || n1 == trailer || n2 == header || n2 == trailer)
+            throw new EPosicaoInvalida("Não é possível trocar sentinelas.");
+
+        if (n1 == n2) return;
+
+        // Vizinhos de n1 e n2
+        No<T> p1 = n1.Prev, n1n = n1.Next;
+        No<T> p2 = n2.Prev, n2n = n2.Next;
+
+        // Se os nós forem adjacentes, tratamos diferente
+        if (n1.Next == n2) {
+            // n1 está antes de n2
+            p1.Next = n2;
+            n2.Prev = p1;
+            n2.Next = n1;
+            n1.Prev = n2;
+            n1.Next = n2n;
+            n2n.Prev = n1;
+        } else if (n2.Next == n1) {
+            // n2 está antes de n1
+            p2.Next = n1;
+            n1.Prev = p2;
+            n1.Next = n2;
+            n2.Prev = n1;
+            n2.Next = n1n;
+            n1n.Prev = n2;
+        } else {
+            // Caso geral: nós distantes
+            p1.Next = n2;
+            n2.Prev = p1;
+            n2.Next = n1n;
+            n1n.Prev = n2;
+
+            p2.Next = n1;
+            n1.Prev = p2;
+            n1.Next = n2n;
+            n2n.Prev = n1;
+        }
+    }
+
+    public T Remove(No<T> node) {
+        if (node == header || node == trailer)
+            throw new EPosicaoInvalida("Não é possível remover sentinelas.");
+        return RemoveNode(node);
+    }
+
+    public T First() {
+        if (IsEmpty()) throw new ESequenciaVazia("Sequência vazia.");
+        return header.Next.Element;
+    }
+
+    public T Last() {
+        if (IsEmpty()) throw new ESequenciaVazia("Sequência vazia.");
+        return trailer.Prev.Element;
+    }
+
+    public bool InFirst(No<T> node) => node == header.Next;
+
+    public bool InLast(No<T> node) => node == trailer.Prev;
+
+    public No<T> After(No<T> node) {
+        if (node.Next == trailer)
+            throw new EPosicaoInvalida("Último elemento não tem sucessor.");
+        return node.Next;
+    }
+
+    public No<T> Before(No<T> node) {
+        if (node.Prev == header)
+            throw new EPosicaoInvalida("Primeiro elemento não tem anterior.");
+        return node.Prev;
+    }
+
+    public No<T> Search(T element) {
+        No<T> node = header.Next;
+        while (node != trailer) {
+            if (node.Element.Equals(element)) return node;
+            node = node.Next;
+        }
+        throw new ENaoEncontrado("Elemento não encontrado.");
+    }
+}
 ```
 
 <br>

@@ -84,8 +84,8 @@ Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
 
 ### ⏱️ Desempenho das Operações
 
-| Operação            | Complexidade | Descrição                         |
-|---------------------|--------------|-----------------------------------|
+| Operação            | Complexidade | Descrição |
+|---------------------|--------------|-----------|
 | `enqueue(object)`   | O(1)         | Adiciona no final                 |
 | `object dequeue()`  | O(1)         | Remove do inicio                  |
 | `object first()`    | O(1)         | Retorna o primeiro elemento       |
