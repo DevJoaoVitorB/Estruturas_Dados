@@ -155,13 +155,15 @@ using System;
 // Exceção personalizada para pilha vazia
 class PilhaVaziaExcecao : Exception
 {
-    public PilhaVaziaExcecao() : base("Operação inválida: pilha vazia!") {}
+    public PilhaVaziaExcecao() : base("Operação inválida: pilha vazia!") { }
+    public DequeVazioException(string mensagem) : base(mensagem) { }
+    public DequeVazioException(string mensagem, Exception inner) : base(mensagem, inner) { }
 }
 
 // Interface do TAD Pilha
 interface IPilha<T>
 {
-    void Push(T elemento);  
+    void Push(T item);  
     T Pop();                
     T Top();                
     int Size();             
@@ -171,7 +173,7 @@ interface IPilha<T>
 // Implementação com array
 class PilhaArray<T> : IPilha<T>
 {
-    private T[] elementos;
+    private T[] array;
     private int topo;
     private int capacidade;
     private readonly int fatorCrescimento;
@@ -181,16 +183,16 @@ class PilhaArray<T> : IPilha<T>
         this.capacidade = capacidadeInicial;
         this.topo = -1;
         this.fatorCrescimento = fatorCrescimento;
-        this.elementos = new T[capacidadeInicial];
+        this.array = new T[capacidadeInicial];
     }
 
-    public void Push(T elemento)
+    public void Push(T item)
     {
         if (topo == capacidade - 1)
         {
             Redimensionar();
         }
-        elementos[++topo] = elemento;
+        array[++topo] = item;
     }
 
     public T Pop()
@@ -199,7 +201,7 @@ class PilhaArray<T> : IPilha<T>
         {
             throw new PilhaVaziaExcecao();
         }
-        return elementos[topo--];
+        return array[topo--];
     }
 
     public T Top()
@@ -208,7 +210,7 @@ class PilhaArray<T> : IPilha<T>
         {
             throw new PilhaVaziaExcecao();
         }
-        return elementos[topo];
+        return array[topo];
     }
 
     public int Tamanho()
@@ -224,19 +226,17 @@ class PilhaArray<T> : IPilha<T>
     // Método privado para redimensionamento
     private void Redimensionar()
     {
-        int novaCapacidade = fatorCrescimento == 0 ? 
-                            capacidade * 2 : 
-                            capacidade + fatorCrescimento;
+        int novaCapacidade = fatorCrescimento == 0 ? capacidade * 2 : capacidade + fatorCrescimento;
 
         T[] novoArray = new T[novaCapacidade];
         
-        // Cópia dos elementos
+        // Cópia dos itens
         for (int i = 0; i <= topo; i++)
         {
-            novoArray[i] = elementos[i];
+            novoArray[i] = array[i];
         }
 
-        elementos = novoArray;
+        array = novoArray;
         capacidade = novaCapacidade;
     }
 }

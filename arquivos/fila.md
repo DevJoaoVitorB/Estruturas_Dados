@@ -100,8 +100,8 @@ Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
 * **Espaço Desperdiçado**: Em uma fila simples baseada em array linear (sem circularidade), quando você remove elementos do início com `dequeue()`, os espaços não são reutilizados automaticamente, gerando uma exceção de EFilaCheia com espaços disponivéis.
 
 > ⚠️ Por isso, para garantir a eficiência e escalabilidade das filas, são implementadas estratégias de **configuração circular** e **redimensionamento dinâmico** como:
->  * [**Estratégia Incremental**](pilha.md/#1-estratégia-incremental) 
->  * [**Estratégia Duplicativa (Exponencial)**](pilha.md/#2-estratégia-duplicativa-exponencial)
+>  * [**Estratégia Incremental**](pilha.md/###1-estratégia-incremental) 
+>  * [**Estratégia Duplicativa (Exponencial)**](pilha.md/###2-estratégia-duplicativa-exponencial)
 
 <br>
 
@@ -109,91 +109,99 @@ Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
 ```csharp
 using System;
 
-class FilaVaziaExcecao : Exception      // Classe de Exceção de Fila Vazia
+public class FilaVaziaException : Exception
 {
-    public FilaVaziaExcecao() : base("A Fila está vazia!") {}
-    public FilaVaziaExcecao(string mensagem) : base(mensagem) {}
-    public FilaVaziaExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}
+    public FilaVaziaException() : base("Operação inválida: fila vazia!") { }
+    public DequeVazioException(string mensagem) : base(mensagem) { }
+    public DequeVazioException(string mensagem, Exception inner) : base(mensagem, inner) { }
 }
 
-interface Fila<T>                       // Interface com os Métodos de uma Fila
+public interface IFila<T>
 {
-    void Enqueue(T objeto);               // Método para Adicionar Elemento no Final da Fila
-    T Dequeue();                          // Método para Remover Elemento do Inicio da Fila
-    T First();                            // Método de Retorno do Primeiro Elemento da Fila
-    int Size();                           // Método de Retorno da Quantidade de Elementos da Fila
-    bool IsEmpty();                       // Método para Verificar se a Fila está Vazia
+    void Enqueue(T item);
+    T Dequeue();
+    T First();
+    bool IsEmpty();
+    int Size();
 }
 
-using System;
-
-class FilaArray<T> : Fila<T>
+public class Fila<T> : IFila<T>
 {
-    private int Inicio;                   // Atributo de referência do Inicio da Fila
-    private int Final;                    // Atributo de referência do Final da Fila
-    private int FC;                       // Fator de Crescimento da FilaArray - Incremental ou Duplicativa
-    private int Capacidade;               // Capacidade da FilaArray
-    private T[] ArrayFila;                // Array utilizado como Fila
+    private T[] array;
+    private int inicio;
+    private int fim;
+    private int capacidade;
 
-    public FilaArray(int capacidade, int crescimento)
+    public Fila(int capacidadeInicial = 10)
     {
-        Capacidade = capacidade;          // Definir a capacidade da FilaArray
-        Inicio = Final = 0;               // Sem elementos na FilaArray
-        if(crescimento <= 0) FC = 0;      // Fator de Crescimento por Duplicação
-        else FC = crescimento;            // Fator de Crescimento por Incrementação
-        ArrayFila = new T[Capacidade];    // Inicializando a FilaArray
+        capacidade = capacidadeInicial;
+        array = new T[capacidade];
+        inicio = 0;
+        fim = 0;
     }
 
-    public void Enqueue(T objeto)
+    public void Enqueue(T item)
     {
-        if(Size() == Capacidade - 1)
+        if (Size() == capacidade)
         {
-            int novaCapacidade = Capacidade;                                // Variável auxiliar contendo a nova capacidade da FilaArray
-
-            if(FC == 0) novaCapacidade *= 2;                                // Redimensionamento por Duplicação
-            else novaCapacidade += FC;                                      // Redimensionamento por Incrementação
-
-            T[] tempArray = new T[novaCapacidade];                          // Criação de um Array temporário
-            int inicioAux = Inicio;                                         // Variável auxiliar contendo o Inicio da FilaArray
-
-            for(int i = 0; i < Size(); i++)
-            {
-                tempArray[i] = ArrayFila[inicioAux];                          // Colocar os elementos do antigo Array (ArrayFila) para o novo Array (tempArray)
-                inicioAux = (inicioAux + 1) % Capacidade;                     // Iterar por todos os elementos da FilaArray
-            }
-
-            ArrayFila = tempArray;                                          // tempArray passa a ser o novo Array
-            Inicio = 0;                                                     // Novo Inicio
-            Final = Size();                                                 // Novo Final
-            Capacidade = novaCapacidade;                                    // Nova Capacidade
+            Redimensionar();
         }
 
-        ArrayFila[Final] = objeto;                  // Adicionar o novo elemento a FilaArray
-        Final = (Final + 1) % Capacidade;           // Novo Final
+        array[fim] = item;
+        fim = (fim + 1) % capacidade;
     }
 
     public T Dequeue()
     {
-        if(IsEmpty()) throw new FilaVaziaExcecao();     // Verificar se a FilaArray está Vazia
-        T removido = ArrayFila[Inicio];                 // Remover o elemento do Inicio da FilaArray
-        Inicio = (Inicio + 1) % Capacidade;             // Novo Inicio
-        return removido;                                // Retorna o elemento removido
+        if (IsEmpty())
+        {
+            throw new FilaVaziaException();
+        }
+
+        T item = array[inicio];
+        array[inicio] = default;
+        inicio = (inicio + 1) % capacidade;
+
+        return item;
     }
 
     public T First()
     {
-        if(IsEmpty()) throw new FilaVaziaExcecao();     // Verificar se a FilaArray está Vazia
-        return ArrayFila[Inicio];                       // Retorna o primeiro elemento
-    }
+        if (IsEmpty())
+        {
+            throw new FilaVaziaException();
+        }
 
-    public int Size()
-    {
-        return (Capacidade - Inicio + Final) % Capacidade;  // Retorna a quantidade de elementos da FilaArray
+        return array[inicio];
     }
 
     public bool IsEmpty()
     {
-        return Inicio == Final;                             // Verificar se a Fila está vazia
+        return inicio == fim;
+    }
+
+    public int Size()
+    {
+        return (capacidade - inicio + fim) % capacidade;
+    }
+
+    private void Redimensionar()
+    {
+        int novaCapacidade = capacidade * 2;
+        T[] novoArray = new T[novaCapacidade];
+
+        int tamanho = Size();
+
+        for (int i = 0; i < tamanho; i++)
+        {
+            int indice = (inicio + i) % capacidade;
+            novoArray[i] = array[indice];
+        }
+
+        array = novoArray;
+        capacidade = novaCapacidade;
+        inicio = 0;
+        fim = tamanho;
     }
 }
 ```

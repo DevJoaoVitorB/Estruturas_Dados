@@ -26,8 +26,8 @@
 
 ## ⚠️ Exceções
 
-* **EListaVazia:** Tentativa de remoção, troca ou retorno com a lista vazia.
 * **ENaoEncontrado:** Elemento não encontrado durante o `search()`.
+* **EListaVazia:** Tentativa de remoção, troca ou retorno com a lista vazia.
 
 <br>
 
@@ -42,7 +42,7 @@
 
 ## 🧱 Implementação Usando Lista **Simplesmente Ligada**
 
-> Cada nó aponta apenas para o **próximo**. A lista usa nós **sentinelas** para Head e Tail.
+> Cada nó aponta apenas para o **próximo**. A lista utiliza nós **sentinelas** para `Head` e `Tail`, facilitando as operações e evitando `null`.
 
 ### 🔧 Estrutura Básica
 
@@ -50,27 +50,27 @@
 Head -> [A] -> [B] -> [C] -> Tail
 ```
 
-* A lista possui dois nós especiais: `Head` e `Tail`
-* O primeiro elemento da lista vem **após `Head`**
-* O fim da lista é **antes de `Tail`**
-* A estrutura evita `null` e facilita inserções/remoções
+- A lista possui dois nós especiais: `Head` e `Tail`.
+- O primeiro elemento real da lista está **após o `Head`**.
+- O final da lista está **antes do `Tail`**.
+- Essa estrutura evita ponteiros nulos e simplifica inserções e remoções.
 
 <br>
 
 ### ⚙️ Modo de Funcionamento
 
-* `Head` aponta para o primeiro **nó real** (ou para `Tail` se estiver vazia).
-* Cada nó aponta para o **próximo**, até chegar ao `Tail`.
-* Inserções são feitas redirecionando ponteiros do nó anterior.
-* Remoções são feitas pulando o nó a ser removido.
-* Para acessar um nó anterior (`Before()`), é necessário percorrer a lista desde o `Head`.
+- `Head` aponta para o primeiro **nó real** (ou diretamente para `Tail` quando a lista está vazia).
+- Cada nó contém uma referência para o **próximo** nó até atingir o `Tail`.
+- Inserções são feitas ajustando o ponteiro do nó anterior para apontar para o novo nó.
+- Remoções são feitas ignorando o nó removido, conectando o nó anterior ao próximo do removido.
+- Para obter o nó **anterior** (`Before()`), é necessário percorrer a lista desde o `Head`, pois não há referência direta para o anterior.
 
 <br>
 
 ### ❌ Limitações
 
-* Acesso aleatório **não é eficiente** → precisa iterar do início.
-* Percorrer `before(position)` é **custoso**, pois não há ponteiro para o nó anterior.
+- Acesso aleatório é **ineficiente** — requer iteração sequencial desde o início.
+- Percorrer para encontrar o nó anterior é **custoso**, já que não há ponteiros reversos.
 
 <br>
 
@@ -343,7 +343,7 @@ class ListaSimplismenteLigada<T> : Lista<T>
 
 ## 🧱 Implementação Usando Lista **Duplamente Ligada**
 
-> Cada nó aponta para o **próximo** e o **anterior**. Também usa sentinelas `Head` e `Tail`.
+> Cada nó possui referências para o **nó anterior** e o **nó seguinte**, permitindo navegação bidirecional. A estrutura é iniciada com **nós sentinelas**: `Head` e `Tail`.
 
 ### 🔧 Estrutura Básica
 
@@ -351,33 +351,42 @@ class ListaSimplismenteLigada<T> : Lista<T>
 Head <-> [A] <-> [B] <-> [C] <-> Tail
 ```
 
-* `Head` aponta para o primeiro nó válido
-* `Tail` aponta para o último nó válido
-* Inserções e remoções são feitas com ajustes em dois ponteiros
+* `Head` aponta para o primeiro nó **real** da lista.
+* `Tail` é apontado pelo último nó **real** da lista.
+* A estrutura evita `null` como marcador de fim/início.
+* Cada nó armazena:
+  * `Elemento`
+  * `Anterior`
+  * `Próximo`
 
 <br>
 
 ### ⚙️ Modo de Funcionamento
 
-* `Head` aponta para o primeiro **nó real** através de `Head.After()`.
-* `Tail` é apontado pelo último nó real através de `Tail.Before()`.
-* Cada nó possui ponteiros **para frente e para trás**, permitindo acesso eficiente nas duas direções.
-* Inserções e remoções em qualquer posição são feitas em **tempo constante**, desde que a posição seja conhecida.
+* `Head.After()` retorna o primeiro nó **válido** da lista (ou `Tail` se vazia).
+* `Tail.Before()` retorna o último nó **válido**.
+* Inserções entre dois nós são feitas atualizando **dois ponteiros**:
+  * `novo.Anterior = anterior`
+  * `novo.Proximo = seguinte`
+* Remoções eliminam o nó ajustando os ponteiros dos vizinhos.
+
+> ⚠️ Como a lista é bidirecional, **não é necessário percorrer** desde o início para obter o elemento anterior (`Before()`).
 
 <br>
 
 ### ✅ Vantagens
 
-* Operações `before()` e `after()` são **eficientes** - O(1)
-* Fácil de percorrer nos dois sentidos
-* Remoções e trocas de elementos são mais diretas
+* Acesso eficiente para `Before()` e `After()` → **O(1)**
+* Navegação **nos dois sentidos**
+* Inserções e remoções são mais diretas, com menos necessidade de iteração
+* Ideal para **estruturas sequenciais complexas** e **operações de edição**
 
 <br>
 
 ### ❌ Limitações
 
-* Ocupa **mais memória** por conta do ponteiro extra
-* Levemente mais complexa de implementar
+* Consome mais **memória**, pois cada nó armazena dois ponteiros.
+* A implementação é **mais detalhada**, com cuidados extras para manter a consistência dos vínculos.
 
 <br>
 
@@ -660,7 +669,7 @@ class ListaDuplamenteLigada<T> : Lista<T>
 | Operação                                | Lista Simples | Lista Dupla | Descrição                                                   |
 |-----------------------------------------|---------------|-------------|-------------------------------------------------------------|
 | `insertFirst(object)`                   | O(1)          | O(1)        | Insere um elemento **X** depois do **Head**                 |
-| `insertLast(object)`                    | O(1)          | O(1)        | Insere um elemento **X** antes do **Tail**                  |
+| `insertLast(object)`                    | O(n)          | O(1)        | Insere um elemento **X** antes do **Tail**                  |
 | `insertAfter(object, object)`           | O(1)          | O(1)        | Insere um elemento **X** depois de um elemento **Y**        |
 | `insertBefore(object, object)`          | O(n)          | O(1)        | Insere um elemento **X** antes de um elemento **Y**         |
 | `object replaceElement(object, object)` | O(n)          | O(1)        | Troca um elemento **X** por um elemento **Y**               |
@@ -669,7 +678,7 @@ class ListaDuplamenteLigada<T> : Lista<T>
 | `object first()`                        | O(1)          | O(1)        | Retorna o **primeiro** elemento                             |
 | `object last()`                         | O(n)          | O(1)        | Retorna o **último** elemento                               |
 | `boolean inFirst(object)`               | O(1)          | O(1)        | Retorna **True** se o elemento é o **primeiro**             |
-| `boolean inLast(object)`                | O(1)          | O(1)        | Retorna **True** se o elemento é o **último**               |
+| `boolean inLast(object)`                | O(n)          | O(1)        | Retorna **True** se o elemento é o **último**               |
 | `object after(object)`                  | O(1)          | O(1)        | Retorna o elemento **depois** de um elemento **X**          |
 | `object before(object)`                 | O(n)          | O(1)        | Retorna o elemento **antes** de um elemento **X**           |
 | `integer size()`                        | O(1)          | O(1)        | Retorna a quantidade de elementos                           |

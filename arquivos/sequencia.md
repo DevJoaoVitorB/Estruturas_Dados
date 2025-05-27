@@ -40,7 +40,7 @@
 
 ## ⚠️ Exceções
 
-* **EPosicaoInvalida**: Posição fora dos limites da sequência.
+* **ERankInvalido**: Posição fora dos limites da sequência.
 * **ENaoEncontrado:** Elemento não encontrado durante o `search()`.
 * **ESequenciaVazia**: Tentativa de acessar/remover elemento de uma sequência **vazia**.
 * **ESequenciaCheia**: Tentativa de inserir em sequência **cheia**.
@@ -88,14 +88,16 @@ Capacidade: 5
 * Inserções e remoções envolvem deslocamento de elementos (O(n)) e ajuste de ranks.
 * Ao remover um elemento do meio:
     * Os elementos posteriores são deslocados para esquerda
-    *Seus ranks são decrementados em 1
+    * Seus ranks são decrementados em 1
 * Nós armazenam o rank lógico, facilitando a conversão entre rank e posição.
 
 <br>
 
 ### ⚠️ Limitações
 
-* Capacidade fixa (necessita redimensionamento quando cheia: [**Estratégia Incremental**](pilha.md/#1-estratégia-incremental) e [**Estratégia Duplicativa (Exponencial)**](pilha.md/#2-estratégia-duplicativa-exponencial)).
+* **Capacidade fixa:** Arrays possuem capacidade fixa. Quando a sequência atinge seu limite, operações de inserção se tornam inviáveis, gerando problemas de **overflow**. Fazendo necessário estrategias de redimensionamento como: 
+    1. [**Estratégia Incremental**](pilha.md/###1-estratégia-incremental)
+    2. [**Estratégia Duplicativa (Exponencial)**](pilha.md/###2-estratégia-duplicativa-exponencial)
 * Deslocamentos custosos em operações de inserção/remoção em posições intermediárias.
 * Maior complexidade para manipular posições relativas (before/after).
 
