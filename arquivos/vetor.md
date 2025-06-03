@@ -1,227 +1,246 @@
 <h1 align="center">🗂️ TAD - Vetor</h1>
-<p align="center">🎯 <strong>Estrutura Sequencial Baseada em Índices</strong></p>
-<p align="center">⚠️ Permite acesso direto a qualquer posição pelo seu índice (rank).</p>
+<p align="center">🎯 <strong>Estrutura Sequencial Indexada</strong></p>
+<p align="center">⚠️ Acesso direto por índice (rank) com complexidade O(1)</p>
+
+## 🌍 Analogia do Mundo Real:
+Imagine uma fileira de cadeiras numeradas em um auditório:
+- Cada cadeira tem um número fixo (índice) que nunca muda
+- Você pode sentar diretamente em qualquer cadeira vazia
+- Se quiser inserir uma cadeira no meio, precisa deslocar todas as outras
+- Quando alguém sai de uma cadeira do meio, as outras devem fechar a lacuna
+
+<br>
 
 ## 🔧 Operações Principais
 
-* `insertAtRank(integer, object)` → **Insere** o elemento `X` na posição `R`, deslocando os demais.
-* `object removeAtRank(integer)` → **Remove** o elemento da posição `R`, ajustando as demais posições.
-* `object replaceAtRank(integer, object)` → **Substitui** o elemento na posição `R` por `X`.
+* `insertAtRank(integer, object)` → Insere elemento na posição especificada
+  - **Comportamento**: Desloca elementos à direita para abrir espaço
+  - **Pré-condição**: 0 ≤ posição ≤ tamanho atual
+  - **Pós-condição**: Tamanho aumenta em 1, elementos são reorganizados
+
+* `object removeAtRank(integer)` → Remove e retorna elemento da posição
+  - **Comportamento**: Desloca elementos à esquerda para preencher lacuna
+  - **Pré-condição**: Vetor não vazio e posição válida
+  - **Pós-condição**: Tamanho diminui em 1, elementos são reorganizados
+
+* `object replaceAtRank(integer, object)` → Substitui elemento na posição
+  - **Comportamento**: Atualiza valor sem alterar estrutura
+  - **Pré-condição**: Posição válida e vetor não vazio
+  - **Pós-condição**: Valor alterado, tamanho mantido
+
+<br>
 
 ## 🧰 Operações Auxiliares
 
-* `object elemAtRank(integer)` → Retorna o **elemento na posição** `R`.
-* `integer size()` → Retorna o **número de elementos** no vetor.
-* `boolean isEmpty()` → Verifica se o vetor está **vazio**.
+* `object elemAtRank(integer)` → Retorna elemento sem remover
+  - **Uso típico**: Consulta rápida por índice conhecido
+
+* `integer size()` → Retorna quantidade de elementos
+  - **Cálculo**: Variável de controle incrementada/decrementada nas operações
+
+* `boolean isEmpty()` → Verifica se vetor está vazio
+  - **Critério**: tamanho == 0
 
 <br>
 
-## ⚠️ Exceções
+## ⚠️ Exceções (Tratamento de Erros)
 
-* **ERankInvalido:** Quando o índice `R` está fora dos limites do vetor.
-* **EVetorVazio:** Tentativa de acessar, substituir ou remover elementos de um vetor que está vazio.
-* **EVetorCheio:** Tentativa de inserção quando o vetor está com a capacidade máxima.
+* **ERankInvalido:** 
+  - Ocorre quando índice < 0 ou índice >= ou > tamanho atual
+  - **Solução**: Validar índice antes de operações
 
-<br>
+* **EVetorVazio:** 
+  - Ocorre em remove/replace/elemAtRank com vetor vazio
+  - **Solução**: Verificar isEmpty() antes dessas operações
 
-## 🛠️ Exemplos Práticos
-
-* Representação de tabelas e vetores matemáticos
-* Implementação de outras estruturas como pilhas, filas, listas
-* Armazenamento de elementos com acesso rápido por índice
-* Controle de sprites em jogos e buffers em editores de texto
-
-<br>
-
-## 🧱 Implementação com Array Tradicional (Linear)
-
-> A implementação padrão do TAD **Vetor** utiliza um **array linear**, pois ele é otimizado para acesso por índice e suporta inserções/remoções em posições arbitrárias com deslocamentos diretos.
-
-### ✅ Vantagens
-
-* Acesso direto a qualquer posição com complexidade **O(1)**.
-* Mantém os elementos em ordem lógica contínua.
-* Facilita o deslocamento dos elementos quando necessário (para frente ou para trás).
-* Ideal para estruturas com **acesso por rank**, como listas indexadas e vetores dinâmicos.
+* **EVetorCheio:** 
+  - Ocorre em inserção com capacidade máxima (em implementações estáticas)
+  - **Solução**: Implementar [redimensionamento dinâmico](pilha.md/#-estratégias-de-redimensionamento)
 
 <br>
 
-### 🧠 Por que não usar Array Circular?
+## 🛠️ Exemplos Práticos (Aplicações Reais)
 
-> Apesar de arrays circulares serem eficientes para **filas** e **deques**, eles **não são vantajosos para o TAD Vetor**. Isso porque:
+1. **Sistemas de Banco de Dados**: 
+   - Armazenamento de registros com acesso rápido
+   - Implementação de tabelas hash
 
-* O TAD Vetor requer que os elementos sejam mantidos em **ordem sequencial lógica**.
-* Inserções e remoções no meio do vetor ainda exigem **deslocamento de elementos**, o que **anula os benefícios do array circular**.
-* A lógica de modularidade introduz uma complexidade desnecessária para uma estrutura cujo foco é o acesso direto e simples via índice.
+2. **Processamento de Imagens**:
+   - Representação de pixels em matrizes
+   - Buffers de frames em vídeos
+
+3. **Jogos Digitais**:
+   - Inventários de itens com slots fixos
+   - Grids para mapas e colisões
+
+4. **Computação Científica**:
+   - Armazenamento de vetores e matrizes
+   - Cálculos algébricos e estatísticos
 
 <br>
 
-### 🔍 Exemplo Visual (Vetor Linear)
+## 🧱 Implementação com Array Dinâmico
+
+### 🔧 Estrutura Básica
+
+Componentes essenciais:
+- `T[] elementos`: Array genérico para armazenamento
+- `int tamanho`: Contador de elementos ativos
+- `int capacidade`: Limite atual do array
 
 ```text
-Capacidade: 6
+Array:  [10] [20] [30] [--] [--] [--]
+Índices:  0    1    2    3    4    5
 Tamanho: 3
-
-Array:   [10] [20] [30] [--] [--] [--]
-Índice:   0    1    2    3     4     5
-Lógico:  [10] [20] [30]
+Capacidade: 6
 ```
 
-> Uma inserção no índice 1 (`insertAtRank(1, 99)`) desloca `20` e `30` para a direita:
->
-> Resultado:
-> `[10] [99] [20] [30]`
->
->
-> Uma remoção no índice 2 (`removeAtRank(1)`) desloca `20` e `30` para a esquerda:
->
-> Resultado:
-> `[10] [20] [30]`
+
+### ⚙️ Modo de Funcionamento
+
+* **`InsertAtRank()`:**
+    * No final: O(1) amortizado
+    * No meio/inicio: O(n) devido a deslocamentos (deslocamento para direita)
+        ```text
+        insertAtRank(1, 99)
+        Antes: [10] [20] [30] [--] [--] [--]
+        Depois: [10] [99] [20] [30] [--] [--]
+        ```
+* **`RemoveAtRank()`:**
+    * Do final: O(1)
+    * Do meio/inicio: O(n) devido a deslocamentos (deslocamento para esquerda)
+        ```text
+        removeAtRank(2)
+        Antes: [10] [99] [20] [30] [--] [--]
+        Depois: [10] [99] [30] [--] [--] [--]
+        ```
+* **`ElemAtRank()`**:
+    * Qualquer posição: O(1) direto
 
 <br>
 
 ### ⏱️ Desempenho das Operações
 
-| Operação                                | Complexidade | Descrição |
-| --------------------------------------- | ------------ | ----------|
-| `insertAtRank(integer, object)`         | O(n)         | Desloca elementos para inserir             |
-| `object removeAtRank(integer)`          | O(n)         | Desloca elementos para remover             |
-| `object replaceAtRank(integer, object)` | O(1)         | Substitui valor diretamente                |
-| `object elemAtRank(integer)`            | O(1)         | Acesso direto via índice                   |
-| `integer size()`                        | O(1)         | Retorna o número de elementos              |
-| `boolean isEmpty()`                     | O(1)         | Verifica se está vazio                     |
+| Operação                                | Complexidade | Descrição                      |
+| --------------------------------------- | ------------ | ------------------------------ |
+| `insertAtRank(integer, object)`         | O(n)         | Desloca elementos para inserir |
+| `object removeAtRank(integer)`          | O(n)         | Desloca elementos para remover |
+| `object replaceAtRank(integer, object)` | O(1)         | Substitui valor                |
+| `object elemAtRank(integer)`            | O(1)         | Acesso direto                  |
+| `integer size()`                        | O(1)         | Retorna o número de elementos  |
+| `boolean isEmpty()`                     | O(1)         | Verifica se está vazio         |
 
 <br>
 
-## ⚠️ Limitações do Vetor com Array
-
-* **Capacidade Fixa**: Ao atingir o limite, não é possível inserir mais sem realocar.
-* **Custo de Realocação**: Para crescer, é necessário criar um novo array maior e copiar os elementos.
-* **Inserções e remoções no meio** são **custosas**, exigindo deslocamentos de vários elementos.
-
-> 💡 Para garantir eficiência e escalabilidade, o TAD Vetor usa estratégias de **redimensionamento dinâmico** como:
->
-> - [**Estratégia Incremental**](pilha.md/###1-estratégia-incremental)  
-> - [**Estratégia Duplicativa (Exponencial)**](pilha.md/###2-estratégia-duplicativa-exponencial)
-
-<br>
-
-### ✏️ Implementação em C#
+### ✏️ Implementação Completa em C#
 ```csharp
 using System;
 
-class VetorVazioExcecao : Exception
-{
-    public VetorVazioExcecao() : base("Operação inválida: vetor vazio!") {}
-    public VetorVazioExcecao(string mensagem) : base(mensagem) {}
-    public VetorVazioExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}
+// Exceções customizadas
+public class VetorVazioException : Exception {
+    public VetorVazioException() : base("Operação inválida: vetor vazio!") {}
+    public VetorVazioException(string mensagem) : base(mensagem) {}
 }
 
-class RankInvalidoExcecao : Exception
-{
-    public RankInvalidoExcecao() : base("Rank informado inválido!") {}
-    public RankInvalidoExcecao(string mensagem) : base(mensagem) {}
-    public RankInvalidoExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}
+public class RankInvalidoException : Exception {
+    public RankInvalidoException(int pos, int tamanho) 
+        : base($"Rank {pos} inválido para vetor com {tamanho} elementos!") {}
+    public RankInvalidoException(string mensagem) : base(mensagem) {}
 }
 
-interface IVetor<T>
-{
-    void InsertAtRank(int rank, T item);
+// Interface do TAD Vetor
+public interface IVetor<T> {
+    void InsertAtRank(int rank, T elemento);
     T RemoveAtRank(int rank);
-    T ReplaceAtRank(int rank, T item);
+    T ReplaceAtRank(int rank, T novoElemento);
     T ElemAtRank(int rank);
     int Size();
     bool IsEmpty();
 }
 
-class VetorArray<T> : IVetor<T>
-{
-    private T[] array;
+// Implementação concreta
+public class VetorArray<T> : IVetor<T> {
+    private T[] elementos;
+    private int tamanho;
     private int capacidade;
-    private int quantidade;
 
-    public VetorArray(int capacidadeInicial = 10)
-    {
-        array = new T[capacidadeInicial];
+    public VetorArray(int capacidadeInicial = 10) {
         capacidade = capacidadeInicial;
-        quantidade = 0;
+        elementos = new T[capacidade];
+        tamanho = 0;
     }
 
-    public void InsertAtRank(int rank, T item)
-    {
-        if (rank < 0 || rank > quantidade)
-            throw new RankInvalidaExcecao();
+    public int Size() => tamanho;
+    public bool IsEmpty() => tamanho == 0;
 
-        if (quantidade == capacidade)
+    public void InsertAtRank(int rank, T elemento) {
+        if (rank < 0 || rank > tamanho)
+            throw new RankInvalidaException(rank, tamanho);
+        
+        if (tamanho == capacidade)
             Redimensionar();
 
-        for (int i = quantidade; i > rank; i--)
-            array[i] = array[i - 1];
-
-        array[rank] = item;
-        quantidade++;
+        // Deslocar elementos para direita
+        for (int i = tamanho; i > rank; i--) {
+            elementos[i] = elementos[i - 1];
+        }
+        
+        elementos[rank] = elemento;
+        tamanho++;
     }
 
-    public T RemoveAtRank(int rank)
-    {
-        if (IsEmpty())
-            throw new VetorVazioExcecao();
-
-        if (rank < 0 || rank >= quantidade)
-            throw new RankInvalidaExcecao();
-
-        T removido = array[rank];
-
-        for (int i = rank; i < quantidade - 1; i++)
-            array[i] = array[i + 1];
-
-        quantidade--;
-        return removido;
+    public T RemoveAtRank(int rank) {
+        if (IsEmpty()) 
+            throw new VetorVazioException();
+        
+        VerificarRank(rank);
+        
+        T elementoRemovido = elementos[rank];
+        
+        // Deslocar elementos para esquerda
+        for (int i = rank; i < tamanho - 1; i++) {
+            elementos[i] = elementos[i + 1];
+        }
+        
+        tamanho--;
+        return elementoRemovido;
     }
 
-    public T ReplaceAtRank(int rank, T item)
-    {
-        if (IsEmpty())
-            throw new VetorVazioExcecao();
-
-        if (rank < 0 || rank >= quantidade)
-            throw new RankInvalidaExcecao();
-
-        T substituido = array[rank];
-        array[rank] = item;
-        return substituido;
+    public T ReplaceAtRank(int rank, T novoElemento) {
+        if (IsEmpty()) 
+            throw new VetorVazioException();
+        
+        VerificarRank(rank);
+        
+        T elementoAntigo = elementos[rank];
+        elementos[rank] = novoElemento;
+        return elementoAntigo;
     }
 
-    public T ElemAtRank(int rank)
-    {
-        if (IsEmpty())
-            throw new VetorVazioExcecao();
-
-        if (rank < 0 || rank >= quantidade)
-            throw new RankInvalidaExcecao();
-
-        return array[rank];
+    public T ElemAtRank(int rank) {
+        if (IsEmpty()) 
+            throw new VetorVazioException();
+        
+        VerificarRank(rank);
+        
+        return elementos[rank];
     }
 
-    public int Size()
-    {
-        return quantidade;
+    private void VerificarRank(int rank) {
+        if (rank < 0 || rank >= tamanho)
+            throw new RankInvalidaException(rank, tamanho);
     }
 
-    public bool IsEmpty()
-    {
-        return quantidade == 0;
-    }
-
-    private void Redimensionar()
-    {
-        capacidade *= 2;
-        T[] novoArray = new T[capacidade];
-
-        for (int i = 0; i < quantidade; i++)
-            novoArray[i] = array[i];
-
-        array = novoArray;
+    private void Redimensionar() {
+        int novaCapacidade = capacidade * 2;
+        T[] novoArray = new T[novaCapacidade];
+        
+        for (int i = 0; i < tamanho; i++) {
+            novoArray[i] = elementos[i];
+        }
+        
+        elementos = novoArray;
+        capacidade = novaCapacidade;
     }
 }
 ```

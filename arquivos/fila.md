@@ -2,206 +2,219 @@
 <p align="center">🎯 <strong>Estrutura FIFO (First In, First Out)</strong></p>
 <p align="center">⚠️ Elemento <strong>inserido primeiro</strong> é o <strong>primeiro a ser removido</strong>.</p>
 
+## 🌍 Analogia do Mundo Real:
+Imagine uma fila de banco:
+- Novas pessoas chegam e se colocam no **final** da fila (enqueue)
+- A pessoa atendida é sempre a **primeira** da fila (dequeue)
+- Não é permitido furar a fila ou atender alguém do meio
+
+<br>
+
 ## 🔧 Operações Principais
 
-* `enqueue(object)` → Adiciona um elemento ao **fim**.
-* `object dequeue()` → Remove e retorna o elemento do **inicio**.
+* `enqueue(object)` → Adiciona um elemento ao **final**.
+  - **Comportamento**: Armazena no índice `fim` e atualiza ponteiro
+  - **Pré-condição**: Fila não está cheia (a menos que seja redimensionável)
+  - **Pós-condição**: Tamanho da fila aumenta em 1
+
+* `object dequeue()` → Remove e retorna o elemento do **início** da fila.
+  - **Comportamento**: Retorna o elemento em `inicio` e avança o ponteiro
+  - **Pré-condição**: Fila não está vazia
+  - **Pós-condição**: Tamanho da fila diminui em 1
+
+<br>
 
 ## 🧰 Operações Auxiliares
 
-* `object first()` ou `object peek()` → Retorna o elemento do inicio **sem remover**.
+* `object first()` → Retorna o elemento do início **sem remover**.
+  - **Uso típico**: Verificar quem é o próximo a ser atendido
+
 * `integer size()` → Retorna o **número de elementos** na fila.
+  - **Cálculo**: `(capacidade - inicio + fim) % capacidade`
+
 * `boolean isEmpty()` → Verifica se a fila está **vazia**.
+  - **Critério**: `inicio == fim`
 
 <br>
 
-## ⚠️ Exceções
+## ⚠️ Exceções (Tratamento de Erros)
 
-* **EFilaVazia:** Tentativa de `dequeue()` ou `first()` com a fila vazia.
-* **EFilaCheia:** Tentativa de `enqueue()` em uma fila sem espaço disponível.
+* **EFilaVazia:** 
+  - Ocorre quando tentamos `dequeue()` ou `first()` em uma fila vazia
+  - **Solução**: Sempre verificar `isEmpty()` antes dessas operações
 
-<br>
-
-## 🛠️ Exemplos Práticos
-
-* Filas de espera
-* Programação paralela
-* Execução de multitarefas em ordens (**Downloads em Fila**)
-* Filas de processos no sistema operacional
+* **EFilaCheia:** 
+  - Ocorre em filas estáticas quando tentamos `enqueue()` na capacidade máxima
+  - **Solução**: Implementar [redimensionamento dinâmico](pilha.md/#-estratégias-de-redimensionamento)
 
 <br>
 
-## 🧱 Implementação Usando Array (Filas baseadas em Array Circular)
+## 🛠️ Exemplos Práticos (Aplicações Reais)
 
-> Uma implementação de fila utilizando um **array fixo**, que pode ser otimizada com a técnica de **alocação circular**.
+1. **Sistemas Operacionais**: 
+   - Escalonamento de processos
+   - Buffer de teclado
+
+2. **Serviços Online**:
+   - Filas de mensagens (RabbitMQ, Kafka)
+   - Sistemas de ticket de suporte
+
+3. **Simulações**:
+   - Filas de supermercado
+   - Tráfego em semáforos
+
+4. **Algoritmos**:
+   - Busca em largura (BFS)
+   - Cache FIFO
+
+<br>
+
+## 🧱 Implementação Usando Array Circular
 
 ### 🔧 Estrutura Básica
 
-* Utiliza-se um **array de tamanho fixo `N`**.
-* A fila é controlada por **dois índices**:
-  * `i` 👉 Índice do **início da fila** (onde os elementos são removidos).
-  * `f` 👉 Índice **imediatamente após o fim da fila** (onde os elementos são inseridos).
+A implementação de fila usando array consiste em:
+- Um **array** para armazenar os elementos
+- Dois **ponteiros**:
+  - `inicio`: índice do primeiro elemento
+  - `fim`: índice após o último elemento
+- **Capacidade máxima** do array
 
-<br>
+    ```csharp
+    private T[] elementos;  // Array de armazenamento
+    private int inicio;     // Índice do primeiro elemento (0 inicialmente)
+    private int fim;        // Índice após o último elemento (0 inicialmente)
+    private int capacidade; // Capacidade total do array
+    ```
 
 ### ⚙️ Modo de Funcionamento
 
-#### 🧩 Configuração Padrão (Sem Circularidade)
+#### 🧩 Configuração Linear (Não Circular)
 
-* À medida que elementos são **removidos**, o índice `i` é incrementado.
-* O índice `f` cresce com as **inserções**.
-* **Problema:** Mesmo com espaço livre no início do array, ele **não é reutilizado**.
-* **Resultado:** Pode parecer que a fila está cheia mesmo havendo espaço ― desperdício de memória.
+* **`Enqueue()`:**
+    * O índice f (fim) avança conforme novos elementos são adicionados.
+* **`Dequeue()`:**
+    * O índice i (início) avança quando elementos são removidos.
+* ❌ **Desvantagens:**
+    * Espaços liberados no início do array não são reutilizados.
+    * Mesmo com áreas vazias, a fila pode atingir o limite máximo sem usar toda a capacidade disponível → desperdício de memória.
+* 🖼️ **Exemplo Visual:**
+    ```text
+    Array:   [ - ][ - ][ B ][ C ][ D ][ E ]  
+    Índices:           ↑i=2           ↑f=5      
+    ```
 
 <br>
 
 #### 🔁 Configuração Circular (Otimizada)
 
-* O array é tratado como um **anel fechado**.
-* Quando `f` chega ao fim do array, ele **retorna ao início** (`f = 0`) e começa a preencher os espaços vazios deixados por `i`.
-* A fila está **cheia** quando:
-  ```text
-  (f + 1) % N == i
-  ```
-* **✅ Isso garante que:**
-  * O array seja **plenamente utilizado**.
-  * Não haja desperdício de espaço.
-  * A fila continue funcionando de forma eficiente mesmo com remoções e inserções contínuas.
-
-* **🔍 Visualização (Fila Circular)**
-
-```text
-Array:   [ - ][ B ][ C ][ D ][ - ][ - ]
-Índices:        ↑              ↑
-              i = 1          f = 4
-```
-
-* **📖 Explicação**
-  * Elementos `B`, `C`, `D` estão na fila. \
-  * Após mais inserções, `f` pode voltar ao índice `0` para reutilizar a posição vazia.
+* **Array como Anel Contínuo:**
+    * Quando fim alcança o final do array, ele reinicia na posição 0, aproveitando os espaços livres deixados por remoções.
+* **Fórmulas críticas:**
+    * Cheio: (fim + 1) % capacidade == inicio - Sempre deixe 1 posição vazia para distinguir cheio/vazio
+    * Vazio: inicio == fim
+    * Tamanho: (fim - inicio + capacidade) % capacidade
+* ✅ **Vantagens:**
+    * Reutilização de espaços liberados.
+    * Uso otimizado da memória (sem "buracos" vazios).
+    * Operações O(1) mesmo com inserções/remoções sucessivas.
+* 🖼️ **Exemplo Visual:**
+    ```text
+    Array:   [ F ][ - ][ B ][ C ][ D ][ E ]  
+    Índices: ↑f=0      ↑i=2      
+    ```
 
 <br>
 
 ### ⏱️ Desempenho das Operações
 
-| Operação            | Complexidade | Descrição |
-|---------------------|--------------|-----------|
-| `enqueue(object)`   | O(1)         | Adiciona no final                 |
-| `object dequeue()`  | O(1)         | Remove do inicio                  |
-| `object first()`    | O(1)         | Retorna o primeiro elemento       |
-| `integer size()`    | O(1)         | Retorna a quantidade de elementos |
-| `boolean isEmpty()` | O(1)         | Verifica se está vazia            |
+| Operação            | Complexidade | Descrição                                                  |
+|---------------------|--------------|------------------------------------------------------------|
+| `enqueue(object)`   | O(1)*        | Adiciona no final - *O(n) apenas durante redimensionamento |
+| `object dequeue()`  | O(1)         | Remove do inicio                                           |
+| `object first()`    | O(1)         | Retorna o primeiro elemento                                |
+| `integer size()`    | O(1)         | Retorna a quantidade de elementos                          |
+| `boolean isEmpty()` | O(1)         | Verifica se está vazia                                     |
 
 <br>
 
-### ⚠️ Limitações das Filas Baseadas em Arrays
+### ✏️ Implementação Completa em C#
 
-* **Capacidade Fixa**: Arrays possuem capacidade fixa. Quando a fila atinge seu limite, operações como `enqueue(object)` se tornam inviáveis, gerando problemas de **overflow**.
-* **Espaço Desperdiçado**: Em uma fila simples baseada em array linear (sem circularidade), quando você remove elementos do início com `dequeue()`, os espaços não são reutilizados automaticamente, gerando uma exceção de EFilaCheia com espaços disponivéis.
-
-> ⚠️ Por isso, para garantir a eficiência e escalabilidade das filas, são implementadas estratégias de **configuração circular** e **redimensionamento dinâmico** como:
->  * [**Estratégia Incremental**](pilha.md/###1-estratégia-incremental) 
->  * [**Estratégia Duplicativa (Exponencial)**](pilha.md/###2-estratégia-duplicativa-exponencial)
-
-<br>
-
-### ✏️ Implementação em C#
 ```csharp
 using System;
 
-public class FilaVaziaException : Exception
-{
-    public FilaVaziaException() : base("Operação inválida: fila vazia!") { }
-    public DequeVazioException(string mensagem) : base(mensagem) { }
-    public DequeVazioException(string mensagem, Exception inner) : base(mensagem, inner) { }
+// Exceção personalizada para fila vazia
+public class FilaVaziaException : Exception {
+    public FilaVaziaException() : base("Operação inválida: fila vazia!") {}
+    public FilaVaziaException(string mensagem) : base(mensagem) {}
 }
 
-public interface IFila<T>
-{
-    void Enqueue(T item);
+// Interface do TAD Fila
+public interface IFila<T> {
+    void Enqueue(T elemento);
     T Dequeue();
     T First();
-    bool IsEmpty();
     int Size();
+    bool IsEmpty();
 }
 
-public class Fila<T> : IFila<T>
-{
-    private T[] array;
+// Implementação concreta usando array circular
+public class FilaArrayCircular<T> : IFila<T> {
+    private T[] elementos;
     private int inicio;
     private int fim;
     private int capacidade;
 
-    public Fila(int capacidadeInicial = 10)
-    {
+    // Construtor
+    public FilaArrayCircular(int capacidadeInicial = 10) {
         capacidade = capacidadeInicial;
-        array = new T[capacidade];
-        inicio = 0;
-        fim = 0;
+        elementos = new T[capacidade];
+        inicio = fim = 0;
     }
 
-    public void Enqueue(T item)
-    {
-        if (Size() == capacidade)
-        {
-            Redimensionar();
-        }
+    public int Size() => (fim - inicio + capacidade) % capacidade;
+    public bool IsEmpty() => inicio == fim;
 
-        array[fim] = item;
+    public void Enqueue(T elemento) {
+        if ((fim + 1) % capacidade == capacidade)
+            Redimensionar();
+        
+        elementos[fim] = elemento;
         fim = (fim + 1) % capacidade;
     }
 
-    public T Dequeue()
-    {
+    public T Dequeue() {
         if (IsEmpty())
-        {
             throw new FilaVaziaException();
-        }
-
-        T item = array[inicio];
-        array[inicio] = default;
+        
+        T elemento = elementos[inicio];
         inicio = (inicio + 1) % capacidade;
-
-        return item;
+        
+        return elemento;
     }
 
-    public T First()
-    {
+    public T First() {
         if (IsEmpty())
-        {
             throw new FilaVaziaException();
-        }
-
-        return array[inicio];
+        
+        return elementos[inicio];
     }
 
-    public bool IsEmpty()
-    {
-        return inicio == fim;
-    }
+    private void Redimensionar() {
 
-    public int Size()
-    {
-        return (capacidade - inicio + fim) % capacidade;
-    }
-
-    private void Redimensionar()
-    {
         int novaCapacidade = capacidade * 2;
+
         T[] novoArray = new T[novaCapacidade];
-
-        int tamanho = Size();
-
-        for (int i = 0; i < tamanho; i++)
-        {
-            int indice = (inicio + i) % capacidade;
-            novoArray[i] = array[indice];
+        
+        // Copia os elementos para o novo array
+        for (int i = 0; i < contador; i++) {
+            int indiceOriginal = (inicio + i) % capacidade;
+            novoArray[i] = elementos[indiceOriginal];
         }
-
-        array = novoArray;
-        capacidade = novaCapacidade;
+        
+        elementos = novoArray;
+        fim = Size();
         inicio = 0;
-        fim = tamanho;
+        capacidade = novaCapacidade;
     }
 }
-```

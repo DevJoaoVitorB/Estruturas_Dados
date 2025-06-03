@@ -16,3 +16,5 @@
 ### 4. 🗂️ [TAD - Vetor](arquivos/vetor.md)
 ### 5. 📋 [TAD - Lista](arquivos/lista.md)
 ### 6. 🔢 [TAD - Sequência](arquivos/sequencia.md)
+### 7. 🔄 [Iteradores e Coleções](arquivos/iteradores_colecoes.md)
+### 8. 🌳 [TAD - Árvore](arquivos/arvore.md)
