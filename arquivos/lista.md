@@ -40,307 +40,6 @@
 
 <br>
 
-## 🧱 Implementação Usando Lista **Simplesmente Ligada**
-
-> Cada nó aponta apenas para o **próximo**. A lista utiliza nós **sentinelas** para `Head` e `Tail`, facilitando as operações e evitando `null`.
-
-### 🔧 Estrutura Básica
-
-```text
-Head -> [A] -> [B] -> [C] -> Tail
-```
-
-- A lista possui dois nós especiais: `Head` e `Tail`.
-- O primeiro elemento real da lista está **após o `Head`**.
-- O final da lista está **antes do `Tail`**.
-- Essa estrutura evita ponteiros nulos e simplifica inserções e remoções.
-
-<br>
-
-### ⚙️ Modo de Funcionamento
-
-- `Head` aponta para o primeiro **nó real** (ou diretamente para `Tail` quando a lista está vazia).
-- Cada nó contém uma referência para o **próximo** nó até atingir o `Tail`.
-- Inserções são feitas ajustando o ponteiro do nó anterior para apontar para o novo nó.
-- Remoções são feitas ignorando o nó removido, conectando o nó anterior ao próximo do removido.
-- Para obter o nó **anterior** (`Before()`), é necessário percorrer a lista desde o `Head`, pois não há referência direta para o anterior.
-
-<br>
-
-### ❌ Limitações
-
-- Acesso aleatório é **ineficiente** — requer iteração sequencial desde o início.
-- Percorrer para encontrar o nó anterior é **custoso**, já que não há ponteiros reversos.
-
-<br>
-
-### ✏️ Implementação em C#
-```csharp
-using System;
-
-class ListaVaziaExcecao : Exception                 // Classe de Exceção de Lista Vazia
-{
-    public ListaVaziaExcecao() : base("A Lista está vazia!") {}
-    public ListaVaziaExcecao(string mensagem) : base(mensagem) {}
-    public ListaVaziaExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}
-}
-
-class ObjetoNaoEncontradoExcecao : Exception         // Classe de Exceção de Objeto não Encontrado na Lista
-{
-    public ObjetoNaoEncontradoExcecao() : base("Objeto não foi encontrado na Lista!") {}
-    public ObjetoNaoEncontradoExcecao(string mensagem) : base(mensagem) {}
-    public ObjetoNaoEncontradoExcecao(string mensagem, Exception inner) : base(mensagem, inner) {}
-}
-
-interface Lista<T>
-{
-    void InsertFirst(T objeto);                     // Método para Inserir Elemento no Início da Lista
-    void InsertLast(T objeto);                      // Método para Inserir Elemento no Final da Lista
-    void InsertAfter(T objetoRef, T objeto);        // Método para Inserir Elemento Depois de Outro Elemento da Lista
-    void InsertBefore(T objetoRef, T objeto);       // Método para Inserir Elemento Antes de Outro Elemento da Lista
-    T ReplaceElement(T objetoRef, T objeto);        // Método para Substituir Elemento Antigo da Lista por Elemento Novo
-    void SwapElement(T objetoRef1, T objetoRef2);   // Método para Trocar Posição do Elemento com Outro Elemento da Lista
-    T Remove(T objeto);                             // Método para Remover e Retornar Elemento da Lista
-    No<T> First();                                  // Método para Retornar o Primeiro Elemento da Lista
-    No<T> Last();                                   // Método para Retornar o Último Elemento da Lista
-    bool InFirst(T objeto);                         // Método para Verificar se Elemento está na Primeira Posição da Lista
-    bool InLast(T objeto);                          // Método para Verificar se Elemento está na Última Posição da Lista
-    No<T> After(T objeto);                          // Método para Retornar Elemento Posterior a Outro Elemento da Lista
-    No<T> Before(T objeto);                         // Método para Retornar Elemento Anterior a Outro Elemento da Lista
-    int Size();                                     // Método para Retornar Número de Elementos da Lista
-    bool IsEmpty();                                 // Método para Verificar se a Lista está Vazia
-    No<T> Search(T objeto);                         // Método para Retornar Elemento da Lista se Existir
-}
-
-class No<T>
-{
-    public No<T> Next {get; set;}                   // Nó de referência próximo
-    public T Objeto {get; set;}                     // Objeto do Nó
-
-    public No(T objeto = default)
-    {
-        Objeto = objeto;                            // Adicionando um objeto ao Nó
-        Next = null;                                // Inicializando a referência para o próximo Nó como NULL
-    }
-}
-
-class ListaSimplismenteLigada<T> : Lista<T>
-{
-    private No<T> Head;                             // Nó Sentinela Head
-    private No<T> Tail;                             // Nó Sentinela Tail
-    private int QtdElement;                         // Quantidade de elementos da Lista
-
-    public ListaSimplismenteLigada()
-    {
-        Head = new No<T>();                         // Inicializando o Nó Sentinela Head
-        Tail = new No<T>();                         // Inicializando o Nó Sentinela Tail
-        Head.Next = Tail;                           // Referência do próximo do Nó Head é o Nó Tail
-        QtdElement = 0;                             // Lista está vazia
-    }
-
-    public void InsertFirst(T objeto)
-    {
-        No<T> novoNo = new No<T>();                 // Criando um novo Nó
-        novoNo.Objeto = objeto;                     // Adicionando o objeto ao Nó
-        novoNo.Next = Head.Next;                    // Referência do próximo do novo Nó é o próximo de Head 
-        Head.Next = novoNo;                         // O próximo de Head passa a ser o novo Nó
-        QtdElement++;                               // Quantidade de elementos +1
-    }
-
-    public void InsertLast(T objeto)
-    {
-        No<T> novoNo = new No<T>();                 // Criando um novo Nó
-        novoNo.Objeto = objeto;                     // Adicionando o objeto ao Nó
-        No<T> ultimoElemento = Last();              // Encontrar o último elemento antes de Tail
-        novoNo.Next = Tail;                         // Referência do próximo do novo Nó é Tail
-        ultimoElemento.Next = novoNo;               // Referência do próximo do antigo último elemento é o novo Nó 
-        QtdElement++;                               // Quantidade de elementos +1
-    }
-
-    public void InsertAfter(T objetoRef, T objeto)
-    {
-        No<T> novoNo = new No<T>();                 // Criando um novo Nó
-        novoNo.Objeto = objeto;                     // Adicionando o objeto ao Nó
-        No<T> noReferencia = Search(objetoRef);     // Nó de referência para adicionar um outro Nó após
-        novoNo.Next = noReferencia.Next;            // Referência do próximo do novo Nó é o próximo do Nó de referência
-        noReferencia.Next = novoNo;                 // Referência do próximo do Nó de referência é o novo Nó
-        QtdElement++;                               // Quantidade de elementos +1
-    }
-
-    public void InsertBefore(T objetoRef, T objeto)
-    {
-        No<T> novoNo = new No<T>();                 // Criando um novo Nó
-        novoNo.Objeto = objeto;                     // Adicionando o objeto ao Nó
-        No<T> noReferencia = Search(objetoRef);     // Nó de referência para adicionar um outro Nó antes
-        No<T> atualNo = Head;                       // Conseguir uma referência auxiliar do começo da Lista
-        while(atualNo.Next != noReferencia)
-        {
-            atualNo = atualNo.Next;                 // Encontra o Nó anterior ao Nó de referência
-        }
-        novoNo.Next = noReferencia;                 // Referência do próximo do novo Nó é o Nó de referência
-        atualNo.Next = novoNo;                      // Referência do Nó anterior ao Nó de referência é o novo Nó
-        QtdElement++;                               // Quantidade de elementos +1
-    }
-
-    public T ReplaceElement(T objetoRef, T objeto)
-    {
-        if(IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
-        No<T> novoNo = new No<T>();                     // Criando um novo Nó
-        novoNo.Objeto = objeto;                         // Adicionando o objeto ao Nó
-        No<T> noReferencia = Search(objetoRef);         // Nó de referência para ser substituido pelo novo Nó
-        novoNo.Next = noReferencia.Next;                // Referência posterior do novo Nó é a referência posterior do Nó de referência
-        No<T> atualNo = Head;                           // Conseguir uma referência auxiliar do começo da Lista
-        while(atualNo.Next != noReferencia)
-        {
-            atualNo = atualNo.Next;                     // Encontra o Nó anterior ao Nó de referência
-        }
-        atualNo.Next = novoNo;                          // Referência posterior da referência anterior do Nó de referência é o novo Nó
-        noReferencia.Next = null;                       // Anular o próximo do Nó que será substituido
-        return noReferencia.Objeto;                     // Retorna o objeto do Nó de referência
-    }
-
-    public void SwapElement(T objetoRef1, T objetoRef2)
-    {
-        if(IsEmpty()) throw new ListaVaziaExcecao();        // Verificar se a Lista está vazia
-        No<T> noRef1 = Search(objetoRef1);                  // Nó de referência 1 que irá troca de lugar com o Nó de referência 2
-        No<T> noRef2 = Search(objetoRef2);                  // Nó de referência 2 que irá troca de lugar com o Nó de referência 1
-        No<T> prev1 = Head;                                 // Nó auxiliar para encontrar a referência anterior do Nó de referência 1
-        while (prev1.Next != noRef1) prev1 = prev1.Next;    // Encontrar o anterior ao Nó de referência 1
-        No<T> prev2 = Head;                                 // Nó auxiliar para encontrar a referência anterior do Nó de referência 2
-        while (prev2.Next != noRef2) prev2 = prev2.Next;    // Encontrar o anterior ao Nó de referência 2
-
-        // CASO 1 - Mesmo Nó
-        // Não realizar a troca!
-
-        if (EqualityComparer<T>.Default.Equals(objetoRef1, objetoRef2)) return; // Não realizar a troca se forem o mesmo Nó
-
-        // CASO 2 - Nós Adjacentes
-        // 1º Nó possui referência posterior no 2º Nó   | 1º | -> | 2º |
-        // OU
-        // 2º Nó possui referência posterior no 1º Nó   | 2º | -> | 1º |
-        // ERRO! Nesse caso, ao trocarem referências os Nós podem estarem referênciando eles mesmo:
-        // EX.: A referência posterior do 2º Nó passa a ser a referência posterior é o Nó 1º: | 1º | -> | 2º | -> | 2º | -> | 2º |
-
-        if (noRef1.Next == noRef2)              // Verificar se Nó de referência 1 é adjacente do Nó de referência 2
-        {
-            prev1.Next = noRef2;                // Referência posterior da referência anterior do Nó de referência 1 passa a ser Nó de referência 2
-            noRef1.Next = noRef2.Next;          // Referência posterior do Nó de referência 1 é referência posterior do Nó de referência 2
-            noRef2.Next = noRef1;               // Referência posterior do Nó de referência 2 é Nó de referência 1
-            return;                             // Fim da operação de troca 
-        }
-        else if (noRef2.Next == noRef1)         // Verificar se Nó de referência 2 é adjacente do Nó de referência 1
-        {
-            prev2.Next = noRef1;                // Referência posterior da referência anterior do Nó de referência 2 passa a ser Nó de referência 1
-            noRef2.Next = noRef1.Next;          // Referência posterior do Nó de referência 2 é referência posterior do Nó de referência 1
-            noRef1.Next = noRef2;               // Referência posterior do Nó de referência 1 é Nó de referência 2
-            return;                             // Fim da operação de troca
-        }
-
-        // CASO 3 - Nós não Adjacentes
-        // Realização de troca padrão!
-
-        No<T> noTemp = noRef1.Next;             // Nó temporário que guarda a referência posterior do Nó de referência 1
-        noRef1.Next = noRef2.Next;              // Referência posterior do Nó de referência 1 é referência posterior do Nó de referência 2
-        prev1.Next = noRef2;                    // Referência posterior da referência anterior do Nó de referência 1 é Nó de referência 2
-        noRef2.Next = noTemp;                   // Referência posterior do Nó de referência 2 é referência posterior do Nó de referência 1 
-        prev2.Next = noRef1;                    // Referência posterior da referência anterior do Nó de referência 2 é Nó de referência 1
-    }
-
-    public T Remove(T objeto)
-    {
-        if(IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
-        No<T> noRemovido = Search(objeto);              // Encontrar o Nó que será removido
-        No<T> atualNo = Head;                           // Conseguir uma referência auxiliar do começo da Lista
-        while(atualNo.Next != noRemovido)
-        {
-            atualNo = atualNo.Next;                     // Encontra o Nó anterior ao Nó que será removido
-        }
-        atualNo.Next = noRemovido.Next;                 // Próximo do Nó anterior ao Nó que será removida passa a ser o próximo do Nó que será removido
-        noRemovido.Next = null;                         // Anular o próximo do Nó que será removido
-        QtdElement--;                                   // Quantidade de elementos -1
-        return noRemovido.Objeto;                       // Retorna o elemento do Nó que será removido
-    }
-
-    public No<T> First()
-    {
-        if(IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
-        return Head.Next;                               // Retorna o primeiro Nó da Lista
-    }
-
-    public No<T> Last()
-    {
-        if(IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
-        No<T> atualNo = Head;                           // Conseguir uma referência auxiliar do começo da Lista
-        while (atualNo.Next != Tail)
-        {
-            atualNo = atualNo.Next;                     // Encontra o último Nó - anterior ao Tail
-        }
-        return atualNo;                                 // Retorna o último Nó da Lista
-    }
-
-    public bool InFirst(T objeto)
-    {
-        if(IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
-        No<T> noReferencia = Search(objeto);            // Nó de referência que quer saber se está no inicio da Lista
-        bool inFirst = false;                           // Váriavel auxiliar para saber se o Nó de referência está no inicio da Lista
-        if(Head.Next == noReferencia) inFirst = true;   // Verificação para saber se o Nó de referência está no inicio da Lista
-        return inFirst;                                 // Retorna a reposta - TRUE ou FALSE - se o Nó de referência está no inicio da Lista
-    }
-
-    public bool InLast(T objeto)
-    {
-        if(IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
-        No<T> noReferencia = Search(objeto);            // Nó de referência que quer saber se está no final da Lista
-        bool inLast = false;                            // Váriavel auxiliar para saber se o Nó de referência está no final da Lista
-        if(Last() == noReferencia) inLast = true;       // Verificação para saber se o Nó de referência está no final da Lista
-        return inLast;                                  // Retorna a reposta - TRUE ou FALSE - se o Nó de referência está no final da Lista
-    }
-
-    public No<T> After(T objeto)
-    {
-        if(IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
-        No<T> noReferencia = Search(objeto);            // Nó de referência para encontrar o próximo Nó a ele
-        return noReferencia.Next;                       // Retorna o próximo Nó ao Nó de referência
-    }
-
-    public No<T> Before(T objeto)
-    {
-        if(IsEmpty()) throw new ListaVaziaExcecao();    // Verificar se a Lista está vazia
-        No<T> noReferencia = Search(objeto);            // Nó de referência para encontrar o Nó anterior a ele
-        No<T> atualNo = Head;                           // Conseguir uma referência auxiliar do começo da Lista
-        while(atualNo.Next != noReferencia)
-        {
-            atualNo = atualNo.Next;                     // Encontra o Nó anterior ao Nó de referência
-        }
-        return atualNo;                                 // Retorna o Nó anterior ao Nó de referência
-    }
-
-    public int Size()
-    {
-        return QtdElement;                              // Retorna a quantidade de Nós da Lista
-    }
-
-    public bool IsEmpty()
-    {
-        return Head.Next == Tail;                       // Verificar se a Lista está vazia
-    }
-
-    public No<T> Search(T objeto)
-    {
-        No<T> atualNo = Head;                                                                                           // Conseguir uma referência auxiliar do começo da Lista
-        while (!EqualityComparer<T>.Default.Equals(atualNo.Objeto, objeto))
-        {
-            atualNo = atualNo.Next;                                                                                     // Encontra o Nó que possui o elemento
-        }
-        if (!EqualityComparer<T>.Default.Equals(atualNo.Objeto, objeto)) throw new ObjetoNaoEncontradoExcecao();        // Verificar se existi o Nó com o elemento na Lista
-        return atualNo;
-    }
-}
-
-```
-
-<br>
-
 ## 🧱 Implementação Usando Lista **Duplamente Ligada**
 
 > Cada nó possui referências para o **nó anterior** e o **nó seguinte**, permitindo navegação bidirecional. A estrutura é iniciada com **nós sentinelas**: `Head` e `Tail`.
@@ -387,6 +86,29 @@ Head <-> [A] <-> [B] <-> [C] <-> Tail
 
 * Consome mais **memória**, pois cada nó armazena dois ponteiros.
 * A implementação é **mais detalhada**, com cuidados extras para manter a consistência dos vínculos.
+
+<br>
+
+### ⏱️ Desempenho das Operações
+
+| Operação                                | Complexidade | Descrição                                                   |
+|-----------------------------------------|--------------|-------------------------------------------------------------|
+| `insertFirst(object)`                   | O(1)         | Insere um elemento **X** depois do **Head**                 |
+| `insertLast(object)`                    | O(1)         | Insere um elemento **X** antes do **Tail**                  |
+| `insertAfter(object, object)`           | O(1)         | Insere um elemento **X** depois de um elemento **Y**        |
+| `insertBefore(object, object)`          | O(1)         | Insere um elemento **X** antes de um elemento **Y**         |
+| `object replaceElement(object, object)` | O(1)         | Troca um elemento **X** por um elemento **Y**               |
+| `swapElement(object, object)`           | O(1)         | Troca de posição de um elemento **X** por um elemento **Y** |
+| `object remove(object)`                 | O(1)         | Remove e retorna um elemento **X**                          |
+| `object first()`                        | O(1)         | Retorna o **primeiro** elemento                             |
+| `object last()`                         | O(1)         | Retorna o **último** elemento                               |
+| `boolean inFirst(object)`               | O(1)         | Retorna **True** se o elemento é o **primeiro**             |
+| `boolean inLast(object)`                | O(1)         | Retorna **True** se o elemento é o **último**               |
+| `object after(object)`                  | O(1)         | Retorna o elemento **depois** de um elemento **X**          |
+| `object before(object)`                 | O(1)         | Retorna o elemento **antes** de um elemento **X**           |
+| `integer size()`                        | O(1)         | Retorna a quantidade de elementos                           |
+| `boolean isEmpty()`                     | O(1)         | Verifica se está vazia                                      |
+| `object search(object)`                 | O(n)         | Encontra um elemento **X**                                  |
 
 <br>
 
@@ -661,26 +383,3 @@ class ListaDuplamenteLigada<T> : Lista<T>
     }
 }
 ```
-
-<br>
-
-## ⏱️ Desempenho das Operações
-
-| Operação                                | Lista Simples | Lista Dupla | Descrição                                                   |
-|-----------------------------------------|---------------|-------------|-------------------------------------------------------------|
-| `insertFirst(object)`                   | O(1)          | O(1)        | Insere um elemento **X** depois do **Head**                 |
-| `insertLast(object)`                    | O(n)          | O(1)        | Insere um elemento **X** antes do **Tail**                  |
-| `insertAfter(object, object)`           | O(1)          | O(1)        | Insere um elemento **X** depois de um elemento **Y**        |
-| `insertBefore(object, object)`          | O(n)          | O(1)        | Insere um elemento **X** antes de um elemento **Y**         |
-| `object replaceElement(object, object)` | O(n)          | O(1)        | Troca um elemento **X** por um elemento **Y**               |
-| `swapElement(object, object)`           | O(n)          | O(1)        | Troca de posição de um elemento **X** por um elemento **Y** |
-| `object remove(object)`                 | O(n)          | O(1)        | Remove e retorna um elemento **X**                          |
-| `object first()`                        | O(1)          | O(1)        | Retorna o **primeiro** elemento                             |
-| `object last()`                         | O(n)          | O(1)        | Retorna o **último** elemento                               |
-| `boolean inFirst(object)`               | O(1)          | O(1)        | Retorna **True** se o elemento é o **primeiro**             |
-| `boolean inLast(object)`                | O(n)          | O(1)        | Retorna **True** se o elemento é o **último**               |
-| `object after(object)`                  | O(1)          | O(1)        | Retorna o elemento **depois** de um elemento **X**          |
-| `object before(object)`                 | O(n)          | O(1)        | Retorna o elemento **antes** de um elemento **X**           |
-| `integer size()`                        | O(1)          | O(1)        | Retorna a quantidade de elementos                           |
-| `boolean isEmpty()`                     | O(1)          | O(1)        | Verifica se está vazia                                      |
-| `object search(object)`                 | O(n)          | O(n)        | Encontra um elemento **X**                                  |
