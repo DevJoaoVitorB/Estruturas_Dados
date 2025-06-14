@@ -89,29 +89,6 @@ Head <-> [A] <-> [B] <-> [C] <-> Tail
 
 <br>
 
-## ⏱️ Desempenho das Operações
-
-| Operação                                | Complexidade | Descrição                                                   |
-|-----------------------------------------|--------------|-------------------------------------------------------------|
-| `insertFirst(object)`                   | O(1)         | Insere um elemento **X** depois do **Head**                 |
-| `insertLast(object)`                    | O(1)         | Insere um elemento **X** antes do **Tail**                  |
-| `insertAfter(object, object)`           | O(1)         | Insere um elemento **X** depois de um elemento **Y**        |
-| `insertBefore(object, object)`          | O(1)         | Insere um elemento **X** antes de um elemento **Y**         |
-| `object replaceElement(object, object)` | O(1)         | Troca um elemento **X** por um elemento **Y**               |
-| `swapElement(object, object)`           | O(1)         | Troca de posição de um elemento **X** por um elemento **Y** |
-| `object remove(object)`                 | O(1)         | Remove e retorna um elemento **X**                          |
-| `object first()`                        | O(1)         | Retorna o **primeiro** elemento                             |
-| `object last()`                         | O(1)         | Retorna o **último** elemento                               |
-| `boolean inFirst(object)`               | O(1)         | Retorna **True** se o elemento é o **primeiro**             |
-| `boolean inLast(object)`                | O(1)         | Retorna **True** se o elemento é o **último**               |
-| `object after(object)`                  | O(1)         | Retorna o elemento **depois** de um elemento **X**          |
-| `object before(object)`                 | O(1)         | Retorna o elemento **antes** de um elemento **X**           |
-| `integer size()`                        | O(1)         | Retorna a quantidade de elementos                           |
-| `boolean isEmpty()`                     | O(1)         | Verifica se está vazia                                      |
-| `object search(object)`                 | O(n)         | Encontra um elemento **X**                                  |
-
-<br>
-
 ### ✏️ Implementação em C#
 ```csharp
 using System;
