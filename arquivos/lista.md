@@ -137,26 +137,79 @@ Imagine um comboio ferroviário com terminais especiais:
     ```text
     [HEAD] ⇄ (elemento1) ⇄ (elemento2) ⇄ ... ⇄ [TAIL]
     ```
+  
+<br>
+
+### ⚙️ Modo de Funcionamento
+
+#### 1. **Inicialização:**
+* Dois nós sentinelas criados (`head` e `tail`)
+* `head.Proximo` aponta para `tail`
+* `tail.Anterior` aponta para `head`
+* `tamanho` inicializado em 0
+  ```text
+  [HEAD] ⇄ [TAIL]
+  ```
+
+#### 2. **Operações Básicas:**
+* **Inserção no Início (InsertFirst):**
+  * Novo nó criado após head
+  * Ajusta ponteiros:
+  ```text
+  [HEAD] ⇄ [NOVO] ⇄ [OLD_FIRST]...
+  ```
+
+* **Inserção no Fim (InsertLast):**
+  * Novo nó criado antes de tail
+  * Ajusta ponteiros:
+  ```text
+  ... ⇄ [OLD_LAST] ⇄ [NOVO] ⇄ [TAIL]
+  ```
+
+* **Inserção no Meio:**
+  * Localiza nó de referência
+  * Novo nó ligado entre anterior e referência
+
+* **Remoção**:
+  * Remove o nó trocando a referência dos nós de referência
+  * Ajusta ponteiros:
+  ```text
+  ... ⇄ [PREV] ⇄ [REMOVE] ⇄ [NEXT] ⇄ ...
+  ... ⇄ [PREV] ⇄ [NEXT] ⇄ ...
+  ```
+
+* **Troca de Elementos:**
+  * Troca o elemento do nó de referência por um novo
+
+* **Substituição de Elementos:**
+  * Substitui o elemento do nó de referência por outro da lista
+
+#### 3. **Controle de Estado:**
+* **`Size()`** - contador tamanho
+* **`IsEmpty()`** - tamanho == 0
+* **`Search()`** - Percorre da head.Proximo até tail
+
+<br>
 
 ### ⏱️ Desempenho das Operações
-| Operação                       | Complexidade |	Descrição |
-|--------------------------------|--------------|-----------|
-| insertFirst(object)	         | O(1)	Inserção no início
-| insertLast(object)	         | O(1)	Inserção no final
-| insertAfter(object, object)	 | O(n)	Busca + Inserção
-| insertBefore(object, object)   | O(n)	Busca + Inserção
-| replaceElement(object, object) | O(n)	Busca + Substituição
-| swapElement(object, object)	O(n)	Busca + Troca
-| remove(object)	O(n)	Busca + Remoção
-| first()	O(1)	Acesso ao primeiro
-| last()	O(1)	Acesso ao último
-| isFirst(object)	O(1)	Comparação direta
-| isLast(object)	O(1)	Comparação direta
-| after(object)	O(n)	Busca + Acesso
-| before(object)	O(n)	Busca + Acesso
-| size()	O(1)	Retorna contador
-| isEmpty()	O(1)	Verifica contador
-| search(object)	O(n)	Percorre lista
+| Operação                              | Complexidade |	Descrição           |
+|---------------------------------------|--------------|----------------------|
+| insertFirst(object)	                  | O(1)         | Inserção no início   |
+| insertLast(object)	                  | O(1)	       | Inserção no final    |
+| insertAfter(object, object)	          | O(n)	       | Busca + Inserção     |
+| insertBefore(object, object)          | O(n)	       | Busca + Inserção     |
+| object replaceElement(object, object) | O(n)	       | Busca + Substituição |
+| swapElement(object, object)	          | O(n)	       | Busca + Troca        |
+| object remove(object)	                | O(n)	       | Busca + Remoção      |
+| object first()	                      | O(1)	       | Acesso ao primeiro   |
+| object last()	                        | O(1)	       | Acesso ao último     |
+| boolean isFirst(object)	              | O(1)	       | Verificar primeiro   |
+| boolean isLast(object)	              | O(1)	       | Verificar último     |
+| object after(object)	                | O(n)	       | Busca + Acesso       |
+| object before(object)	                | O(n)	       | Busca + Acesso       |
+| interger size()	                      | O(1)	       | Retorna contador     |
+| boolean isEmpty()	                    | O(1)	       | Verifica contador    |
+| object search(object)	                | O(n)	       | Percorre lista       |
 
 ### ✏️ Implementação Completa em C#
 ```csharp
@@ -165,11 +218,13 @@ using System;
 // Exceções customizadas
 public class ListaVaziaException : InvalidOperationException {
     public ListaVaziaException() : base("Lista vazia") {}
+    public ListaVaziaException(string mensagem) : base(mensagem) {}
 }
 
 public class ElementoNaoEncontradoException : InvalidOperationException {
     public ElementoNaoEncontradoException(object elemento) 
         : base($"Elemento {elemento} não encontrado") {}
+    public ElementoNaoEncontradoException(string mensagem) : base(mensagem) {}
 }
 
 // Interface do TAD Lista
@@ -192,18 +247,18 @@ public interface ILista<T> where T : IEquatable<T> {
     T Search(T elemento);
 }
 
+private class Nodo {
+    public T Dado { get; set; }
+    public Nodo Anterior { get; set; }
+    public Nodo Proximo { get; set; }
+
+    public Nodo(T dado) {
+        Dado = dado;
+    }
+}
+
 // Implementação concreta usando lista duplamente ligada
 public class ListaDuplamenteEncadeada<T> : ILista<T> where T : IEquatable<T> {
-    private class Nodo {
-        public T Dado { get; set; }
-        public Nodo Anterior { get; set; }
-        public Nodo Proximo { get; set; }
-
-        public Nodo(T dado) {
-            Dado = dado;
-        }
-    }
-
     private readonly Nodo head;
     private readonly Nodo tail;
     private int tamanho;
