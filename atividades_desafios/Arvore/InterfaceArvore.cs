@@ -1,31 +1,14 @@
-using System.Collections;
-
-public interface IArvore<T>
+public interface IArvore<T> where T : IComparable<T>
 {
-    // Métodos Genéricos
     int Size();
     bool IsEmpty();
-    int Height();
-    IEnumerable Elements();
-    IEnumerable Nos();
-
-    // Métodos de Acesso
-    Node<T> Root();
-    Node<T> Parent(Node<T> child);
-    IEnumerator Children(Node<T> parent);
-
-    // Métodos de Consulta
-    bool IsInternal(Node<T> node);
-    bool IsExternal(Node<T> node);
     bool IsRoot(Node<T> node);
+    int Height(Node<T> node);
     int Depth(Node<T> node);
-    Node<T> Find(T element);
-
-    // Métodos de Atualização
-    void SwapElements(Node<T> node1, Node<T> node2);
-    T Replace(Node<T> node, T element);
-
-    // Métodos de Persistencia
-    void AddChild(T referenceElement, T newElement);
-    T Remove(Node<T> removeNode);
+    void Insert(T element);
+    void Remove(T key);
+    Node<T>? Find(T key);
+    void PreOrder();
+    void InOrder();
+    void PostOrder();
 }
