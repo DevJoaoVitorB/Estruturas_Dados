@@ -1,5 +1,6 @@
 public interface IArvore<T> where T : IComparable<T>
 {
+    Node<T>? GetRoot();
     int Size();
     bool IsEmpty();
     bool IsRoot(Node<T> node);

@@ -4,19 +4,20 @@ public class ArvoreBinariaPesquisa<T> : IArvore<T> where T : IComparable<T>
 
     public ArvoreBinariaPesquisa() => Root = null;
 
+    // Método para Pegar a Raiz da Árvore
+    public Node<T>? GetRoot() => Root;
+
     // Métodos Tamanho e Está Vazio
     public int Size() => NodeCount(Root);
-    public bool IsEmpty() => Root == null;
-
-    // Método de Verificação de Raiz
-    public bool IsRoot(Node<T>? node) => node == Root;
-
-    // Método para Contar a Quantidade de Nós
     private int NodeCount(Node<T>? node)
     {
         if (node == null) return 0;
         return 1 + NodeCount(node.GetLeftChild()) + NodeCount(node.GetRightChild());
     }
+    public bool IsEmpty() => Root == null;
+
+    // Método de Verificação de Raiz
+    public bool IsRoot(Node<T>? node) => node == Root;
 
     // Método de Calculo da Altura
     public int Height(Node<T> node) => HeightCalc(node);
