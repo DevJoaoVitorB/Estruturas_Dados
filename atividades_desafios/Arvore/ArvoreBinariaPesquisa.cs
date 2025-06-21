@@ -2,10 +2,7 @@ public class ArvoreBinariaPesquisa<T> : IArvore<T> where T : IComparable<T>
 {
     private Node<T>? Root;
 
-    public ArvoreBinariaPesquisa()
-    {
-        Root = null;
-    }
+    public ArvoreBinariaPesquisa() => Root = null;
 
     // Métodos Tamanho e Está Vazio
     public int Size() => NodeCount(Root);
@@ -38,6 +35,7 @@ public class ArvoreBinariaPesquisa<T> : IArvore<T> where T : IComparable<T>
     }
 
     // Método para Inserir um Novo Nó na Árvore
+    // Lógica: O Nó Pai deve possuir o Nó Filho Esquerdo Menor e o Nó Filho Direito Maior
     public void Insert(T element) => Root = InsertOperation(Root, element, default);
     private Node<T> InsertOperation(Node<T>? node, T element, Node<T>? parent)
     {
@@ -69,22 +67,34 @@ public class ArvoreBinariaPesquisa<T> : IArvore<T> where T : IComparable<T>
     public void Remove(T key) => Root = RemoveOperation(Root, key);
     private Node<T>? RemoveOperation(Node<T>? node, T key)
     {
+        // A chave não foi encontrada na árvore.
         if (node == null)
             return null;
 
+        // Encontra o Nó com a chave de remoção
         if (key.CompareTo(node.GetElement()) < 0)
+            // Nó procurado é menor que o Nó atual -> percorre a esquerda 
             node.SetLeftChild(RemoveOperation(node.GetLeftChild(), key));
         else if (key.CompareTo(node.GetElement()) > 0)
+            // Nó procurado é maior que o Nó atual -> percorre a direita
             node.SetRightChild(RemoveOperation(node.GetRightChild(), key));
+        // Nó com chave de remoção encontrado
         else
         {
+            // Único Filho
             if (node.GetLeftChild() == null)
+                // Sem filho esquerdo -> filho direito ocupa o lugar do pai
                 return node.GetRightChild();
             if (node.GetRightChild() == null)
+                // Sem filho direito -> filho esquerdo ocupa o lugar do pai
                 return node.GetLeftChild();
 
+            // Dois Filhos
+            // PASSO 1 - Encontra o sucessor (Direita - Esquerda - Esquerda - ...)
             Node<T> successor = Successor(node.GetRightChild());
+            // PASSO 2 - Nó sucessor ocupa o lugar do Nó pai
             node.SetElement(successor.GetElement());
+            // PASSO 3 - Remove o Nó duplicado do sucessor
             node.SetRightChild(RemoveOperation(node.GetRightChild(), successor.GetElement()));
         }
 
@@ -94,6 +104,7 @@ public class ArvoreBinariaPesquisa<T> : IArvore<T> where T : IComparable<T>
     // Método para encontrar o Sucessor do Nó Removido quando esse possui 2 Filhos
     private Node<T> Successor(Node<T>? node)
     {
+        // Encontrar o menor Nó da subarvore direita
         while (node.GetLeftChild() != null)
             node = node.GetLeftChild();
 
@@ -107,7 +118,7 @@ public class ArvoreBinariaPesquisa<T> : IArvore<T> where T : IComparable<T>
         if (node == null)
             return;
 
-        Console.WriteLine(node.GetElement() + " - ");
+        Console.Write(node.GetElement() + " - ");
         PreOrderTraversal(node.GetLeftChild());
         PreOrderTraversal(node.GetRightChild());
     }
@@ -119,7 +130,7 @@ public class ArvoreBinariaPesquisa<T> : IArvore<T> where T : IComparable<T>
             return;
 
         InOrderTraversal(node.GetLeftChild());
-        Console.WriteLine(node.GetElement() + " - ");
+        Console.Write(node.GetElement() + " - ");
         InOrderTraversal(node.GetRightChild());
     }
 
@@ -131,7 +142,7 @@ public class ArvoreBinariaPesquisa<T> : IArvore<T> where T : IComparable<T>
 
         PostOrderTraversal(node.GetLeftChild());
         PostOrderTraversal(node.GetRightChild());
-        Console.WriteLine(node.GetElement() + " - ");
+        Console.Write(node.GetElement() + " - "); 
     }
 
 
@@ -143,27 +154,44 @@ public class ArvoreBinariaPesquisa<T> : IArvore<T> where T : IComparable<T>
         // Colunas da Árvore
         int width = (int)Math.Pow(2, height + 2);
 
-        // Lista de Linhas da Árvore
+        // Lista de Linhas da Árvore (Folha de Desenho)
         List<string> lines = new();
+        // Definir a quantidade de Colunas de cada Linha
         for (int i = 0; i <= height; i++)
+            // Cada Linha deve ter o mesmo número de colunas
             lines.Add(new string(' ', width));
 
+        // "Escrever" cada Nó em sua Linha/Coluna da "Folha de Desenho"
+        // INFORMAÇÕES INICIAIS:
+        // Nó de referência - Raíz (ínicio)
+        // "Folha de Desenho em Branco"
+        // Linha - 0 (ínicio)
+        // Posição - Centro da Linha 0
+        // Deslocamento - Deslocamento Horizontal dos Filhos (Metade da Linha 0)
         PrintArvore(Root, lines, 0, width / 2, width / 4);
 
+        // Mostrar todas as Linhas/Colunas da "Folha de Desenho" - retirando todos os espaços desnecessários do final de cada Linha
         foreach (string line in lines)
             Console.WriteLine(line.TrimEnd());
     }
 
     private void PrintArvore(Node<T>? node, List<string> lines, int level, int position, int shift)
     {
+        // Condição Base - Nó atual é null -> sair da função
         if (node == null || level >= lines.Count)
             return;
 
+        // Tranforma o elemento do Nó de referência em string
         string element = node.GetElement()!.ToString()!;
+        // Centralização do elemento - posição de inserção
         int init = position - element.Length / 2;
 
+        // "Escrever"
+        // PASSO 1 - Remover o espaço(" ") necessário para colocar o elemento
+        // PASSO 2 - Inserir o elemento no espaço liberado
         lines[level] = lines[level].Remove(init, element.Length).Insert(init, element);
 
+        // Recursividade - Fazer a mesma coisa para os filhos esquerdo e direito seguindo para as próximas linhas e ajustando a posição relativa ao Nó pai
         if (node.GetLeftChild() != null)
             PrintArvore(node.GetLeftChild(), lines, level + 1, position - shift, shift / 2);
 
