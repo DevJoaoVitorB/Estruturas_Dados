@@ -4,54 +4,67 @@ public class ArvoreBinariaPesquisa<T> : IArvore<T> where T : IComparable<T>
 
     public ArvoreBinariaPesquisa() => Root = null;
 
-    // Método para Pegar a Raiz da Árvore
-    public Node<T>? GetRoot() => Root;
-
-    // Métodos Tamanho e Está Vazio
-    public int Size() => NodeCount(Root);
-    private int NodeCount(Node<T>? node)
+    // Métodos Genéricos
+    public int Size() => Count(Root);
+    private int Count(Node<T>? node)
     {
         if (node == null) return 0;
-        return 1 + NodeCount(node.GetLeftChild()) + NodeCount(node.GetRightChild());
+        return 1 + Count(node.GetLeftChild()) + Count(node.GetRightChild());
     }
     public bool IsEmpty() => Root == null;
+    public IEnumerator<T> Elements()
+    {
+        List<T> elements = new List<T>();
+        GetElements(Root, elements);
+        return elements.GetEnumerator();
+    }
+    private void GetElements(Node<T>? node, List<T> elements)
+    {
+        if (node == null)
+            return;
 
-    // Método de Verificação de Raiz
+        // InOrder
+        GetElements(node.GetLeftChild(), elements);
+        elements.Add(node.GetElement());
+        GetElements(node.GetRightChild(), elements);
+    }
+    public IEnumerator<Node<T>> Nodes()
+    {
+        List<Node<T>> nodes = new List<Node<T>>();
+        GetNodes(Root, nodes);
+        return nodes.GetEnumerator();
+    }
+    private void GetNodes(Node<T>? node, List<Node<T>> nodes)
+    {
+        if (node == null)
+            return;
+
+        // InOrder
+        GetNodes(node.GetLeftChild(), nodes);
+        nodes.Add(node);
+        GetNodes(node.GetRightChild(), nodes);
+    }
+
+    // Método de Acesso
+    public Node<T>? GetRoot() => Root;
+    public Node<T>? Parent(Node<T> child) => child.GetParent();
+    public IEnumerator<Node<T>> Children(Node<T> parent) => parent.GetChildren();
+
+    // Método de Consulta
     public bool IsRoot(Node<T>? node) => node == Root;
-
-    // Método de Calculo da Altura
     public int Height(Node<T> node) => HeightCalc(node);
     private int HeightCalc(Node<T>? node)
     {
         if (node == null) return -1;
         return 1 + Math.Max(HeightCalc(node.GetLeftChild()), HeightCalc(node.GetRightChild()));
     }
-
-    // Método de Calculo de Profundidade
     public int Depth(Node<T>? node) => DepthCalc(node);
-    private int DepthCalc(Node<T>? node)
+    private int DepthCalc(Node<T> node)
     {
-        if (IsRoot(node)) return 0;
+        if (IsRoot(node))
+            return 0;
         return 1 + DepthCalc(node.GetParent());
     }
-
-    // Método para Inserir um Novo Nó na Árvore
-    // Lógica: O Nó Pai deve possuir o Nó Filho Esquerdo Menor e o Nó Filho Direito Maior
-    public void Insert(T element) => Root = InsertOperation(Root, element, default);
-    private Node<T> InsertOperation(Node<T>? node, T element, Node<T>? parent)
-    {
-        if (node == null)
-            return new Node<T>(element, parent);
-
-        if (element.CompareTo(node.GetElement()) < 0)
-            node.SetLeftChild(InsertOperation(node.GetLeftChild(), element, node));
-        else
-            node.SetRightChild(InsertOperation(node.GetRightChild(), element, node));
-
-        return node;
-    }
-
-    // Método de Busca para Nó com Chave X
     public Node<T>? Find(T key) => FindOperation(Root, key);
     private Node<T>? FindOperation(Node<T>? node, T key)
     {
@@ -64,7 +77,23 @@ public class ArvoreBinariaPesquisa<T> : IArvore<T> where T : IComparable<T>
             return FindOperation(node.GetRightChild(), key);
     }
 
-    // Método para Remove um Nó com Chave X
+    // Métodos de Atualização
+
+    // Método para Inserir um Novo Nó na Árvore
+    // Lógica: O Nó Pai deve possuir o Nó Filho Esquerdo Menor e o Nó Filho Direito Maior
+    public void Insert(T element) => Root = InsertOperation(Root, element, null);
+    private Node<T> InsertOperation(Node<T>? node, T element, Node<T>? parent)
+    {
+        if (node == null)
+            return new Node<T>(element, parent);
+
+        if (element.CompareTo(node.GetElement()) < 0)
+            node.SetLeftChild(InsertOperation(node.GetLeftChild(), element, node));
+        else
+            node.SetRightChild(InsertOperation(node.GetRightChild(), element, node));
+
+        return node;
+    }
     public void Remove(T key) => Root = RemoveOperation(Root, key);
     private Node<T>? RemoveOperation(Node<T>? node, T key)
     {
@@ -101,7 +130,6 @@ public class ArvoreBinariaPesquisa<T> : IArvore<T> where T : IComparable<T>
 
         return node;
     }
-
     // Método para encontrar o Sucessor do Nó Removido quando esse possui 2 Filhos
     private Node<T> Successor(Node<T>? node)
     {
@@ -143,7 +171,7 @@ public class ArvoreBinariaPesquisa<T> : IArvore<T> where T : IComparable<T>
 
         PostOrderTraversal(node.GetLeftChild());
         PostOrderTraversal(node.GetRightChild());
-        Console.Write(node.GetElement() + " - "); 
+        Console.Write(node.GetElement() + " - ");
     }
 
 

@@ -22,7 +22,7 @@ public class Node<T> where T : IComparable<T>
     public void SetParent(Node<T> newParent) => Parent = newParent;
 
     // Métodos GET, ADD, REMOVE e COUNT para os Filhos do Nó
-    public IEnumerator GetChildren() => Children.GetEnumerator();
+    public IEnumerator<Node<T>> GetChildren() => Children.GetEnumerator();
     public void AddChild(Node<T>? newChild) => Children.Add(newChild);
     public void RemoveChild(Node<T>? child) => Children.Remove(child);
     public int CountChildren() => Children.Count;

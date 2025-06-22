@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-TesteArvoreGenerica.Executar();
+﻿TesteArvoreGenerica.Executar();
 
 public static class TesteArvoreGenerica
 {
@@ -8,88 +6,73 @@ public static class TesteArvoreGenerica
 
     public static void Executar()
     {
+        // Criar nós filhos diretamente para teste
         Node<string> raiz = arvore.GetRoot();
-
-        // Adicionar filhos à raiz
+        
+        // Adicionar filhos na raiz
         arvore.AddChild(raiz, "B");
         arvore.AddChild(raiz, "C");
-        arvore.AddChild(raiz, "D");
 
-        // Adicionar filhos a B
-        IEnumerator filhosRaiz = arvore.Children(raiz);
-        Node<string> noB = null;
+        // Pegar referências dos filhos para adicionar netos
+        IEnumerator<Node<string>> filhosRaiz = raiz.GetChildren();
+        List<Node<string>> filhos = new List<Node<string>>();
         while (filhosRaiz.MoveNext())
-        {
-            Node<string> filho = (Node<string>)filhosRaiz.Current;
-            if (filho.GetElement() == "B")
-            {
-                noB = filho;
-                break;
-            }
-        }
+            filhos.Add(filhosRaiz.Current);
 
-        if (noB != null)
-        {
-            arvore.AddChild(noB, "E");
-            arvore.AddChild(noB, "F");
-        }
+        // Adicionar filhos em "B"
+        arvore.AddChild(filhos[0], "D");
+        arvore.AddChild(filhos[0], "E");
 
-        // 🔎 Travessias
-        Console.WriteLine("📌 Pré-Ordem:");
-        arvore.PreOrder();
+        // Mostrar tamanho (quantidade de nós)
+        Console.WriteLine("Tamanho da árvore: " + arvore.Size());
 
-        Console.WriteLine("\n\n📌 Pós-Ordem:");
-        arvore.PostOrder();
+        // Mostrar altura da raiz
+        Console.WriteLine("Altura da raiz: " + arvore.Height(raiz));
 
-        // 📏 Altura, profundidade e tamanho
-        Console.WriteLine($"\n\n📏 Altura da árvore: {arvore.Height(raiz)}");
-        Console.WriteLine($"📍 Profundidade de B: {arvore.Depth(noB)}");
-        Console.WriteLine($"📦 Tamanho da árvore: {arvore.Size()}");
+        // Mostrar profundidade do nó "E"
+        Node<string> noE = filhos[0].GetChildren().Current; // cuidado, pegar com MoveNext se quiser exato
+        // Melhor pegar iterador e avançar:
+        IEnumerator<Node<string>> itE = filhos[0].GetChildren();
+        itE.MoveNext();
+        Node<string> noD = itE.Current;
+        itE.MoveNext();
+        Node<string> noE_real = itE.Current;
+        Console.WriteLine($"Profundidade do nó {noE_real.GetElement()}: " + arvore.Depth(noE_real));
 
-        // 📦 Elements
-        Console.WriteLine("\n🧺 Elementos:");
-        IEnumerator elementos = arvore.Elements(raiz);
+        // Mostrar elementos da árvore (pré-ordem implícita)
+        Console.Write("Elementos da árvore: ");
+        IEnumerator<string> elementos = arvore.Elements();
         while (elementos.MoveNext())
-        {
-            string el = (string)elementos.Current;
-            Console.Write(el + " ");
-        }
+            Console.Write(elementos.Current + " ");
+        Console.WriteLine();
 
-        // 📦 Nodes
-        Console.WriteLine("\n\n🔗 Nós:");
-        IEnumerator nos = arvore.Nodes(raiz);
-        while (nos.MoveNext())
-        {
-            Node<string> no = (Node<string>)nos.Current;
-            Console.Write(no.GetElement() + " ");
-        }
+        // Testar remoção de nó externo (ex: nó "E")
+        var removido = arvore.Remove(noE_real);
+        Console.WriteLine("Elemento removido: " + (removido ?? "null"));
 
-        // 🔁 Swap entre B e C
-        Console.WriteLine("\n\n🔁 Fazendo swap entre B e C...");
-        Node<string> noC = null;
-        filhosRaiz = arvore.Children(raiz);
-        while (filhosRaiz.MoveNext())
-        {
-            Node<string> filho = (Node<string>)filhosRaiz.Current;
-            if (filho.GetElement() == "C") noC = filho;
-        }
+        // Mostrar tamanho após remoção
+        Console.WriteLine("Tamanho após remoção: " + arvore.Size());
 
-        arvore.SwapElement(noB, noC);
+        // Trocar elementos entre "B" e "C"
+        arvore.SwapElement(filhos[0], filhos[1]);
+        Console.WriteLine("Elementos após troca entre B e C:");
+        elementos = arvore.Elements();
+        while (elementos.MoveNext())
+            Console.Write(elementos.Current + " ");
+        Console.WriteLine();
+
+        // Substituir elemento "D" por "X"
+        var antigo = arvore.Replace(noD, "X");
+        Console.WriteLine($"Elemento substituído: {antigo}");
+
+        // Mostrar pré-ordem
+        Console.Write("Pré-Ordem: ");
         arvore.PreOrder();
+        Console.WriteLine();
 
-        // 🔁 Replace D → X
-        Console.WriteLine("\n\n✏️ Substituindo D por X...");
-        Node<string> noD = null;
-        filhosRaiz = arvore.Children(raiz);
-        while (filhosRaiz.MoveNext())
-        {
-            Node<string> filho = (Node<string>)filhosRaiz.Current;
-            if (filho.GetElement() == "D") noD = filho;
-        }
-
-        arvore.Replace(noD, "X");
-        arvore.PreOrder();
-
-        Console.WriteLine("\n");
+        // Mostrar pós-ordem
+        Console.Write("Pós-Ordem: ");
+        arvore.PostOrder();
+        Console.WriteLine();
     }
 }

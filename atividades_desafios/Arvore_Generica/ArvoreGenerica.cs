@@ -1,5 +1,3 @@
-using System.Collections;
-
 public class ArvoreGenerica<T> : IArvore<T> where T : IComparable<T>
 {
     private Node<T> Root;
@@ -17,68 +15,58 @@ public class ArvoreGenerica<T> : IArvore<T> where T : IComparable<T>
             return 0;
 
         int contador = 1;
-        IEnumerator iterator = node.GetChildren();
+        IEnumerator<Node<T>> iterator = node.GetChildren();
         while (iterator.MoveNext())
             contador += Count((Node<T>)iterator.Current);
 
         return contador;
     }
     public bool IsEmpty() => Root == null;
-    public IEnumerator<T> Elements(Node<T> node)
+    public IEnumerator<T> Elements()
     {
         List<T> elements = new List<T>();
-
+        GetElements(Root, elements);
+        return elements.GetEnumerator();
+    }
+    private void GetElements(Node<T> node, List<T> elements)
+    {
         // Adicionar elemento do Nó atual na lista de elementos
         elements.Add(node.GetElement());
 
         // Criar um Enumerator com todos os filhos do Nó atual
-        IEnumerator iterator = Children(node);
+        IEnumerator<Node<T>> iterator = Children(node);
 
-        // Adicionar todos os elementos dos filhos dos filhos do Nó atual
+        // Adicionar todos os elementos dos filhos do Nó atual
         while (iterator.MoveNext())
         {
-            // Filho atual
-            Node<T> child = (Node<T>)iterator.Current;
-
-            // Criar um Enumerator com todos os elementos dos filhos do filho atual
-            IEnumerator subElements = Elements(child);
-            while (subElements.MoveNext())
-                // Adicionar todos os elementos dos filhos do filho atual na lista de elementos
-                elements.Add((T)subElements.Current);
+            GetElements(iterator.Current, elements);
         }
-
-        return elements.GetEnumerator();
     }
-    public IEnumerator<Node<T>> Nodes(Node<T> node)
+    public IEnumerator<Node<T>> Nodes()
     {
         List<Node<T>> nodes = new List<Node<T>>();
-
+        GetNodes(Root, nodes);
+        return nodes.GetEnumerator();
+    }
+    private void GetNodes(Node<T> node, List<Node<T>> nodes)
+    {
         // Adicionar o Nó atual na lista de Nós
         nodes.Add(node);
 
         // Criar um Enumerator com todos os filhos do Nó atual
-        IEnumerator iterator = Children(node);
+        IEnumerator<Node<T>> iterator = Children(node);
 
-        // Adicionar todos os filhos dos filhos do Nó atual
+        // Adicionar todos os filhos do Nó atual
         while (iterator.MoveNext())
         {
-            // Filho atual
-            Node<T> child = (Node<T>)iterator.Current;
-
-            // Criar um Enumerator com todos os filhos do filho atual
-            IEnumerator subElements = Nodes(child);
-            while (subElements.MoveNext())
-                // Adicionar todos os filhos do filho atual na lista de Nós
-                nodes.Add((Node<T>)subElements.Current);
+            GetNodes(iterator.Current, nodes);
         }
-
-        return nodes.GetEnumerator();
     }
 
     // Métodos de Acesso
     public Node<T> GetRoot() => Root;
     public Node<T>? Parent(Node<T> child) => child.GetParent();
-    public IEnumerator Children(Node<T> parent) => parent.GetChildren();
+    public IEnumerator<Node<T>> Children(Node<T> parent) => parent.GetChildren();
 
     // Métodos de Consulta
     public bool IsRoot(Node<T>? node) => node == Root;
@@ -86,7 +74,7 @@ public class ArvoreGenerica<T> : IArvore<T> where T : IComparable<T>
     private int HeightCalc(Node<T> node)
     {
         int height;
-        IEnumerator iterator;
+        IEnumerator<Node<T>> iterator;
 
         if (node.IsExternal())
             return 0;
@@ -103,12 +91,11 @@ public class ArvoreGenerica<T> : IArvore<T> where T : IComparable<T>
         }
     }
     public int Depth(Node<T> node) => DepthCalc(node);
-    public int DepthCalc(Node<T> node)
+    public int DepthCalc(Node<T>? node)
     {
         if (IsRoot(node))
             return 0;
-        else
-            return 1 + DepthCalc(node.GetParent());
+        return 1 + DepthCalc(node.GetParent());
     }
 
     // Métodos de Atualização
@@ -117,14 +104,15 @@ public class ArvoreGenerica<T> : IArvore<T> where T : IComparable<T>
         Node<T> newChild = new Node<T>(newElement, parent);
         parent.AddChild(newChild);
     }
-    public T? RemoveChild(Node<T> child)
-    {
-        Node<T> parent = child.GetParent();
-        if (!IsRoot(parent) && child.IsExternal())
+    public T? Remove(Node<T> node)
+    {   
+        Node<T> parent = node.GetParent();
+        // Remove Apenas Nós Externos
+        if (!IsRoot(parent) && node.IsExternal())
         {
-            parent.RemoveChild(child);
-            T elementChild = child.GetElement();
-            return elementChild;
+            parent.RemoveChild(node);
+            T element = node.GetElement();
+            return element;
         }
 
         return default;
@@ -150,7 +138,7 @@ public class ArvoreGenerica<T> : IArvore<T> where T : IComparable<T>
 
         Console.Write(node.GetElement() + " - ");
 
-        IEnumerator iterator = node.GetChildren();
+        IEnumerator<Node<T>> iterator = node.GetChildren();
         while (iterator.MoveNext())
             PreOrderTraversal((Node<T>)iterator.Current);
     }
@@ -160,7 +148,7 @@ public class ArvoreGenerica<T> : IArvore<T> where T : IComparable<T>
     {
         if (node == null) return;
 
-        IEnumerator iterator = node.GetChildren();
+        IEnumerator<Node<T>> iterator = node.GetChildren();
         while (iterator.MoveNext())
             PostOrderTraversal((Node<T>)iterator.Current);
 
