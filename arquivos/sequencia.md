@@ -57,262 +57,6 @@
 
 <br>
 
-## 🧱 Implementação com Array Circular
-
-> A sequência é representada com um **array circular** contendo **nós como objetos**. Cada nó possui:
->
-> * O **valor** armazenado
-> * O **rank (posição lógica)** em que se encontra (diferente do índice do array)
-
-### 🔧 Estrutura Básica
-
-* 🔹 Cada elemento do array é um objeto Nó, que armazena o valor e seu rank lógico na estrutura.
-* 🔹 O array é circular: quando se alcança o final, volta-se ao início.
-* 🔹 O rank não é o mesmo que o índice do array - é a posição lógica baseada na ordem de inserção.
-* 🔹 Ao remover um elemento do meio, os ranks são reajustados para manter a sequência lógica.
-* 🔹 Operações de leitura são rápidas, mas inserções e remoções internas são custosas por envolver deslocamento de elementos.
-
-```text
-Array Circular: 
-[ Nó(30, rank=2) ] [ -- ][ -- ][ Nó(10, rank=0) ] [ Nó(20, rank=1) ]
-Tamanho: 3
-Capacidade: 5
-```
-
-<br>
-
-### ⚙️ Modo de Funcionamento
-
-* Todas as operações (genéricas, de vetor, de lista e de ponte) são suportadas.
-* Acesso direto por rank é eficiente (O(1)) usando busca modular no array circular.
-* Inserções e remoções envolvem deslocamento de elementos (O(n)) e ajuste de ranks.
-* Ao remover um elemento do meio:
-    * Os elementos posteriores são deslocados para esquerda
-    * Seus ranks são decrementados em 1
-* Nós armazenam o rank lógico, facilitando a conversão entre rank e posição.
-
-<br>
-
-### ⚠️ Limitações
-
-* **Capacidade fixa:** Arrays possuem capacidade fixa. Quando a sequência atinge seu limite, operações de inserção se tornam inviáveis, gerando problemas de **overflow**. Fazendo necessário estrategias de redimensionamento como: 
-    1. [**Estratégia Incremental**](pilha.md/###1-estratégia-incremental)
-    2. [**Estratégia Duplicativa (Exponencial)**](pilha.md/###2-estratégia-duplicativa-exponencial)
-* Deslocamentos custosos em operações de inserção/remoção em posições intermediárias.
-* Maior complexidade para manipular posições relativas (before/after).
-
-<br>
-
-### ✏️ Implementação em C#
-```csharp
-using system;
-
-public class EPosicaoInvalida : Exception {
-    public EPosicaoInvalida(string msg) : base(msg) { }
-}
-
-public class ENaoEncontrado : Exception {
-    public ENaoEncontrado(string msg) : base(msg) { }
-}
-
-public class ESequenciaVazia : Exception {
-    public ESequenciaVazia(string msg) : base(msg) { }
-}
-
-public interface ISequencia<T> {
-    int Size();
-    bool IsEmpty();
-
-    void InsertAtRank(int rank, T element);
-    T RemoveAtRank(int rank);
-    T ReplaceAtRank(int rank, T element);
-    T ElemAtRank(int rank);
-
-    void InsertFirst(T element);
-    void InsertLast(T element);
-    void InsertAfter(T target, T element);
-    void InsertBefore(T target, T element);
-    T ReplaceElement(T oldElement, T newElement);
-    void SwapElement(T e1, T e2);
-    T Remove(T element);
-    T First();
-    T Last();
-    bool InFirst(T element);
-    bool InLast(T element);
-    T After(T element);
-    T Before(T element);
-    T Search(T element);
-
-    No<T> AtRank(int rank);
-    int RankOf(No<T> node);
-}
-
-public class No<T> {
-    public T Element { get; set; }
-    public int Rank { get; set; }
-
-    public No(T element, int rank) {
-        Element = element;
-        Rank = rank;
-    }
-}
-
-public class SequenciaArray<T> : ISequencia<T> {
-    private No<T>[] array;
-    private int capacidade;
-    private int inicio;
-    private int tamanho;
-
-    public SequenciaArray(int capacidadeInicial = 10) {
-        capacidade = capacidadeInicial;
-        array = new No<T>[capacidade];
-        inicio = 0;
-        tamanho = 0;
-    }
-
-    public int Size() => tamanho;
-    public bool IsEmpty() => tamanho == 0;
-    private int Index(int r) => (inicio + r) % capacidade;
-
-    private void Redimensionar() {
-        int novaCapacidade = capacidade * 2;
-        No<T>[] novoArray = new No<T>[novaCapacidade];
-        for (int i = 0; i < tamanho; i++)
-            novoArray[i] = array[Index(i)];
-        array = novoArray;
-        capacidade = novaCapacidade;
-        inicio = 0;
-    }
-
-    public No<T> AtRank(int rank) {
-        if (rank < 0 || rank >= tamanho)
-            throw new EPosicaoInvalida("Rank inválido.");
-        return array[Index(rank)];
-    }
-
-    public int RankOf(No<T> no) {
-        for (int i = 0; i < tamanho; i++) {
-            if (array[Index(i)].Equals(no)) return i;
-        }
-        throw new ENaoEncontrado("Elemento não encontrado.");
-    }
-
-    public void InsertAtRank(int rank, T element) {
-        if (rank < 0 || rank > tamanho)
-            throw new EPosicaoInvalida("Rank inválido.");
-        if (tamanho == capacidade) Redimensionar();
-        for (int i = tamanho; i > rank; i--) {
-            array[Index(i)] = array[Index(i - 1)];
-        }
-        array[Index(rank)] = new No<T>(element, rank);
-        tamanho++;
-    }
-
-    public T RemoveAtRank(int rank) {
-        if (IsEmpty()) throw new ESequenciaVazia("Sequência vazia.");
-        if (rank < 0 || rank >= tamanho)
-            throw new EPosicaoInvalida("Rank inválido.");
-        T elemento = array[Index(rank)].Element;
-        for (int i = rank; i < tamanho - 1; i++) {
-            array[Index(i)] = array[Index(i + 1)];
-        }
-        array[Index(tamanho - 1)] = null;
-        tamanho--;
-        return elemento;
-    }
-
-    public T ReplaceAtRank(int rank, T element) {
-        if (rank < 0 || rank >= tamanho)
-            throw new EPosicaoInvalida("Rank inválido.");
-        T antigo = array[Index(rank)].Element;
-        array[Index(rank)].Element = element;
-        return antigo;
-    }
-
-    public T ElemAtRank(int rank) {
-        return AtRank(rank).Element;
-    }
-
-    public void InsertFirst(T element) => InsertAtRank(0, element);
-    public void InsertLast(T element) => InsertAtRank(tamanho, element);
-
-    public void InsertAfter(T target, T element) {
-        int pos = IndexOf(target);
-        InsertAtRank(pos + 1, element);
-    }
-
-    public void InsertBefore(T target, T element) {
-        int pos = IndexOf(target);
-        InsertAtRank(pos, element);
-    }
-
-    public T ReplaceElement(T oldElement, T newElement) {
-        int pos = IndexOf(oldElement);
-        T antigo = array[Index(pos)].Element;
-        array[Index(pos)].Element = newElement;
-        return antigo;
-    }
-
-    public void SwapElement(T e1, T e2) {
-        int i1 = IndexOf(e1);
-        int i2 = IndexOf(e2);
-        var temp = array[Index(i1)].Element;
-        array[Index(i1)].Element = array[Index(i2)].Element;
-        array[Index(i2)].Element = temp;
-    }
-
-    public T Remove(T element) {
-        int pos = IndexOf(element);
-        return RemoveAtRank(pos);
-    }
-
-    public T First() {
-        if (IsEmpty()) throw new ESequenciaVazia("Sequência vazia.");
-        return array[Index(0)].Element;
-    }
-
-    public T Last() {
-        if (IsEmpty()) throw new ESequenciaVazia("Sequência vazia.");
-        return array[Index(tamanho - 1)].Element;
-    }
-
-    public bool InFirst(T element) => IndexOf(element) == 0;
-    public bool InLast(T element) => IndexOf(element) == tamanho - 1;
-
-    public T After(T element) {
-        int pos = IndexOf(element);
-        if (pos == tamanho - 1)
-            throw new EPosicaoInvalida("Último elemento não possui sucessor.");
-        return array[Index(pos + 1)].Element;
-    }
-
-    public T Before(T element) {
-        int pos = IndexOf(element);
-        if (pos == 0)
-            throw new EPosicaoInvalida("Primeiro elemento não possui anterior.");
-        return array[Index(pos - 1)].Element;
-    }
-
-    public T Search(T element) {
-        for (int i = 0; i < tamanho; i++) {
-            if (array[Index(i)].Element.Equals(element)) {
-                return array[Index(i)].Element;
-            }
-        }
-        throw new ENaoEncontrado("Elemento não encontrado.");
-    }
-
-    private int IndexOf(T element) {
-        for (int i = 0; i < tamanho; i++) {
-            if (array[Index(i)].Element.Equals(element)) return i;
-        }
-        throw new ENaoEncontrado("Elemento não encontrado.");
-    }
-}
-```
-
-<br>
-
 ## 🔁 Implementação com Lista Duplamente Ligada
 
 > A sequência é implementada como uma **lista duplamente ligada**, com **nós contendo**:
@@ -353,6 +97,35 @@ public class SequenciaArray<T> : ISequencia<T> {
 * Maior uso de memória devido aos ponteiros adicionais por nó.
 * Implementação mais complexa devido à manutenção das referências e ranks.
 * Necessidade de atualizar ranks após operações de remoção no meio da lista.
+
+<br>
+
+### ⏱️ Desempenho das Operações
+
+| Operação                                | Complexidade | Descrição                                                                     |
+| --------------------------------------- | -------------| ----------------------------------------------------------------------------- |
+| `insertAtRank(integer, object)`         | O(n)         | Insere o **elemento** na **posição X** da sequência e desloca os demais       |
+| `insertFirst(object)`                   | O(1)         | Insere o **elemento** no **início** da sequência                              |
+| `insertLast(object)`                    | O(1)         | Insere o **elemento** no **fim** da sequência                                 |
+| `insertAfter(object, object)`           | O(1)         | Insere o **elemento depois** de outro elemento da sequência                   |
+| `insertBefore(object, object)`          | O(1)         | Insere o **elemento antes** de outro elemento da sequeência                   |
+| `object replaceAtRank(integer, object)` | O(n)         | Substitui o **elemento** na **posição X** da sequência por outro **elemento** |
+| `object replaceElement(object, object)` | O(1)         | Substitui o **elemento** da sequência por **outro elemento**                  |
+| `swapElements(object, object)`          | O(1)         | Troca um **elemento** da sequência por **outro elemento** da sequência        |
+| `object removeAtRank(integer)`          | O(n)         | Remove o **elemento** na **posição X** da sequência                           |
+| `object remove(object)`                 | O(1)         | Remove o **elemento** da sequência                                            |
+| `object elemAtRank(integer)`            | O(n)         | Acessa o **elemento** na **posição X** da sequência                           |
+| `object first()`                        | O(1)         | Retorna o **primeiro elemento** da sequência                                  |
+| `object last()`                         | O(1)         | Retorna o **último elemento** da sequência                                    |
+| `boolean inFirst(object)`               | O(1)         | Verifica se o **elemento** é o **primeiro** da sequência                      |
+| `boolean inLast(object)`                | O(1)         | Verifica se o **elemento** é o **último** da sequência                        |
+| `object after(object)`                  | O(1)         | Retorna o **elemento posterior** ao **elemento** da sequência                 |
+| `object before(object)`                 | O(1)         | Retorna o **elemento anterior** ao **elemento** da sequência                  |
+| `object atRank(integer)`                | O(n)         | Retorna o **elemento** da **posição X** da sequência                          |
+| `integer rankOf(object)`                | O(n)         | Retorna a **posição X** do **elemento** da sequência                          |
+| `integer size()`                        | O(1)         | Retorna a **quantidade** de **elementos** da sequência                        |
+| `boolean isEmpty()`                     | O(1)         | Verifica se a sequência está **vazia**                                        |
+| `object search(object)`                 | O(n)         | Encontra um **elemento** da sequência                                         |
 
 <br>
 
@@ -611,34 +384,3 @@ public class SequenciaLista<T> : ISequencia<T> {
     }
 }
 ```
-
-<br>
-
-## ⏱️ Desempenho das Operações
-
-| Operação                                | Array com Nós | Lista Duplamente Ligada | Descrição                                                                     |
-| --------------------------------------- | ------------- | ----------------------- | ----------------------------------------------------------------------------- |
-| `insertAtRank(integer, object)`         | O(n)          | O(n)                    | Insere o **elemento** na **posição X** da sequência e desloca os demais       |
-| `insertFirst(object)`                   | O(n)          | O(1)                    | Insere o **elemento** no **início** da sequência                              |
-| `insertLast(object)`                    | O(n)          | O(1)                    | Insere o **elemento** no **fim** da sequência                                 |
-| `insertAfter(object, object)`           | O(n)          | O(1)                    | Insere o **elemento depois** de outro elemento da sequência                   |
-| `insertBefore(object, object)`          | O(n)          | O(1)                    | Insere o **elemento antes** de outro elemento da sequeência                   |
-| `object replaceAtRank(integer, object)` | O(1)          | O(n)                    | Substitui o **elemento** na **posição X** da sequência por outro **elemento** |
-| `object replaceElement(object, object)` | O(1)          | O(1)                    | Substitui o **elemento** da sequência por **outro elemento**                  |
-| `swapElements(object, object)`          | O(1)          | O(1)                    | Troca um **elemento** da sequência por **outro elemento** da sequência        |
-| `object removeAtRank(integer)`          | O(n)          | O(n)                    | Remove o **elemento** na **posição X** da sequência                           |
-| `object remove(object)`                 | O(n)          | O(1)                    | Remove o **elemento** da sequência                                            |
-| `object elemAtRank(integer)`            | O(1)          | O(n)                    | Acessa o **elemento** na **posição X** da sequência                           |
-| `object first()`                        | O(1)          | O(1)                    | Retorna o **primeiro elemento** da sequência                                  |
-| `object last()`                         | O(1)          | O(1)                    | Retorna o **último elemento** da sequência                                    |
-| `boolean inFirst(object)`               | O(1)          | O(1)                    | Verifica se o **elemento** é o **primeiro** da sequência                      |
-| `boolean inLast(object)`                | O(1)          | O(1)                    | Verifica se o **elemento** é o **último** da sequência                        |
-| `object after(object)`                  | O(1)          | O(1)                    | Retorna o **elemento posterior** ao **elemento** da sequência                 |
-| `object before(object)`                 | O(1)          | O(1)                    | Retorna o **elemento anterior** ao **elemento** da sequência                  |
-| `object atRank(integer)`                | O(1)          | O(n)                    | Retorna o **elemento** da **posição X** da sequência                          |
-| `integer rankOf(object)`                | O(1)          | O(n)                    | Retorna a **posição X** do **elemento** da sequência                          |
-| `integer size()`                        | O(1)          | O(1)                    | Retorna a **quantidade** de **elementos** da sequência                        |
-| `boolean isEmpty()`                     | O(1)          | O(1)                    | Verifica se a sequência está **vazia**                                        |
-| `object search(object)`                 | O(n)          | O(n)                    | Encontra um **elemento** da sequência                                         |
-
-> 📌 Ambas suportam **todas as operações** do TAD Sequência. A escolha entre elas depende do tipo de acesso mais frequente: **acesso rápido por índice (array)** ou **navegação eficiente por posições (lista)**.
